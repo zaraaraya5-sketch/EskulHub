@@ -9,16 +9,16 @@ import { Textarea } from '@/components/ui/Textarea';
 import { generatePortfolioPdf } from '@/lib/pdf/generatePortfolioPdf';
 import { Plus, CheckCircle2, AlertCircle, UploadCloud } from 'lucide-react';
 import { Extracurricular } from '@/types';
-import { StudentProfileHeader } from '../components/StudentProfileHeader';
+import { StudentProfileHeader } from '../views/StudentProfileHeader';
 
 // Import Tabs
-import { StudentOverviewTab } from '../components/student/StudentOverviewTab';
-import { StudentBrowseTab } from '../components/student/StudentBrowseTab';
-import { StudentRegistrationsTab } from '../components/student/StudentRegistrationsTab';
-import { StudentAttendanceTab } from '../components/student/StudentAttendanceTab';
-import { StudentAchievementsTab } from '../components/student/StudentAchievementsTab';
-import { StudentDocumentsTab } from '../components/student/StudentDocumentsTab';
-import { StudentPortfolioTab } from '../components/student/StudentPortfolioTab';
+import { StudentOverviewTab } from '../views/student/StudentOverviewTab';
+import { StudentBrowseTab } from '../views/student/StudentBrowseTab';
+import { StudentRegistrationsTab } from '../views/student/StudentRegistrationsTab';
+import { StudentAttendanceTab } from '../views/student/StudentAttendanceTab';
+import { StudentAchievementsTab } from '../views/student/StudentAchievementsTab';
+import { StudentDocumentsTab } from '../views/student/StudentDocumentsTab';
+import { StudentPortfolioTab } from '../views/student/StudentPortfolioTab';
 
 export type StudentDashboardTab =
   | 'overview'
@@ -120,12 +120,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
     setTimeout(() => {
-      generatePortfolioPdf(verification, settings, {
-        memberships: myMemberships,
-        attendanceRate,
-        presentCount,
-        totalSessions,
-      });
+      generatePortfolioPdf(verification, settings);
       setIsGeneratingPdf(false);
     }, 1500);
   };
@@ -148,12 +143,13 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       return;
     }
 
-    const res = db.addRegistration({
+    const res = db.createRegistration({
       student_id: studentId,
       extracurricular_id: regTargetEkskulId,
       student_class: regClass,
       student_nisn: regNisn,
       reason: regReason.trim(),
+      student_name: currentUser?.name || 'Siswa',
     });
 
     if (!res.success) {

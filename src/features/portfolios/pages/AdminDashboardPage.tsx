@@ -6,12 +6,12 @@ import { User, Extracurricular, SchoolEvent, PortfolioVerification } from '@/typ
 import { Button } from '@/components/ui/Button';
 
 // Modular Sections
-import { AdminOverviewSection } from '../components/admin/AdminOverviewSection';
-import { AdminUserManager } from '../components/admin/AdminUserManager';
-import { AdminEkskulSection } from '../components/admin/AdminEkskulSection';
-import { AdminScheduleSection } from '../components/admin/AdminScheduleSection';
-import { AdminVerificationSection } from '../components/admin/AdminVerificationSection';
-import { AdminProfileSection } from '../components/admin/AdminProfileSection';
+import { AdminOverviewSection } from '../views/admin/AdminOverviewSection';
+import { AdminUserManager } from '../views/admin/AdminUserManager';
+import { AdminEkskulSection } from '../views/admin/AdminEkskulSection';
+import { AdminScheduleSection } from '../views/admin/AdminScheduleSection';
+import { AdminVerificationSection } from '../views/admin/AdminVerificationSection';
+import { AdminProfileSection } from '../views/admin/AdminProfileSection';
 
 interface AdminDashboardPageProps {
   currentPath?: string;
