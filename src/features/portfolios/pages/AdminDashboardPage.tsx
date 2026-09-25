@@ -462,7 +462,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
   return (
     <div className="space-y-6">
       {/* Top Breadcrumb & Page Title */}
-      <div className="border-b border-[#D8D4CC] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="border-b border-[#EAE6DC] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="text-[11px] font-bold uppercase tracking-wider text-[#234B36] flex items-center gap-1.5 mb-1">
             <School className="w-3.5 h-3.5" />
@@ -537,7 +537,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
             <div
               onClick={() => switchSection('students')}
-              className="bg-white border border-[#D8D4CC] rounded-lg p-4 cursor-pointer hover:border-[#234B36] transition-colors group"
+              className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#234B36] transition-colors group"
             >
               <div className="flex items-center justify-between text-[#68655F] mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Total Siswa</span>
@@ -549,7 +549,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
             <div
               onClick={() => switchSection('teachers')}
-              className="bg-white border border-[#D8D4CC] rounded-lg p-4 cursor-pointer hover:border-[#8C6819] transition-colors group"
+              className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#8C6819] transition-colors group"
             >
               <div className="flex items-center justify-between text-[#68655F] mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Guru Wali Kelas</span>
@@ -561,7 +561,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
             <div
               onClick={() => switchSection('pembina')}
-              className="bg-white border border-[#D8D4CC] rounded-lg p-4 cursor-pointer hover:border-[#B84A3A] transition-colors group"
+              className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#B84A3A] transition-colors group"
             >
               <div className="flex items-center justify-between text-[#68655F] mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Guru Pembina</span>
@@ -573,7 +573,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
             <div
               onClick={() => switchSection('ekskul')}
-              className="bg-white border border-[#D8D4CC] rounded-lg p-4 cursor-pointer hover:border-[#234B36] transition-colors group"
+              className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#234B36] transition-colors group"
             >
               <div className="flex items-center justify-between text-[#68655F] mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Ekstrakurikuler</span>
@@ -585,7 +585,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
             <div
               onClick={() => switchSection('verification')}
-              className="bg-white border border-[#D8D4CC] rounded-lg p-4 cursor-pointer hover:border-[#262522] transition-colors group col-span-2 lg:col-span-1"
+              className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#262522] transition-colors group col-span-2 lg:col-span-1"
             >
               <div className="flex items-center justify-between text-[#68655F] mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">Portofolio QR</span>
@@ -597,7 +597,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           </div>
 
           {/* Quick Shortcuts Bar */}
-          <div className="bg-[#F5F2EA] border border-[#D8D4CC] rounded-lg p-4">
+          <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-4">
             <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-3">
               Aksi Cepat Administrator
             </div>
@@ -624,8 +624,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           </div>
 
           {/* Pending Registrations Table */}
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-5">
-            <div className="flex items-center justify-between pb-3 border-b border-[#D8D4CC] mb-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#EAE6DC] mb-4">
               <div>
                 <h3 className="text-sm font-bold text-[#171717]">Pendaftaran Ekskul Siswa yang Masuk</h3>
                 <p className="text-xs text-[#68655F]">Verifikasi langsung persetujuan kuota masuk ekskul.</p>
@@ -656,7 +656,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                           </button>
                           <button
                             onClick={() => handleRejectRegistration(reg.id)}
-                            className="px-2.5 py-1 bg-white border border-[#D8D4CC] text-[#A33D35] hover:bg-[#F9ECEB] rounded font-bold cursor-pointer"
+                            className="px-2.5 py-1 bg-white border border-[#EAE6DC] text-[#A33D35] hover:bg-[#F9ECEB] rounded font-bold cursor-pointer"
                           >
                             Tolak
                           </button>
@@ -679,8 +679,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 2: KELOLA SISWA */}
       {/* ========================================================================= */}
       {activeSection === 'students' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Daftar Seluruh Siswa Terdaftar</h2>
               <p className="text-xs text-[#68655F]">Kelola akun siswa, pantau status keaktifan, dan data kontak.</p>
@@ -693,7 +693,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   placeholder="Cari siswa atau email..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F5F2EA]/50 border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
                 />
               </div>
               <Button variant="primary" size="sm" onClick={() => openAddUserModal('student')} icon={<Plus className="w-3.5 h-3.5" />}>
@@ -705,7 +705,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[#D8D4CC] bg-[#F5F2EA]/60 text-[#68655F]">
+                <tr className="border-b border-[#EAE6DC] bg-[#F9F8F6]/60 text-[#68655F]">
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Nama Lengkap</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Email Akun</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">No. Telepon / WA</th>
@@ -715,7 +715,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               </thead>
               <tbody className="divide-y divide-[#D8D4CC]">
                 {filteredStudents.map((st) => (
-                  <tr key={st.id} className="hover:bg-[#F5F2EA]/30 transition-colors">
+                  <tr key={st.id} className="hover:bg-[#F9F8F6]/30 transition-colors">
                     <td className="py-3 px-3 font-bold text-[#171717] flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-full bg-[#E7EFEA] text-[#234B36] font-bold flex items-center justify-center text-xs">
                         {st.name.substring(0, 1)}
@@ -733,7 +733,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           onClick={() => openEditUserModal(st)}
-                          className="p-1.5 text-[#68655F] hover:text-[#234B36] hover:bg-[#F5F2EA] rounded cursor-pointer transition-colors"
+                          className="p-1.5 text-[#68655F] hover:text-[#234B36] hover:bg-[#F9F8F6] rounded cursor-pointer transition-colors"
                           title="Edit Siswa"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -759,8 +759,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 3: KELOLA GURU */}
       {/* ========================================================================= */}
       {activeSection === 'teachers' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Daftar Guru & Wali Kelas</h2>
               <p className="text-xs text-[#68655F]">Guru berwenang memvalidasi raport, leger capaian, dan memantau siswa binaan kelas.</p>
@@ -773,7 +773,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   placeholder="Cari guru..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F5F2EA]/50 border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
+                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
                 />
               </div>
               <Button variant="primary" size="sm" onClick={() => openAddUserModal('guru')} icon={<Plus className="w-3.5 h-3.5" />}>
@@ -785,7 +785,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[#D8D4CC] bg-[#F5F2EA]/60 text-[#68655F]">
+                <tr className="border-b border-[#EAE6DC] bg-[#F9F8F6]/60 text-[#68655F]">
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Nama Guru</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Email Institusi</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Telepon / WhatsApp</th>
@@ -795,7 +795,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               </thead>
               <tbody className="divide-y divide-[#D8D4CC]">
                 {filteredTeachers.map((tc) => (
-                  <tr key={tc.id} className="hover:bg-[#F5F2EA]/30 transition-colors">
+                  <tr key={tc.id} className="hover:bg-[#F9F8F6]/30 transition-colors">
                     <td className="py-3 px-3 font-bold text-[#171717] flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-full bg-[#F9F4E5] text-[#8C6819] font-bold flex items-center justify-center text-xs">
                         {tc.name.substring(0, 1)}
@@ -813,7 +813,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                       <div className="inline-flex items-center gap-1.5">
                         <button
                           onClick={() => openEditUserModal(tc)}
-                          className="p-1.5 text-[#68655F] hover:text-[#8C6819] hover:bg-[#F5F2EA] rounded cursor-pointer transition-colors"
+                          className="p-1.5 text-[#68655F] hover:text-[#8C6819] hover:bg-[#F9F8F6] rounded cursor-pointer transition-colors"
                           title="Edit Guru"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -839,8 +839,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 4: KELOLA PEMBINA */}
       {/* ========================================================================= */}
       {activeSection === 'pembina' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Daftar Guru Pembina Ekstrakurikuler</h2>
               <p className="text-xs text-[#68655F]">Guru pembina memvalidasi presensi latihan, kegiatan mingguan, dan pengajuan sertifikat kejuaraan.</p>
@@ -853,7 +853,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   placeholder="Cari pembina..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F5F2EA]/50 border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#B84A3A]"
+                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#B84A3A]"
                 />
               </div>
               <Button variant="primary" size="sm" onClick={() => openAddUserModal('pembina')} icon={<Plus className="w-3.5 h-3.5" />}>
@@ -865,7 +865,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-[#D8D4CC] bg-[#F5F2EA]/60 text-[#68655F]">
+                <tr className="border-b border-[#EAE6DC] bg-[#F9F8F6]/60 text-[#68655F]">
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Nama Pembina</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Email Institusi</th>
                   <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Ekskul yang Dibina</th>
@@ -877,7 +877,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                 {filteredPembina.map((pb) => {
                   const assignedEkskul = ekskuls.filter((e) => e.supervisor_name.toLowerCase().includes(pb.name.toLowerCase()));
                   return (
-                    <tr key={pb.id} className="hover:bg-[#F5F2EA]/30 transition-colors">
+                    <tr key={pb.id} className="hover:bg-[#F9F8F6]/30 transition-colors">
                       <td className="py-3 px-3 font-bold text-[#171717] flex items-center gap-2.5">
                         <div className="w-7 h-7 rounded-full bg-[#F9ECEB] text-[#B84A3A] font-bold flex items-center justify-center text-xs">
                           {pb.name.substring(0, 1)}
@@ -897,7 +897,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                         )}
                       </td>
                       <td className="py-3 px-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${pb.is_active ? 'bg-[#F9ECEB] text-[#B84A3A]' : 'bg-[#F5F2EA] text-[#68655F]'}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${pb.is_active ? 'bg-[#F9ECEB] text-[#B84A3A]' : 'bg-[#F9F8F6] text-[#68655F]'}`}>
                           {pb.is_active ? 'Aktif Membina' : 'Non-Aktif'}
                         </span>
                       </td>
@@ -905,7 +905,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                         <div className="inline-flex items-center gap-1.5">
                           <button
                             onClick={() => openEditUserModal(pb)}
-                            className="p-1.5 text-[#68655F] hover:text-[#B84A3A] hover:bg-[#F5F2EA] rounded cursor-pointer transition-colors"
+                            className="p-1.5 text-[#68655F] hover:text-[#B84A3A] hover:bg-[#F9F8F6] rounded cursor-pointer transition-colors"
                             title="Edit Pembina"
                           >
                             <Edit2 className="w-3.5 h-3.5" />
@@ -932,8 +932,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 5: KELOLA EKSTRAKURIKULER */}
       {/* ========================================================================= */}
       {activeSection === 'ekskul' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Master Data Ekstrakurikuler Resmi</h2>
               <p className="text-xs text-[#68655F]">Atur kuota daya tampung, jadwal rutin, penugasan guru pembina, dan status pendaftaran.</p>
@@ -946,7 +946,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   placeholder="Cari ekskul..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F5F2EA]/50 border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                  className="pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
                 />
               </div>
               <Button variant="primary" size="sm" onClick={() => setIsAddEkskulModalOpen(true)} icon={<Plus className="w-3.5 h-3.5" />}>
@@ -959,7 +959,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
             {filteredEkskuls.map((ekskul) => (
               <div
                 key={ekskul.id}
-                className="border border-[#D8D4CC] rounded-lg p-4 bg-[#F5F2EA]/20 flex flex-col justify-between hover:border-[#234B36] transition-colors"
+                className="border border-[#EAE6DC] rounded-lg p-4 bg-[#F9F8F6]/20 flex flex-col justify-between hover:border-[#234B36] transition-colors"
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
@@ -970,7 +970,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                     {ekskul.short_description}
                   </p>
 
-                  <div className="space-y-1.5 text-xs text-[#68655F] border-t border-[#D8D4CC]/70 pt-2.5 mb-3">
+                  <div className="space-y-1.5 text-xs text-[#68655F] border-t border-[#EAE6DC]/70 pt-2.5 mb-3">
                     <div className="flex items-center justify-between">
                       <span>Pembina:</span>
                       <strong className="text-[#171717]">{ekskul.supervisor_name}</strong>
@@ -992,7 +992,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-[#D8D4CC]/70 flex items-center justify-between">
+                <div className="pt-2 border-t border-[#EAE6DC]/70 flex items-center justify-between">
                   <button
                     onClick={() => toggleEkskulStatus(ekskul)}
                     className={`text-[11px] font-bold px-2 py-0.5 rounded cursor-pointer transition-colors ${
@@ -1038,8 +1038,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 6: JADWAL & KALENDER LATIHAN */}
       {/* ========================================================================= */}
       {activeSection === 'schedule' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Jadwal Sesi Latihan & Kalender Ruangan</h2>
               <p className="text-xs text-[#68655F]">
@@ -1055,7 +1055,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
             {events.map((ev) => (
               <div
                 key={ev.id}
-                className="border border-[#D8D4CC] rounded-lg p-4 bg-[#F5F2EA]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                className="border border-[#EAE6DC] rounded-lg p-4 bg-[#F9F8F6]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -1096,8 +1096,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 7: VERIFIKASI QR PORTOFOLIO */}
       {/* ========================================================================= */}
       {activeSection === 'verification' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Arsip & Pengaturan Verifikasi QR Portofolio</h2>
               <p className="text-xs text-[#68655F]">
@@ -1110,7 +1110,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           </div>
 
           {/* Institutional Verification Config Card */}
-          <div className="bg-[#F5F2EA] border border-[#D8D4CC] rounded-lg p-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div>
               <div className="text-[10px] font-bold uppercase tracking-wider text-[#68655F]">Penandatangan Dokumen</div>
               <div className="font-bold text-[#171717] mt-0.5">{settings.principal_name}</div>
@@ -1136,7 +1136,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
             {verifications.map((ver) => (
               <div
                 key={ver.id}
-                className="border border-[#D8D4CC] rounded-lg p-4 bg-[#F5F2EA]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                className="border border-[#EAE6DC] rounded-lg p-4 bg-[#F9F8F6]/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -1181,8 +1181,8 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* SECTION 8: KELOLA PROFIL & FOTO ADMIN */}
       {/* ========================================================================= */}
       {activeSection === 'profile' && (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-6 space-y-6">
-          <div className="pb-4 border-b border-[#D8D4CC]">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 space-y-6">
+          <div className="pb-4 border-b border-[#EAE6DC]">
             <h2 className="text-base font-bold text-[#171717]">Pengaturan Profil & Foto Administrator</h2>
             <p className="text-xs text-[#68655F]">
               Ubah foto profil yang tampil di sidebar, nama akun, informasi kontak, dan kata sandi kesiswaan.
@@ -1191,7 +1191,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
           <form onSubmit={handleSaveProfile} className="space-y-6">
             {/* Foto Profil Section */}
-            <div className="bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded-lg p-5">
+            <div className="bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded-lg p-5">
               <label className="block text-xs font-bold uppercase tracking-wider text-[#234B36] mb-3">
                 Foto Profil Administrator
               </label>
@@ -1228,7 +1228,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                       type="file"
                       accept="image/png, image/jpeg, image/webp"
                       onChange={handleFileUpload}
-                      className="block w-full text-xs text-[#68655F] file:mr-3 file:py-2 file:px-3.5 file:rounded file:border file:border-[#D8D4CC] file:text-xs file:font-bold file:bg-white file:text-[#171717] hover:file:bg-[#F5F2EA] cursor-pointer"
+                      className="block w-full text-xs text-[#68655F] file:mr-3 file:py-2 file:px-3.5 file:rounded file:border file:border-[#EAE6DC] file:text-xs file:font-bold file:bg-white file:text-[#171717] hover:file:bg-[#F9F8F6] cursor-pointer"
                     />
                     <p className="text-[11px] text-[#68655F] mt-1.5">
                       Pilih file foto dari laptop/komputer Anda (Format JPG, PNG, atau WEBP, maksimal 3MB). Foto akan langsung terpasang pada pratinjau di sebelah kiri.
@@ -1274,13 +1274,13 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   type="text"
                   disabled
                   value="Wakil Kepala Sekolah Bidang Kesiswaan (Admin)"
-                  className="w-full px-3 py-2 text-xs bg-[#F5F2EA] border border-[#D8D4CC] rounded text-[#68655F] cursor-not-allowed"
+                  className="w-full px-3 py-2 text-xs bg-[#F9F8F6] border border-[#EAE6DC] rounded text-[#68655F] cursor-not-allowed"
                 />
               </div>
             </div>
 
             {/* Keamanan & Sandi */}
-            <div className="pt-4 border-t border-[#D8D4CC]">
+            <div className="pt-4 border-t border-[#EAE6DC]">
               <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-3">
                 Pengaturan Kata Sandi (Opsional)
               </div>
@@ -1303,7 +1303,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end gap-3 pt-3 border-t border-[#D8D4CC]">
+            <div className="flex justify-end gap-3 pt-3 border-t border-[#EAE6DC]">
               <Button
                 type="button"
                 variant="outline"
@@ -1357,7 +1357,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
             <select
               value={addUserTargetRole}
               onChange={(e) => setAddUserTargetRole(e.target.value as UserRole)}
-              className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+              className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
             >
               <option value="student">Siswa</option>
               <option value="guru">Guru</option>
@@ -1417,7 +1417,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               <select
                 value={editUserRole}
                 onChange={(e) => setEditUserRole(e.target.value as UserRole)}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 <option value="student">Siswa</option>
                 <option value="guru">Guru</option>
@@ -1433,7 +1433,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               <select
                 value={editUserStatus ? 'active' : 'inactive'}
                 onChange={(e) => setEditUserStatus(e.target.value === 'active')}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 <option value="active">Aktif</option>
                 <option value="inactive">Non-Aktif</option>
@@ -1514,7 +1514,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               <select
                 value={ekskulCategory}
                 onChange={(e) => setEkskulCategory(e.target.value as any)}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 <option value="Olahraga">Olahraga</option>
                 <option value="Seni & Budaya">Seni & Budaya</option>
@@ -1613,7 +1613,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               <select
                 value={ekskulCategory}
                 onChange={(e) => setEkskulCategory(e.target.value as any)}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 <option value="Olahraga">Olahraga</option>
                 <option value="Seni & Budaya">Seni & Budaya</option>
@@ -1736,7 +1736,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
               <select
                 value={eventOrganizer}
                 onChange={(e) => setEventOrganizer(e.target.value)}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 {ekskuls.map((e) => (
                   <option key={e.id} value={e.name}>{e.name}</option>
@@ -1754,7 +1754,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
                   setEventLocation(e.target.value);
                   checkConflictOnTimeChange(e.target.value, eventStart, eventEnd);
                 }}
-                className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+                className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               >
                 <option value="Lapangan Basket">Lapangan Basket</option>
                 <option value="Lapangan Futsal">Lapangan Futsal</option>

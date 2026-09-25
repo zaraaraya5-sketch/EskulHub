@@ -73,7 +73,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D4CC] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
             Panel Pengurus • {managedEkskul.name}
@@ -104,10 +104,10 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Anggota Resmi</div>
           <div className="text-2xl font-bold text-[#171717]">{members.length} / {managedEkskul.member_capacity}</div>
-          <div className="w-full h-1 bg-[#F5F2EA] rounded-full overflow-hidden mt-2">
+          <div className="w-full h-1 bg-[#F9F8F6] rounded-full overflow-hidden mt-2">
             <div
               className="h-full bg-[#234B36]"
               style={{ width: `${(members.length / managedEkskul.member_capacity) * 100}%` }}
@@ -115,19 +115,19 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
           </div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Pendaftaran Baru</div>
           <div className="text-2xl font-bold text-[#B84A3A]">{registrations.length}</div>
           <div className="text-[11px] text-[#68655F] mt-1">Perlu Persetujuan</div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Sesi Presensi Selesai</div>
           <div className="text-2xl font-bold text-[#234B36]">{sessions.length}</div>
           <div className="text-[11px] text-[#234B36] font-medium mt-1">Semester Ganjil</div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Rata-rata Kehadiran</div>
           <div className="text-2xl font-bold text-[#234B36]">94.2%</div>
           <div className="text-[11px] text-[#68655F] mt-1">Kategori Sangat Baik</div>
@@ -137,8 +137,8 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left: Pending Registrations Table */}
-        <div className="lg:col-span-8 bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#D8D4CC]">
+        <div className="lg:col-span-8 bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#EAE6DC]">
             <div>
               <h2 className="text-sm font-bold text-[#171717]">Pendaftaran Menunggu Verifikasi Pengurus</h2>
               <p className="text-xs text-[#68655F]">Periksa motivasi siswa dan pastikan kuota masih mencukupi.</p>
@@ -149,7 +149,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
           </div>
 
           {registrations.length === 0 ? (
-            <div className="p-8 text-center border border-dashed border-[#D8D4CC] rounded bg-[#F5F2EA]/30 text-xs text-[#68655F]">
+            <div className="p-8 text-center border border-dashed border-[#EAE6DC] rounded bg-[#F9F8F6]/30 text-xs text-[#68655F]">
               Semua pendaftaran telah diverifikasi. Tidak ada berkas tertunda.
             </div>
           ) : (
@@ -157,7 +157,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
               {registrations.map((reg) => (
                 <div
                   key={reg.id}
-                  className="p-4 border border-[#D8D4CC] rounded bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className="p-4 border border-[#EAE6DC] rounded bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
@@ -165,7 +165,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
                       <span className="text-xs text-[#68655F]">({reg.student_class})</span>
                       <span className="font-mono text-[10px] text-[#68655F]">NISN: {reg.student_nisn}</span>
                     </div>
-                    <p className="text-xs text-[#474540] italic bg-[#F5F2EA] p-2 rounded border border-[#D8D4CC]/60">
+                    <p className="text-xs text-[#474540] italic bg-[#F9F8F6] p-2 rounded border border-[#EAE6DC]/60">
                       "{reg.reason}"
                     </p>
                   </div>
@@ -194,8 +194,8 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
 
         {/* Right: Latest Attendance Session Snapshot */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-[#D8D4CC]">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC]">
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F]">
                 Sesi Latihan Terakhir
               </h3>
@@ -209,7 +209,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
                   <Calendar className="w-3.5 h-3.5" />
                   <span>{latestSession.session_date} ({latestSession.start_time} - {latestSession.end_time})</span>
                 </div>
-                <div className="p-3 bg-[#F5F2EA] rounded border border-[#D8D4CC] grid grid-cols-2 gap-2 text-center text-xs mt-3">
+                <div className="p-3 bg-[#F9F8F6] rounded border border-[#EAE6DC] grid grid-cols-2 gap-2 text-center text-xs mt-3">
                   <div>
                     <span className="text-[#68655F] block text-[10px]">Hadir</span>
                     <strong className="text-[#234B36]">{latestSession.present_count} Siswa</strong>
@@ -262,7 +262,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
                 placeholder="Berikan arahan untuk perlengkapan latihan atau alasan penolakan..."
               />
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-[#D8D4CC]">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#EAE6DC]">
                 <Button
                   type="button"
                   variant="outline"

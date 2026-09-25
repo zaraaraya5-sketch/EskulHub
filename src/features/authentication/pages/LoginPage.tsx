@@ -142,7 +142,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       <div className="mb-5 flex justify-start">
         <button
           onClick={() => onNavigate('/')}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#D8D4CC] rounded text-xs font-bold text-[#171717] hover:bg-[#F5F2EA] transition-colors cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#EAE6DC] rounded text-xs font-bold text-[#171717] hover:bg-[#F9F8F6] transition-colors cursor-pointer shadow-xs"
         >
           <ArrowLeft className="w-4 h-4 text-[#234B36]" />
           <span>Kembali ke Beranda</span>
@@ -150,7 +150,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       </div>
 
       {/* Main Card */}
-      <div className="bg-white border border-[#D8D4CC] rounded-xl shadow-sm overflow-hidden p-6 sm:p-8 space-y-6">
+      <div className="bg-white border border-[#EAE6DC] rounded-xl shadow-sm overflow-hidden p-6 sm:p-8 space-y-6">
         {/* Brand & Page Header */}
         <div className="text-center">
           <div className="w-13 h-13 bg-[#234B36] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
@@ -291,7 +291,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
 
         {/* Demo Accounts Quick-Select (Only on Login mode) */}
         {mode === 'login' && (
-          <div className="pt-4 border-t border-[#D8D4CC] space-y-2.5">
+          <div className="pt-4 border-t border-[#EAE6DC] space-y-2.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F] flex items-center gap-1.5">
                 <KeyRound className="w-3.5 h-3.5 text-[#234B36]" />
@@ -303,7 +303,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('student')}
-                className="p-2.5 text-left border border-[#D8D4CC] rounded-lg bg-[#F5F2EA] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#234B36]">
                   <GraduationCap className="w-3.5 h-3.5" />
@@ -316,7 +316,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('admin')}
-                className="p-2.5 text-left border border-[#D8D4CC] rounded-lg bg-[#F5F2EA] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#262522]">
                   <ShieldCheck className="w-3.5 h-3.5" />

@@ -93,7 +93,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D4CC] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
             Kalender Kegiatan & Fasilitas Terpusat
@@ -118,13 +118,13 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-3 flex flex-wrap gap-2 text-xs">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-3 flex flex-wrap gap-2 text-xs">
         <button
           onClick={() => setSelectedType('all')}
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'all'
               ? 'bg-[#234B36] text-white border-[#234B36]'
-              : 'bg-[#F5F2EA] text-[#171717] border-[#D8D4CC] hover:bg-[#EAE6DC]'
+              : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
           Semua Kategori ({events.length})
@@ -134,7 +134,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'extracurricular_practice'
               ? 'bg-[#234B36] text-white border-[#234B36]'
-              : 'bg-[#F5F2EA] text-[#171717] border-[#D8D4CC] hover:bg-[#EAE6DC]'
+              : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
           Latihan Rutin
@@ -144,7 +144,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'competition'
               ? 'bg-[#234B36] text-white border-[#234B36]'
-              : 'bg-[#F5F2EA] text-[#171717] border-[#D8D4CC] hover:bg-[#EAE6DC]'
+              : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
           Kompetisi & Kejuaraan
@@ -154,7 +154,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'school_event'
               ? 'bg-[#234B36] text-white border-[#234B36]'
-              : 'bg-[#F5F2EA] text-[#171717] border-[#D8D4CC] hover:bg-[#EAE6DC]'
+              : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
           Acara Sekolah / PORSENI
@@ -166,7 +166,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
         {filteredEvents.map((ev) => (
           <div
             key={ev.id}
-            className="bg-white border border-[#D8D4CC] rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#234B36] transition-colors"
+            className="bg-white border border-[#EAE6DC] rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#234B36] transition-colors"
           >
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -179,7 +179,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
               )}
             </div>
 
-            <div className="shrink-0 flex flex-col md:items-end gap-1.5 text-xs text-[#68655F] border-t md:border-t-0 pt-3 md:pt-0 border-[#D8D4CC]">
+            <div className="shrink-0 flex flex-col md:items-end gap-1.5 text-xs text-[#68655F] border-t md:border-t-0 pt-3 md:pt-0 border-[#EAE6DC]">
               <div className="flex items-center gap-1.5 font-medium text-[#171717]">
                 <MapPin className="w-3.5 h-3.5 text-[#234B36]" />
                 <span>{ev.location}</span>
@@ -299,7 +299,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
             placeholder="Jelaskan rincian agenda, perlengkapan yang digunakan, dll..."
           />
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#D8D4CC]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#EAE6DC]">
             <Button
               type="button"
               variant="outline"

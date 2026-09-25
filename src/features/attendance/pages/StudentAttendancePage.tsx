@@ -35,7 +35,7 @@ export const StudentAttendancePage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-[#D8D4CC] pb-5">
+      <div className="border-b border-[#EAE6DC] pb-5">
         <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
           Buku Induk Presensi Digital
         </div>
@@ -48,7 +48,7 @@ export const StudentAttendancePage: React.FC = () => {
       </div>
 
       {/* Structured Minimal Summary Bar (No giant flashy cards, per rule #6) */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
         <div className="grid grid-cols-2 sm:grid-cols-6 divide-y sm:divide-y-0 sm:divide-x divide-[#D8D4CC] text-center text-xs">
           <div className="py-2 px-3">
             <span className="text-[#68655F] block text-[11px] uppercase">Total Sesi</span>
@@ -78,13 +78,13 @@ export const StudentAttendancePage: React.FC = () => {
       </div>
 
       {/* Filter controls */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-4 flex flex-col sm:flex-row gap-3">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-4 flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
           <label className="block text-[11px] font-semibold text-[#68655F] uppercase mb-1">Filter Ekstrakurikuler</label>
           <select
             value={selectedEkskul}
             onChange={(e) => setSelectedEkskul(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
           >
             <option value="all">Semua Ekstrakurikuler</option>
             {myMemberships.map(m => {
@@ -99,7 +99,7 @@ export const StudentAttendancePage: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
           >
             <option value="all">Semua Status</option>
             <option value="present">Hadir Saja</option>
@@ -111,10 +111,10 @@ export const StudentAttendancePage: React.FC = () => {
       </div>
 
       {/* Attendance Table */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg overflow-hidden">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2.5 px-3 font-semibold w-12">No</th>
                 <th className="py-2.5 px-3 font-semibold">Tanggal Sesi</th>
@@ -134,7 +134,7 @@ export const StudentAttendancePage: React.FC = () => {
                 </tr>
               ) : (
                 filteredRecords.map((rec, idx) => (
-                  <tr key={rec.id} className="hover:bg-[#F5F2EA]/40">
+                  <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
                     <td className="py-2.5 px-3 text-[#68655F]">{idx + 1}</td>
                     <td className="py-2.5 px-3 font-mono text-[#171717]">{rec.session_date}</td>
                     <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.extracurricular_name}</td>

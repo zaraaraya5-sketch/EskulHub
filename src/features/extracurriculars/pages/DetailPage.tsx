@@ -109,7 +109,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
       </div>
 
       {/* Main Profile Header */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg overflow-hidden">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
         <div className="h-64 sm:h-80 relative bg-[#EAE6DC]">
           <img
             src={ekskul.profile_image}
@@ -152,7 +152,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
         </div>
 
         {/* Quick Facts Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#D8D4CC] border-t border-[#D8D4CC] bg-[#F5F2EA]/40 text-xs">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#D8D4CC] border-t border-[#EAE6DC] bg-[#F9F8F6]/40 text-xs">
           <div className="p-4">
             <span className="block text-[11px] font-semibold text-[#68655F] uppercase mb-0.5">Guru Pembina</span>
             <span className="font-bold text-[#171717]">{ekskul.supervisor_name}</span>
@@ -177,8 +177,8 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
         {/* Left Column (8 cols): Description, Activities, Achievements */}
         <div className="lg:col-span-8 space-y-8">
           {/* Detailed Description */}
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-6">
-            <h2 className="text-base font-bold text-[#171717] border-b border-[#D8D4CC] pb-3 mb-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-6">
+            <h2 className="text-base font-bold text-[#171717] border-b border-[#EAE6DC] pb-3 mb-4">
               Tentang & Silabus Kegiatan
             </h2>
             <div className="text-sm text-[#474540] leading-relaxed space-y-3">
@@ -192,8 +192,8 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
           </div>
 
           {/* Achievements */}
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-6">
-            <div className="flex items-center justify-between border-b border-[#D8D4CC] pb-3 mb-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-6">
+            <div className="flex items-center justify-between border-b border-[#EAE6DC] pb-3 mb-4">
               <h2 className="text-base font-bold text-[#171717]">Daftar Prestasi Resmi Klub</h2>
               <Trophy className="w-4 h-4 text-[#B58A32]" />
             </div>
@@ -203,7 +203,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
             ) : (
               <div className="space-y-3">
                 {achievements.map((ach) => (
-                  <div key={ach.id} className="p-3.5 border border-[#D8D4CC] rounded bg-[#F5F2EA]/30 flex justify-between items-center">
+                  <div key={ach.id} className="p-3.5 border border-[#EAE6DC] rounded bg-[#F9F8F6]/30 flex justify-between items-center">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xs font-bold text-[#171717]">{ach.title}</span>
@@ -223,8 +223,8 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
           </div>
 
           {/* Recent Activities */}
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-6">
-            <h2 className="text-base font-bold text-[#171717] border-b border-[#D8D4CC] pb-3 mb-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-6">
+            <h2 className="text-base font-bold text-[#171717] border-b border-[#EAE6DC] pb-3 mb-4">
               Dokumentasi & Agenda Terbaru
             </h2>
             {activities.length === 0 ? (
@@ -232,7 +232,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
             ) : (
               <div className="space-y-4">
                 {activities.map((act) => (
-                  <div key={act.id} className="p-4 border border-[#D8D4CC] rounded bg-white">
+                  <div key={act.id} className="p-4 border border-[#EAE6DC] rounded bg-white">
                     <div className="flex items-center justify-between text-xs text-[#68655F] mb-1">
                       <span className="font-semibold text-[#234B36]">{act.location}</span>
                       <span>{act.activity_date}</span>
@@ -257,20 +257,20 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
 
         {/* Right Column (4 cols): Organization Structure & CTA */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-white border border-[#D8D4CC] rounded-lg p-5">
+          <div className="bg-white border border-[#EAE6DC] rounded-lg p-5">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F] mb-3">
               Struktur Kepengurusan Siswa
             </h3>
             <div className="space-y-3 text-xs">
-              <div className="flex items-center justify-between pb-2 border-b border-[#D8D4CC]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC]">
                 <span className="text-[#68655F]">Ketua:</span>
                 <strong className="text-[#171717]">{ekskul.chairperson_name}</strong>
               </div>
-              <div className="flex items-center justify-between pb-2 border-b border-[#D8D4CC]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC]">
                 <span className="text-[#68655F]">Wakil Ketua:</span>
                 <strong className="text-[#171717]">Budi Pratama</strong>
               </div>
-              <div className="flex items-center justify-between pb-2 border-b border-[#D8D4CC]">
+              <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC]">
                 <span className="text-[#68655F]">Guru Pembina:</span>
                 <strong className="text-[#171717]">{ekskul.supervisor_name}</strong>
               </div>
@@ -282,7 +282,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
           </div>
 
           {/* Registration Requirement Box */}
-          <div className="bg-[#F5F2EA] border border-[#D8D4CC] rounded-lg p-5">
+          <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-5">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#234B36] mb-2">
               <ShieldCheck className="w-4 h-4" />
               <span>Ketentuan Anggota</span>
@@ -294,7 +294,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
               <li>Presensi dicatat otomatis pada dokumen portofolio akhir.</li>
             </ul>
 
-            <div className="mt-4 pt-3 border-t border-[#D8D4CC]">
+            <div className="mt-4 pt-3 border-t border-[#EAE6DC]">
               <Button
                 variant="primary"
                 size="md"
@@ -316,7 +316,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
         title={`Pendaftaran: ${ekskul.name}`}
       >
         <form onSubmit={handleRegisterSubmit} className="space-y-4">
-          <div className="p-3 bg-[#F5F2EA] border border-[#D8D4CC] rounded text-xs space-y-1">
+          <div className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded text-xs space-y-1">
             <div className="flex items-center gap-1.5 font-bold text-[#8C6819]">
               <UserCheck className="w-4 h-4" />
               <span>Formulir ini dikirim langsung ke Guru Pembina:</span>
@@ -366,7 +366,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
               type="text"
               value={`${ekskul.member_capacity - ekskul.current_member_count} Kuota Tersedia`}
               readOnly
-              className="bg-[#F5F2EA]/60 text-[#68655F]"
+              className="bg-[#F9F8F6]/60 text-[#68655F]"
             />
           </div>
 

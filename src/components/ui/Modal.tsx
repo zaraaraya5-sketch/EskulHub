@@ -47,11 +47,11 @@ export const Modal: React.FC<ModalProps> = ({
         aria-hidden="true"
       />
       <div
-        className={`relative w-full ${maxWidthStyles[maxWidth]} bg-white border border-[#D8D4CC] rounded-lg shadow-md z-10 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150`}
+        className={`relative w-full ${maxWidthStyles[maxWidth]} bg-white border border-[#EAE6DC] rounded-lg shadow-md z-10 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150`}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#D8D4CC] bg-[#F5F2EA]/60">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-[#EAE6DC] bg-[#F9F8F6]/60">
           <h3 className="text-base font-semibold text-[#171717]">{title}</h3>
           <button
             onClick={onClose}

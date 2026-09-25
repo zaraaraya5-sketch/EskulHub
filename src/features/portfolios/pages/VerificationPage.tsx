@@ -23,7 +23,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Search Header */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-6 shadow-xs">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 shadow-xs">
         <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-[#234B36] mb-2">
           <ShieldCheck className="w-5 h-5 text-[#234B36]" />
           <span>Verifikasi Resmi Portofolio Siswa</span>
@@ -41,7 +41,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Masukkan Nomor Verifikasi (Contoh: EKH-2026-000184)"
-            className="flex-1 px-3.5 py-2 text-sm bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="flex-1 px-3.5 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
           />
           <Button type="submit" variant="primary">
             Cek Keabsahan
@@ -51,7 +51,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
 
       {/* Verification Result Card */}
       {verification ? (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg overflow-hidden shadow-xs">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden shadow-xs">
           {/* Certificate Top Banner */}
           <div className="bg-[#234B36] text-white p-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -71,7 +71,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
 
           <div className="p-6 space-y-6">
             {/* Student & School Info Box */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-[#F5F2EA] border border-[#D8D4CC] rounded-lg text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg text-xs">
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#68655F] uppercase">
                   <User className="w-3.5 h-3.5 text-[#234B36]" />
@@ -97,11 +97,11 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
 
             {/* Verified Extracurriculars List */}
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] pb-2 border-b border-[#D8D4CC] mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] pb-2 border-b border-[#EAE6DC] mb-3 flex items-center justify-between">
                 <span>1. Keanggotaan Ekstrakurikuler yang Disahkan</span>
                 <Badge variant="success">Presensi: {verification.summary_data.total_attendance_rate}</Badge>
               </h3>
-              <div className="divide-y divide-[#D8D4CC] border border-[#D8D4CC] rounded">
+              <div className="divide-y divide-[#D8D4CC] border border-[#EAE6DC] rounded">
                 {verification.summary_data.ekskul_list.map((item, idx) => (
                   <div key={idx} className="p-3 flex items-center justify-between text-xs">
                     <div>
@@ -116,13 +116,13 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
 
             {/* Verified Achievements List */}
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] pb-2 border-b border-[#D8D4CC] mb-3 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] pb-2 border-b border-[#EAE6DC] mb-3 flex items-center justify-between">
                 <span>2. Prestasi & Penghargaan Terverifikasi</span>
                 <Trophy className="w-4 h-4 text-[#B58A32]" />
               </h3>
               <div className="space-y-2">
                 {verification.summary_data.achievements.map((ach, idx) => (
-                  <div key={idx} className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded flex items-center justify-between text-xs">
+                  <div key={idx} className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded flex items-center justify-between text-xs">
                     <div>
                       <div className="font-bold text-[#171717]">{ach.title}</div>
                       <div className="text-[#68655F]">Tingkat {ach.level} • {ach.year}</div>
@@ -134,7 +134,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
             </div>
 
             {/* Official Validation Notice */}
-            <div className="p-4 border-l-4 border-[#234B36] bg-[#F5F2EA] text-xs text-[#68655F] space-y-1">
+            <div className="p-4 border-l-4 border-[#234B36] bg-[#F9F8F6] text-xs text-[#68655F] space-y-1">
               <div className="font-bold text-[#171717]">Catatan Pengesahan Institusional:</div>
               <p>
                 Dokumen ini sah dan dikeluarkan secara elektronik oleh Kesiswaan {verification.school_name}.
@@ -147,7 +147,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
           </div>
         </div>
       ) : (
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-10 text-center space-y-3">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-10 text-center space-y-3">
           <div className="w-12 h-12 rounded-full bg-[#F9ECEB] text-[#A33D35] flex items-center justify-center mx-auto">
             <AlertTriangle className="w-6 h-6" />
           </div>

@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   const currentBadge = roleBadges[role] || roleBadges.student;
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-[#D8D4CC] shadow-xs">
+    <header className="sticky top-0 z-40 bg-white border-b border-[#EAE6DC] shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
         {/* School Brand Identity */}
         <div
@@ -72,60 +72,30 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         </div>
 
         {/* Public Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold uppercase tracking-wider">
+        <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-[#68655F]">
           <button
             onClick={() => onNavigate('/')}
-            className={`transition-colors cursor-pointer py-1.5 ${
-              currentPath === '/'
-                ? 'text-[#234B36] border-b-2 border-[#234B36] font-bold'
-                : 'text-[#68655F] hover:text-[#171717]'
+            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+              currentPath === '/' ? 'text-[#234B36] font-bold' : ''
             }`}
           >
             Beranda
           </button>
           <button
             onClick={() => onNavigate('/ekskul')}
-            className={`transition-colors cursor-pointer py-1.5 flex items-center gap-1.5 ${
-              currentPath.startsWith('/ekskul')
-                ? 'text-[#234B36] border-b-2 border-[#234B36] font-bold'
-                : 'text-[#68655F] hover:text-[#171717]'
+            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+              currentPath.startsWith('/ekskul') ? 'text-[#234B36] font-bold' : ''
             }`}
           >
-            <BookOpen className="w-4 h-4 text-[#234B36]" />
-            Katalog Ekstrakurikuler
-          </button>
-          <button
-            onClick={() => onNavigate('/calendar')}
-            className={`transition-colors cursor-pointer py-1.5 flex items-center gap-1.5 ${
-              currentPath === '/calendar'
-                ? 'text-[#234B36] border-b-2 border-[#234B36] font-bold'
-                : 'text-[#68655F] hover:text-[#171717]'
-            }`}
-          >
-            <Calendar className="w-4 h-4 text-[#234B36]" />
-            Kalender Kegiatan
-          </button>
-          <button
-            onClick={() => onNavigate('/contoh-portofolio')}
-            className={`transition-colors cursor-pointer py-1.5 flex items-center gap-1.5 ${
-              currentPath === '/contoh-portofolio'
-                ? 'text-[#234B36] border-b-2 border-[#234B36] font-bold'
-                : 'text-[#68655F] hover:text-[#171717]'
-            }`}
-          >
-            <FileCheck className="w-4 h-4 text-[#234B36]" />
-            Contoh Portofolio
+            Katalog Ekskul
           </button>
           <button
             onClick={() => onNavigate('/verify/EKH-2026-000184')}
-            className={`transition-colors cursor-pointer py-1.5 flex items-center gap-1.5 ${
-              currentPath.startsWith('/verify')
-                ? 'text-[#234B36] border-b-2 border-[#234B36] font-bold'
-                : 'text-[#68655F] hover:text-[#171717]'
+            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+              currentPath.startsWith('/verify') ? 'text-[#234B36] font-bold' : ''
             }`}
           >
-            <ShieldCheck className="w-4 h-4 text-[#234B36]" />
-            Verifikasi QR
+            Verifikasi Portofolio
           </button>
         </nav>
 
@@ -133,13 +103,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         <div className="flex items-center gap-2.5">
           {currentUser ? (
             <div className="flex items-center gap-2">
-              {/* Active Role Dashboard Shortcut */}
+              {/* Active Dashboard Shortcut */}
               <button
                 onClick={() => onNavigate(getDashboardPath(role))}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 text-white text-xs font-semibold rounded shadow-xs transition-colors cursor-pointer ${currentBadge.bgClass}`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F8F6] hover:bg-[#EAE6DC] text-[#171717] text-sm font-semibold rounded-lg transition-colors cursor-pointer border border-[#EAE6DC]"
               >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                <span>Dasbor {currentBadge.label}</span>
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Buka Dasbor Utama</span>
               </button>
 
               {/* Logout Button */}
@@ -148,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                   logout();
                   onNavigate('/');
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F5F2EA] text-[#68655F] hover:text-[#A33D35] hover:bg-[#F9ECEB] border border-[#D8D4CC] rounded text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#F9ECEB] border border-[#EAE6DC] rounded text-xs font-bold transition-colors cursor-pointer"
                 title="Keluar dari sesi"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -158,10 +128,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           ) : (
             <button
               onClick={() => onNavigate('/login')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#234B36] text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-[#1a3828] transition-colors cursor-pointer shadow-xs border border-[#1a3828]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#171717] text-white text-sm font-bold rounded-lg hover:bg-[#333333] transition-colors cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
-              <span>Masuk / Login</span>
+              <span>Masuk Sistem</span>
             </button>
           )}
         </div>

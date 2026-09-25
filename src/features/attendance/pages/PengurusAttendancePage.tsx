@@ -69,7 +69,7 @@ export const PengurusAttendancePage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D4CC] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
             Presensi Digital • {managedEkskul.name}
@@ -95,13 +95,13 @@ export const PengurusAttendancePage: React.FC = () => {
       </div>
 
       {/* Select Session Dropdown Bar */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <label className="text-xs font-bold text-[#171717] uppercase shrink-0">Pilih Sesi Latihan:</label>
           <select
             value={selectedSessionId}
             onChange={(e) => setSelectedSessionId(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] font-semibold focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] font-semibold focus:outline-none focus:ring-1 focus:ring-[#234B36]"
           >
             {sessions.map((sess) => (
               <option key={sess.id} value={sess.id}>
@@ -127,7 +127,7 @@ export const PengurusAttendancePage: React.FC = () => {
 
       {/* Session Stats Bar */}
       {activeSession && (
-        <div className="bg-[#F5F2EA] border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-4">
           <div className="grid grid-cols-2 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[#D8D4CC] text-center text-xs">
             <div className="py-1">
               <span className="text-[#68655F] block text-[10px] uppercase font-semibold">Total Anggota</span>
@@ -154,8 +154,8 @@ export const PengurusAttendancePage: React.FC = () => {
       )}
 
       {/* Members Attendance Form Table */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg overflow-hidden">
-        <div className="p-4 border-b border-[#D8D4CC] bg-[#F5F2EA]/40 flex items-center justify-between">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
+        <div className="p-4 border-b border-[#EAE6DC] bg-[#F9F8F6]/40 flex items-center justify-between">
           <h2 className="text-xs font-bold text-[#171717] uppercase tracking-wider">
             Daftar Anggota Pada Sesi Ini
           </h2>
@@ -164,7 +164,7 @@ export const PengurusAttendancePage: React.FC = () => {
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2.5 px-3 font-semibold w-12">No</th>
                 <th className="py-2.5 px-3 font-semibold">Nama Siswa</th>
@@ -174,11 +174,11 @@ export const PengurusAttendancePage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {sessionRecords.map((rec, idx) => (
-                <tr key={rec.id} className="hover:bg-[#F5F2EA]/40">
+                <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2.5 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.student_name}</td>
                   <td className="py-2.5 px-3">
-                    <div className="inline-flex rounded border border-[#D8D4CC] bg-[#F5F2EA] p-0.5 gap-0.5">
+                    <div className="inline-flex rounded border border-[#EAE6DC] bg-[#F9F8F6] p-0.5 gap-0.5">
                       <button
                         onClick={() => handleStatusChange(rec.id, 'present')}
                         className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors cursor-pointer ${
@@ -277,7 +277,7 @@ export const PengurusAttendancePage: React.FC = () => {
             placeholder="Catatan khusus dari pelatih atau materi yang ditekankan..."
           />
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#D8D4CC]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-[#EAE6DC]">
             <Button
               type="button"
               variant="outline"

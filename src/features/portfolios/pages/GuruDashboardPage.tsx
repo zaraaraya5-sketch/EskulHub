@@ -121,7 +121,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-[#D8D4CC] pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="border-b border-[#EAE6DC] pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#8C6819] mb-1">
             Portal Guru Wali Kelas & Penilai Raport • {currentUser?.name || 'Dra. Hj. Sri Wahyuni, M.Pd.'}
@@ -151,7 +151,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
 
       {/* KPI Stats Bar with Solid Ochre Gold Palette (No blue, no purple) */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Wali Kelas
@@ -162,7 +162,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
           <div className="text-[11px] text-[#68655F] mt-0.5">36 Siswa Terdaftar</div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Rata-rata Presensi
@@ -173,7 +173,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
           <div className="text-[11px] text-[#68655F] mt-0.5">Standar kelulusan min. 80%</div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Portofolio Disahkan
@@ -186,7 +186,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
           <div className="text-[11px] text-[#68655F] mt-0.5">Siap dicetak di raport</div>
         </div>
 
-        <div className="bg-white border border-[#D8D4CC] rounded-lg p-4">
+        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Siswa Berprestasi
@@ -199,7 +199,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-4 flex flex-col sm:flex-row gap-3">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-4 flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#68655F]" />
           <input
@@ -207,7 +207,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
             placeholder="Cari nama siswa atau NISN..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
+            className="w-full pl-9 pr-4 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
           />
         </div>
 
@@ -215,7 +215,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
           <select
             value={selectedClass}
             onChange={(e) => setSelectedClass(e.target.value)}
-            className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
+            className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
           >
             <option value="XII RPL 1">Kelas XII RPL 1</option>
             <option value="XII RPL 2">Kelas XII RPL 2</option>
@@ -229,7 +229,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="w-full px-3 py-2 text-xs bg-white border border-[#D8D4CC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
+            className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#8C6819]"
           >
             <option value="all">Semua Status Validasi</option>
             <option value="Tervalidasi">Tervalidasi</option>
@@ -239,8 +239,8 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
       </div>
 
       {/* Classroom Assessment Table */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg overflow-hidden">
-        <div className="p-4 border-b border-[#D8D4CC] bg-[#F5F2EA]/40 flex items-center justify-between">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
+        <div className="p-4 border-b border-[#EAE6DC] bg-[#F9F8F6]/40 flex items-center justify-between">
           <h2 className="text-xs font-bold text-[#171717] uppercase tracking-wider">
             Daftar Nilai & Pengesahan Portofolio Ekstrakurikuler Siswa
           </h2>
@@ -249,7 +249,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
 
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2.5 px-3 font-semibold w-10">No</th>
                 <th className="py-2.5 px-3 font-semibold">Nama Siswa / NISN</th>
@@ -262,7 +262,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {filteredList.map((item, idx) => (
-                <tr key={item.id} className="hover:bg-[#F5F2EA]/40">
+                <tr key={item.id} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-3 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-3 px-3">
                     <div className="font-bold text-[#171717]">{item.name}</div>
@@ -299,7 +299,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
                     ) : (
                       <button
                         onClick={() => onNavigate?.('/verify/EKH-2026-000184')}
-                        className="px-2.5 py-1 bg-[#F5F2EA] text-[#171717] border border-[#D8D4CC] rounded text-[11px] font-semibold hover:bg-[#EAE6DC] transition-colors cursor-pointer"
+                        className="px-2.5 py-1 bg-[#F9F8F6] text-[#171717] border border-[#EAE6DC] rounded text-[11px] font-semibold hover:bg-[#EAE6DC] transition-colors cursor-pointer"
                       >
                         Lihat Portofolio
                       </button>
@@ -323,7 +323,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
             Leger ini memuat rekapitulasi nilai kegiatan non-akademik, kehadiran latihan, dan predikat karakter siswa untuk dilampirkan pada Buku Laporan Capaian Hasil Belajar (Raport).
           </p>
 
-          <div className="p-3 bg-[#F5F2EA] border border-[#D8D4CC] rounded text-[#171717] space-y-1">
+          <div className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded text-[#171717] space-y-1">
             <div>Kelas: <strong>{selectedClass}</strong></div>
             <div>Wali Kelas: <strong>{currentUser?.name || 'Dra. Hj. Sri Wahyuni, M.Pd.'}</strong></div>
             <div>Tahun Ajaran: <strong>2025/2026 (Semester Ganjil)</strong></div>

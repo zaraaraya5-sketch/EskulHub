@@ -62,7 +62,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-[#D8D4CC] pb-5">
+      <div className="border-b border-[#EAE6DC] pb-5">
         <div className="text-xs font-bold uppercase tracking-wider text-[#B84A3A] mb-1">
           Panel Guru Pembina • {currentUser?.name || 'Hendra Wijaya, S.Pd.'}
         </div>
@@ -88,7 +88,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
       {/* Supervised Clubs Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {ekskuls.map((ekskul) => (
-          <div key={ekskul.id} className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-3">
+          <div key={ekskul.id} className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#B84A3A] uppercase">{ekskul.category}</span>
               <Badge variant="success">Binaan Aktif</Badge>
@@ -104,8 +104,8 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
       </div>
 
       {/* SECTION: Incoming Registration Messages to Pembina */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#D8D4CC]">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAE6DC]">
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-sm font-bold text-[#171717]">
@@ -123,7 +123,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
         </div>
 
         {relevantRegistrations.length === 0 ? (
-          <div className="p-6 text-center text-xs text-[#68655F] bg-[#F5F2EA]/40 rounded border border-[#D8D4CC]">
+          <div className="p-6 text-center text-xs text-[#68655F] bg-[#F9F8F6]/40 rounded border border-[#EAE6DC]">
             Belum ada formulir permohonan anggota baru yang masuk.
           </div>
         ) : (
@@ -131,9 +131,9 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
             {relevantRegistrations.map((reg) => (
               <div
                 key={reg.id}
-                className="border border-[#D8D4CC] rounded-lg p-4 bg-[#F5F2EA]/20 hover:bg-[#F5F2EA]/50 transition-colors space-y-3"
+                className="border border-[#EAE6DC] rounded-lg p-4 bg-[#F9F8F6]/20 hover:bg-[#F9F8F6]/50 transition-colors space-y-3"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D8D4CC]/60 pb-2.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EAE6DC]/60 pb-2.5">
                   <div>
                     <span className="text-xs font-bold text-[#171717]">{reg.student_name}</span>
                     <span className="text-[11px] text-[#68655F] ml-2">
@@ -168,7 +168,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
                   <span className="text-[10px] font-bold uppercase tracking-wider text-[#68655F] block mb-1">
                     Deskripsi & Alasan Masuk Ekskul:
                   </span>
-                  <div className="p-2.5 bg-white border border-[#D8D4CC] rounded text-[#171717] italic">
+                  <div className="p-2.5 bg-white border border-[#EAE6DC] rounded text-[#171717] italic">
                     "{reg.reason}"
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
                   <div className="flex items-center justify-end gap-2 pt-1">
                     <button
                       onClick={() => handleRejectRegistration(reg.id)}
-                      className="px-3 py-1.5 border border-[#D8D4CC] hover:bg-[#F9ECEB] text-[#A33D35] rounded text-xs font-semibold transition-colors cursor-pointer"
+                      className="px-3 py-1.5 border border-[#EAE6DC] hover:bg-[#F9ECEB] text-[#A33D35] rounded text-xs font-semibold transition-colors cursor-pointer"
                     >
                       Tolak Permohonan
                     </button>
@@ -198,8 +198,8 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
       </div>
 
       {/* Achievement Verification Table */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-5 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-[#D8D4CC]">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-[#EAE6DC]">
           <div>
             <h2 className="text-sm font-bold text-[#171717]">Verifikasi Prestasi Masuk Portofolio Resmi</h2>
             <p className="text-xs text-[#68655F]">
@@ -210,8 +210,8 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left border border-[#D8D4CC]">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+          <table className="w-full text-xs text-left border border-[#EAE6DC]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2.5 px-3 font-semibold">Nama Siswa</th>
                 <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
@@ -223,7 +223,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {achievements.map((ach) => (
-                <tr key={ach.id} className="hover:bg-[#F5F2EA]/40">
+                <tr key={ach.id} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2.5 px-3 font-bold text-[#171717]">{ach.student_name}</td>
                   <td className="py-2.5 px-3 text-[#68655F]">{ach.extracurricular_name}</td>
                   <td className="py-2.5 px-3 font-medium text-[#171717]">{ach.title}</td>

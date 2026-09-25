@@ -14,7 +14,7 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral', cla
     warning: 'bg-[#F9F4E5] text-[#8C6819] border-[#DFCF9B]',
     danger: 'bg-[#FBECEB] text-[#B84A3A] border-[#E8BFB8]',
     info: 'bg-[#EFECE6] text-[#3E3C36] border-[#D0CCC2]',
-    neutral: 'bg-[#ECEAE4] text-[#474540] border-[#D8D4CC]',
+    neutral: 'bg-[#ECEAE4] text-[#474540] border-[#EAE6DC]',
   };
 
   return (

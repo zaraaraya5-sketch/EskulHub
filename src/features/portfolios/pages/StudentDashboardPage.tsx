@@ -35,6 +35,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Extracurricular, ExtracurricularRegistration, Certificate } from '@/types';
+import { StudentProfileHeader } from '../components/StudentProfileHeader';
 
 export type StudentDashboardTab =
   | 'overview'
@@ -261,74 +262,33 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Student Profile Header */}
-      <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 bg-[#234B36] text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
-            {studentName.charAt(0)}
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#234B36]">
-                Portal Siswa Resmi
-              </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2]">
-                TA {settings.academic_year}
-              </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#ECEAE4] text-[#171717] border border-[#D8D4CC]">
-                {regClass}
-              </span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#171717]">
-              {studentName}
-            </h1>
-            <p className="text-xs text-[#68655F] mt-0.5">
-              NISN: <span className="font-mono font-medium text-[#171717]">{regNisn}</span> • {settings.school_name}
-            </p>
-          </div>
-        </div>
+      {/* Top Banner & Student Profile Header (Modularized) */}
+      <StudentProfileHeader
+        studentName={studentName}
+        regClass={regClass}
+        regNisn={regNisn}
+        academicYear={settings.academic_year}
+        schoolName={settings.school_name}
+        isGeneratingPdf={isGeneratingPdf}
+        onOpenRegisterModal={handleOpenRegisterModal}
+        onOpenUploadModal={() => {
+          setDocError('');
+          setDocSuccess('');
+          setUploadModalOpen(true);
+        }}
+        onDownloadPdf={handleDownloadPdf}
+      />
 
-        {/* Header Actions */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleOpenRegisterModal()}
-            icon={<Plus className="w-3.5 h-3.5 text-[#234B36]" />}
-          >
-            Daftar Ekskul Baru
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setDocError('');
-              setDocSuccess('');
-              setUploadModalOpen(true);
-            }}
-            icon={<UploadCloud className="w-3.5 h-3.5 text-[#234B36]" />}
-          >
-            Unggah Piagam/Sertifikat
-          </Button>
-
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleDownloadPdf}
-            isLoading={isGeneratingPdf}
-            icon={<Download className="w-3.5 h-3.5" />}
-          >
-            Unduh Portofolio PDF
-          </Button>
-        </div>
-      </div>
-
-      {/* 5 Core Metrics Cards */}
+      {/* ========================================================================= */}
+      {/* TAB 1: OVERVIEW & EKSKUL SAYA */}
+      {/* ========================================================================= */}
+      {activeTab === 'overview' && (
+        <div className="space-y-6">
+          {/* 5 Core Metrics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         <div
           onClick={() => setActiveTab('overview')}
-          className="bg-white border border-[#D8D4CC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Ekskul Aktif</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myMemberships.length}</div>
@@ -337,7 +297,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
         <div
           onClick={() => setActiveTab('registrations')}
-          className="bg-white border border-[#D8D4CC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Pendaftaran Diajukan</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">
@@ -350,7 +310,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
         <div
           onClick={() => setActiveTab('attendance')}
-          className="bg-white border border-[#D8D4CC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Tingkat Kehadiran</div>
           <div className="text-2xl font-bold text-[#234B36] mt-1">{attendanceRate}%</div>
@@ -359,7 +319,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
         <div
           onClick={() => setActiveTab('achievements')}
-          className="bg-white border border-[#D8D4CC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Prestasi Terdata</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myAchievements.length}</div>
@@ -370,7 +330,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
         <div
           onClick={() => setActiveTab('documents')}
-          className="bg-white border border-[#D8D4CC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Dokumen Pendukung</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myCertificates.length}</div>
@@ -378,114 +338,12 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         </div>
       </div>
 
-      {/* Navigation Tabs for All 10 Student Features */}
-      <div className="border-b border-[#D8D4CC] bg-white rounded-t-lg px-2 pt-2 flex items-center gap-1 overflow-x-auto">
-        <button
-          onClick={() => setActiveTab('overview')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'overview'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <BookOpen className="w-3.5 h-3.5" />
-          <span>Ikhtisar & Ekskul Saya</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('browse')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'browse'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <Search className="w-3.5 h-3.5" />
-          <span>Jelajah Ekskul</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('registrations')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'registrations'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <UserCheck className="w-3.5 h-3.5" />
-          <span>Status Pendaftaran</span>
-          {myRegistrations.length > 0 && (
-            <span
-              className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                activeTab === 'registrations'
-                  ? 'bg-white text-[#234B36]'
-                  : 'bg-[#E7EFEA] text-[#234B36]'
-              }`}
-            >
-              {myRegistrations.length}
-            </span>
-          )}
-        </button>
-
-        <button
-          onClick={() => setActiveTab('attendance')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'attendance'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <CheckSquare className="w-3.5 h-3.5" />
-          <span>Presensi & Kehadiran</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('achievements')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'achievements'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <Trophy className="w-3.5 h-3.5" />
-          <span>Prestasi & Kepanitiaan</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('documents')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'documents'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <UploadCloud className="w-3.5 h-3.5" />
-          <span>Dokumen Pendukung</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('portfolio')}
-          className={`px-3.5 py-2.5 text-xs font-bold rounded-t-md transition-colors cursor-pointer shrink-0 flex items-center gap-2 ${
-            activeTab === 'portfolio'
-              ? 'bg-[#234B36] text-white border-t border-x border-[#234B36]'
-              : 'text-[#68655F] hover:text-[#171717] hover:bg-[#F5F2EA]'
-          }`}
-        >
-          <FileText className="w-3.5 h-3.5" />
-          <span>Portofolio Resmi (PDF & QR)</span>
-        </button>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* TAB 1: OVERVIEW & EKSKUL SAYA */}
-      {/* ========================================================================= */}
-      {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column (8 cols): Memberships & Activity Overview */}
           <div className="lg:col-span-8 space-y-6">
             {/* Active Memberships */}
-            <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#D8D4CC]">
+            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#EAE6DC]">
                 <div>
                   <h2 className="text-sm font-bold text-[#171717]">Ekstrakurikuler yang Diikuti</h2>
                   <p className="text-xs text-[#68655F] mt-0.5">Daftar ekskul resmi tempat Anda terdaftar aktif sebagai anggota/pengurus.</p>
@@ -518,13 +376,13 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                     return (
                       <div
                         key={m.id}
-                        className="p-4 border border-[#D8D4CC] rounded-lg bg-[#F5F2EA]/30 hover:bg-[#F5F2EA]/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/30 hover:bg-[#F9F8F6]/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                       >
                         <div className="flex items-start gap-3">
                           <img
                             src={ekskul?.profile_image || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150'}
                             alt={ekskul?.name}
-                            className="w-14 h-14 rounded-lg object-cover border border-[#D8D4CC] shrink-0"
+                            className="w-14 h-14 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                           />
                           <div>
                             <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -559,8 +417,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </div>
 
             {/* Recent Attendance Preview */}
-            <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#D8D4CC]">
+            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#EAE6DC]">
                 <div>
                   <h2 className="text-sm font-bold text-[#171717]">Catatan Presensi Terkini</h2>
                   <p className="text-xs text-[#68655F] mt-0.5">Rekap sesi latihan terakhir yang dicatat oleh pembina/pengurus ekskul.</p>
@@ -576,8 +434,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border border-[#D8D4CC]">
-                  <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+                <table className="w-full text-xs text-left border border-[#EAE6DC]">
+                  <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
                     <tr>
                       <th className="py-2.5 px-3 font-semibold">Tanggal</th>
                       <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
@@ -587,7 +445,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   </thead>
                   <tbody className="divide-y divide-[#D8D4CC]">
                     {myAttendanceRecords.slice(0, 5).map((rec) => (
-                      <tr key={rec.id} className="hover:bg-[#F5F2EA]/40">
+                      <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
                         <td className="py-2.5 px-3 font-mono text-[#68655F]">{rec.session_date}</td>
                         <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.extracurricular_name}</td>
                         <td className="py-2.5 px-3 text-[#171717]">{rec.session_title}</td>
@@ -643,7 +501,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full justify-center bg-white text-[#234B36] hover:bg-[#F5F2EA] border-transparent font-bold"
+                  className="w-full justify-center bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold"
                   onClick={handleDownloadPdf}
                   isLoading={isGeneratingPdf}
                   icon={<Download className="w-3.5 h-3.5" />}
@@ -661,8 +519,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </div>
 
             {/* Upcoming Agenda & Practices */}
-            <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#D8D4CC]">
+            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EAE6DC]">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F]">
                   Agenda Mendatang
                 </h3>
@@ -671,7 +529,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
               <div className="space-y-3 text-xs">
                 {upcomingEvents.map((ev) => (
-                  <div key={ev.id} className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded-lg space-y-1">
+                  <div key={ev.id} className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded-lg space-y-1">
                     <div className="font-bold text-[#171717]">{ev.title}</div>
                     <div className="text-[#68655F] flex items-center gap-1.5 text-[11px]">
                       <Clock className="w-3.5 h-3.5" />
@@ -687,6 +545,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </div>
           </div>
         </div>
+        </div>
       )}
 
       {/* ========================================================================= */}
@@ -695,54 +554,41 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {activeTab === 'browse' && (
         <div className="space-y-5">
           {/* Search & Filter Header */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h2 className="text-base font-bold text-[#171717]">Katalog Ekstrakurikuler Sekolah</h2>
-                <p className="text-xs text-[#68655F]">
-                  Pilih dan daftarkan diri pada ekstrakurikuler yang sesuai dengan minat dan bakat Anda.
-                </p>
-              </div>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => handleOpenRegisterModal()}
-                icon={<Plus className="w-3.5 h-3.5" />}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+            <div>
+              <h2 className="text-xl font-bold text-[#171717] tracking-tight">Katalog Ekstrakurikuler</h2>
+              <p className="text-sm text-[#68655F]">
+                Pilih ekskul yang sesuai dengan minat dan bakat Anda.
+              </p>
+            </div>
+            
+            <div className="relative w-full md:w-72">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#68655F]" />
+              <input
+                type="text"
+                placeholder="Cari ekskul atau pembina..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 border border-[#EAE6DC] rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#234B36] shadow-sm"
+              />
+            </div>
+          </div>
+
+          {/* Category Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold cursor-pointer shrink-0 transition-colors shadow-sm ${
+                  categoryFilter === cat
+                    ? 'bg-[#234B36] text-white border border-[#234B36]'
+                    : 'bg-white text-[#68655F] border border-[#EAE6DC] hover:bg-[#F9F8F6]'
+                }`}
               >
-                Formulir Pendaftaran Langsung
-              </Button>
-            </div>
-
-            {/* Filter controls */}
-            <div className="flex flex-col md:flex-row gap-3">
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#68655F]" />
-                <input
-                  type="text"
-                  placeholder="Cari nama ekskul, pembina, atau kegiatan..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 border border-[#D8D4CC] rounded-md text-xs bg-white focus:outline-none focus:border-[#234B36]"
-                />
-              </div>
-
-              {/* Category Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setCategoryFilter(cat)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer shrink-0 transition-colors ${
-                      categoryFilter === cat
-                        ? 'bg-[#234B36] text-white'
-                        : 'bg-[#F5F2EA] text-[#68655F] hover:bg-[#EAE6DC]'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
+                {cat}
+              </button>
+            ))}
           </div>
 
           {/* Extracurricular Cards Grid */}
@@ -752,69 +598,69 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               const isFull = ekskul.current_member_count >= ekskul.member_capacity;
 
               return (
-                <div
+                  <div
                   key={ekskul.id}
-                  className="bg-white border border-[#D8D4CC] rounded-xl overflow-hidden shadow-xs flex flex-col justify-between hover:border-[#234B36] transition-colors"
+                  className="bg-white border border-[#EAE6DC]/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-md flex flex-col justify-between transition-all group"
                 >
                   <div>
                     {/* Image Banner */}
-                    <div className="relative h-40 overflow-hidden bg-[#ECEAE4]">
+                    <div className="relative h-44 overflow-hidden bg-[#ECEAE4]">
                       <img
                         src={ekskul.profile_image}
                         alt={ekskul.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute top-2.5 left-2.5">
-                        <Badge variant="neutral" className="bg-[#171717]/80 text-white backdrop-blur-xs text-[10px]">
+                      <div className="absolute top-3 left-3">
+                        <Badge variant="neutral" className="bg-white/90 text-[#171717] backdrop-blur-md shadow-sm border-0 font-bold">
                           {ekskul.category}
                         </Badge>
                       </div>
-                      <div className="absolute top-2.5 right-2.5">
+                      <div className="absolute top-3 right-3">
                         {ekskul.registration_status === 'open' && !isFull ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2] shadow-xs">
-                            Pendaftaran Dibuka
+                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#234B36] text-white shadow-sm tracking-wider uppercase">
+                            Dibuka
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#F9ECEB] text-[#A33D35] border border-[#E8BAB5] shadow-xs">
-                            {isFull ? 'Kuota Penuh' : 'Pendaftaran Ditutup'}
+                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#A33D35] text-white shadow-sm tracking-wider uppercase">
+                            {isFull ? 'Penuh' : 'Ditutup'}
                           </span>
                         )}
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-4 space-y-3">
+                    <div className="p-5 space-y-3">
                       <div>
-                        <h3 className="font-bold text-base text-[#171717]">{ekskul.name}</h3>
-                        <p className="text-xs text-[#68655F] line-clamp-2 mt-1 leading-relaxed">
+                        <h3 className="font-bold text-lg text-[#171717] group-hover:text-[#234B36] transition-colors">{ekskul.name}</h3>
+                        <p className="text-sm text-[#68655F] line-clamp-2 mt-1.5 leading-relaxed">
                           {ekskul.short_description}
                         </p>
                       </div>
 
-                      <div className="space-y-1 text-xs border-t border-[#D8D4CC] pt-3 text-[#68655F]">
-                        <div className="flex items-center gap-1.5">
-                          <Users className="w-3.5 h-3.5 text-[#234B36]" />
+                      <div className="space-y-2 text-xs border-t border-[#EAE6DC]/60 pt-4 text-[#68655F]">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-[#234B36]" />
                           <span>Pembina: <strong className="text-[#171717]">{ekskul.supervisor_name}</strong></span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-[#234B36]" />
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-[#234B36]" />
                           <span>{ekskul.practice_schedule}</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-[#234B36]" />
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-[#234B36]" />
                           <span>{ekskul.location}</span>
                         </div>
                       </div>
 
                       {/* Quota Progress */}
-                      <div className="pt-1">
-                        <div className="flex justify-between text-[11px] text-[#68655F] mb-1">
+                      <div className="pt-2">
+                        <div className="flex justify-between text-[11px] text-[#68655F] mb-1.5">
                           <span>Kapasitas Anggota</span>
                           <span className="font-bold text-[#171717]">
-                            {ekskul.current_member_count} / {ekskul.member_capacity} Kuota
+                            {ekskul.current_member_count} / {ekskul.member_capacity} Siswa
                           </span>
                         </div>
-                        <div className="w-full bg-[#EAE6DC] h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-[#F9F8F6] h-1.5 rounded-full overflow-hidden border border-[#EAE6DC]">
                           <div
                             className="bg-[#234B36] h-full rounded-full transition-all"
                             style={{
@@ -830,7 +676,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   </div>
 
                   {/* Actions footer */}
-                  <div className="p-4 pt-0 border-t border-[#D8D4CC]/60 mt-3 flex items-center justify-between gap-2">
+                  <div className="p-4 pt-0 border-t border-[#EAE6DC]/60 mt-3 flex items-center justify-between gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -877,7 +723,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {/* ========================================================================= */}
       {activeTab === 'registrations' && (
         <div className="space-y-5">
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-bold text-[#171717]">Status Pendaftaran Ekstrakurikuler</h2>
               <p className="text-xs text-[#68655F]">
@@ -894,7 +740,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </Button>
           </div>
 
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
             {myRegistrations.length === 0 ? (
               <div className="text-center py-12 text-xs text-[#68655F] space-y-3">
                 <FileCheck className="w-10 h-10 text-[#68655F]/40 mx-auto" />
@@ -905,8 +751,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border border-[#D8D4CC]">
-                  <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+                <table className="w-full text-xs text-left border border-[#EAE6DC]">
+                  <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
                     <tr>
                       <th className="py-2.5 px-3 font-semibold">No</th>
                       <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
@@ -918,7 +764,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   </thead>
                   <tbody className="divide-y divide-[#D8D4CC]">
                     {myRegistrations.map((reg, idx) => (
-                      <tr key={reg.id} className="hover:bg-[#F5F2EA]/40">
+                      <tr key={reg.id} className="hover:bg-[#F9F8F6]/40">
                         <td className="py-2.5 px-3 font-mono text-[#68655F]">{idx + 1}</td>
                         <td className="py-2.5 px-3 font-bold text-[#171717]">
                           {reg.extracurricular_name}
@@ -955,7 +801,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             )}
 
             {/* Note on workflow */}
-            <div className="p-3.5 bg-[#F5F2EA]/60 border border-[#D8D4CC] rounded-lg text-xs text-[#68655F] space-y-1">
+            <div className="p-3.5 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded-lg text-xs text-[#68655F] space-y-1">
               <strong className="text-[#171717]">Alur Pendaftaran:</strong>
               <p>
                 Setiap pendaftaran yang diajukan akan diverifikasi oleh Pembina Kesiswaan berdasarkan kapasitas ruang latihan dan kriteria anggota. Setelah status berubah menjadi <strong>Diterima</strong>, data Anda otomatis masuk ke dalam rekap absensi dan portofolio resmi.
@@ -971,8 +817,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {activeTab === 'attendance' && (
         <div className="space-y-5">
           {/* Attendance Overview Card */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D8D4CC] pb-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EAE6DC] pb-3">
               <div>
                 <h2 className="text-base font-bold text-[#171717]">Buku Presensi Kegiatan & Sesi Latihan</h2>
                 <p className="text-xs text-[#68655F]">
@@ -986,7 +832,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
             {/* Quick stats grid */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-xs">
-              <div className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded">
+              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Total Sesi</span>
                 <span className="text-lg font-bold text-[#171717]">{totalSessions}</span>
               </div>
@@ -1015,7 +861,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <select
                   value={attendanceEkskulFilter}
                   onChange={(e) => setAttendanceEkskulFilter(e.target.value)}
-                  className="px-2.5 py-1.5 border border-[#D8D4CC] rounded text-xs bg-white focus:outline-none"
+                  className="px-2.5 py-1.5 border border-[#EAE6DC] rounded text-xs bg-white focus:outline-none"
                 >
                   <option value="Semua">Semua Ekskul</option>
                   {myMemberships.map((m) => {
@@ -1034,7 +880,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <select
                   value={attendanceStatusFilter}
                   onChange={(e) => setAttendanceStatusFilter(e.target.value)}
-                  className="px-2.5 py-1.5 border border-[#D8D4CC] rounded text-xs bg-white focus:outline-none"
+                  className="px-2.5 py-1.5 border border-[#EAE6DC] rounded text-xs bg-white focus:outline-none"
                 >
                   <option value="Semua">Semua Status</option>
                   <option value="present">Hadir</option>
@@ -1047,8 +893,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
             {/* Attendance Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left border border-[#D8D4CC]">
-                <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+              <table className="w-full text-xs text-left border border-[#EAE6DC]">
+                <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
                   <tr>
                     <th className="py-2.5 px-3 font-semibold">Tanggal</th>
                     <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
@@ -1059,7 +905,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 </thead>
                 <tbody className="divide-y divide-[#D8D4CC]">
                   {filteredAttendance.map((rec) => (
-                    <tr key={rec.id} className="hover:bg-[#F5F2EA]/40">
+                    <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
                       <td className="py-2.5 px-3 font-mono text-[#68655F]">{rec.session_date}</td>
                       <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.extracurricular_name}</td>
                       <td className="py-2.5 px-3 text-[#171717]">{rec.session_title}</td>
@@ -1109,8 +955,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {activeTab === 'achievements' && (
         <div className="space-y-6">
           {/* Section: Achievements (Prestasi) */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-[#D8D4CC] pb-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-[#EAE6DC] pb-3">
               <div>
                 <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
                   <Trophy className="w-4 h-4 text-[#B58A32]" />
@@ -1134,7 +980,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 {myAchievements.map((ach) => (
                   <div
                     key={ach.id}
-                    className="p-4 border border-[#D8D4CC] rounded-lg bg-[#F5F2EA]/30 hover:bg-[#F5F2EA]/60 transition-colors space-y-2"
+                    className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/30 hover:bg-[#F9F8F6]/60 transition-colors space-y-2"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <h4 className="font-bold text-sm text-[#171717]">{ach.title}</h4>
@@ -1159,8 +1005,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           </div>
 
           {/* Section: Committees & School Events (Kepanitiaan & Event) */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="border-b border-[#D8D4CC] pb-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
+            <div className="border-b border-[#EAE6DC] pb-3">
               <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
                 <Users className="w-4 h-4 text-[#234B36]" />
                 <span>Kepanitiaan & Partisipasi Event Sekolah</span>
@@ -1174,7 +1020,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               {verification.summary_data.committee_roles?.map((comm, idx) => (
                 <div
                   key={idx}
-                  className="p-4 border border-[#D8D4CC] rounded-lg bg-white space-y-1 hover:border-[#234B36] transition-colors"
+                  className="p-4 border border-[#EAE6DC] rounded-lg bg-white space-y-1 hover:border-[#234B36] transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#171717]">{comm.title}</span>
@@ -1188,8 +1034,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           </div>
 
           {/* Section: Personal Extracurricular Activity History */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="border-b border-[#D8D4CC] pb-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
+            <div className="border-b border-[#EAE6DC] pb-3">
               <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
                 <Layers className="w-4 h-4 text-[#234B36]" />
                 <span>Riwayat Kegiatan & Dokumentasi Ekskul</span>
@@ -1203,13 +1049,13 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               {myActivityHistory.map((act) => (
                 <div
                   key={act.id}
-                  className="p-4 border border-[#D8D4CC] rounded-lg bg-[#F5F2EA]/20 flex flex-col md:flex-row gap-4 items-start"
+                  className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/20 flex flex-col md:flex-row gap-4 items-start"
                 >
                   {act.documentation_urls?.[0] && (
                     <img
                       src={act.documentation_urls[0]}
                       alt={act.title}
-                      className="w-full md:w-36 h-24 rounded-lg object-cover border border-[#D8D4CC] shrink-0"
+                      className="w-full md:w-36 h-24 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                     />
                   )}
                   <div className="space-y-1 text-xs">
@@ -1238,7 +1084,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {/* ========================================================================= */}
       {activeTab === 'documents' && (
         <div className="space-y-5">
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h2 className="text-base font-bold text-[#171717]">Dokumen Pendukung & Piagam Prestasi</h2>
               <p className="text-xs text-[#68655F]">
@@ -1259,7 +1105,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </Button>
           </div>
 
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-5 shadow-xs space-y-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
             {myCertificates.length === 0 ? (
               <div className="text-center py-10 text-xs text-[#68655F] space-y-3">
                 <UploadCloud className="w-10 h-10 text-[#68655F]/40 mx-auto" />
@@ -1277,7 +1123,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 {myCertificates.map((cert) => (
                   <div
                     key={cert.id}
-                    className="p-4 border border-[#D8D4CC] rounded-lg bg-white hover:border-[#234B36] transition-colors flex flex-col justify-between gap-3"
+                    className="p-4 border border-[#EAE6DC] rounded-lg bg-white hover:border-[#234B36] transition-colors flex flex-col justify-between gap-3"
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 rounded-lg bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shrink-0 border border-[#B7D2C2]">
@@ -1299,7 +1145,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                       </div>
                     </div>
 
-                    <div className="pt-2 border-t border-[#D8D4CC] flex items-center justify-between text-xs">
+                    <div className="pt-2 border-t border-[#EAE6DC] flex items-center justify-between text-xs">
                       <span className="text-[11px] text-[#68655F]">Format: Digital Tersimpan</span>
                       {cert.file_url && (
                         <a
@@ -1342,7 +1188,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             <Button
               variant="outline"
               size="lg"
-              className="bg-white text-[#234B36] hover:bg-[#F5F2EA] border-transparent font-bold shrink-0 shadow-sm"
+              className="bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold shrink-0 shadow-sm"
               onClick={handleDownloadPdf}
               isLoading={isGeneratingPdf}
               icon={<Download className="w-4 h-4" />}
@@ -1352,7 +1198,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           </div>
 
           {/* Document Preview Card */}
-          <div className="bg-white border border-[#D8D4CC] rounded-xl p-6 shadow-xs space-y-6">
+          <div className="bg-white border border-[#EAE6DC] rounded-xl p-6 shadow-xs space-y-6">
             <div className="border-b-2 border-[#234B36] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="text-[11px] uppercase tracking-wider font-bold text-[#234B36]">
@@ -1380,19 +1226,19 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
             {/* Student info grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded">
+              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Nama Lengkap Siswa</span>
                 <span className="text-sm font-bold text-[#171717]">{studentName}</span>
               </div>
-              <div className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded">
+              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Nomor Induk Siswa (NISN)</span>
                 <span className="text-sm font-bold font-mono text-[#171717]">{regNisn}</span>
               </div>
-              <div className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded">
+              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Rombongan Belajar (Kelas)</span>
                 <span className="text-sm font-bold text-[#171717]">{regClass}</span>
               </div>
-              <div className="p-3 bg-[#F5F2EA]/40 border border-[#D8D4CC] rounded">
+              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Tingkat Kehadiran Latihan</span>
                 <span className="text-sm font-bold text-[#234B36]">{attendanceRate}% ({presentCount}/{totalSessions} Sesi)</span>
               </div>
@@ -1403,7 +1249,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
                 1. Keikutsertaan Ekstrakurikuler
               </h4>
-              <div className="border border-[#D8D4CC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
+              <div className="border border-[#EAE6DC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
                 {myMemberships.map((m) => {
                   const eks = db.getExtracurricularById(m.extracurricular_id);
                   return (
@@ -1424,7 +1270,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               <h4 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
                 2. Rekam Jejak Prestasi & Kompetisi
               </h4>
-              <div className="border border-[#D8D4CC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
+              <div className="border border-[#EAE6DC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
                 {myAchievements.map((ach) => (
                   <div key={ach.id} className="p-3 flex items-center justify-between">
                     <div>
@@ -1438,7 +1284,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             </div>
 
             {/* Signatures & Certification footnote */}
-            <div className="pt-4 border-t border-[#D8D4CC] flex flex-col sm:flex-row justify-between items-end gap-4 text-xs text-[#68655F]">
+            <div className="pt-4 border-t border-[#EAE6DC] flex flex-col sm:flex-row justify-between items-end gap-4 text-xs text-[#68655F]">
               <div>
                 <div>Diterbitkan di: Kota Bandung</div>
                 <div>Tanggal Pengesahan: 20 September 2026</div>
@@ -1491,7 +1337,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 p-3.5 bg-[#F5F2EA]/60 border border-[#D8D4CC] rounded-lg">
+            <div className="grid grid-cols-2 gap-3 p-3.5 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded-lg">
               <div>
                 <span className="text-[#68655F] block text-[11px]">Pembina:</span>
                 <strong className="text-[#171717]">{selectedEkskulDetail.supervisor_name}</strong>
@@ -1524,7 +1370,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#D8D4CC] flex items-center justify-end gap-2">
+            <div className="pt-3 border-t border-[#EAE6DC] flex items-center justify-end gap-2">
               <Button variant="outline" size="sm" onClick={() => setSelectedEkskulDetail(null)}>
                 Tutup
               </Button>
@@ -1579,7 +1425,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             <select
               value={regTargetEkskulId}
               onChange={(e) => setRegTargetEkskulId(e.target.value)}
-              className="w-full px-3 py-2 border border-[#D8D4CC] rounded-md text-xs bg-white focus:outline-none focus:border-[#234B36]"
+              className="w-full px-3 py-2 border border-[#EAE6DC] rounded-md text-xs bg-white focus:outline-none focus:border-[#234B36]"
               required
             >
               <option value="" disabled>-- Pilih Ekstrakurikuler --</option>
@@ -1601,7 +1447,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               type="text"
               value={studentName}
               readOnly
-              className="bg-[#F5F2EA]/60 text-[#68655F]"
+              className="bg-[#F9F8F6]/60 text-[#68655F]"
             />
             <Input
               label="NISN Siswa"
@@ -1630,7 +1476,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             required
           />
 
-          <div className="pt-3 border-t border-[#D8D4CC] flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-[#EAE6DC] flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="outline"
@@ -1719,11 +1565,11 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             />
           </div>
 
-          <div className="p-3 bg-[#F5F2EA]/60 border border-[#D8D4CC] rounded text-[11px] text-[#68655F]">
+          <div className="p-3 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded text-[11px] text-[#68655F]">
             Berkas yang Anda unggah akan divalidasi oleh Kesiswaan sebelum otomatis diintegrasikan ke lembar PDF portofolio resmi kelulusan.
           </div>
 
-          <div className="pt-3 border-t border-[#D8D4CC] flex items-center justify-end gap-2">
+          <div className="pt-3 border-t border-[#EAE6DC] flex items-center justify-end gap-2">
             <Button
               type="button"
               variant="outline"

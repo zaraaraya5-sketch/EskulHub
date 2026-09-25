@@ -146,7 +146,7 @@ const AppContent: React.FC = () => {
   // If in dashboard: Render ONLY Sidebar and full-height content (NO NAVBAR!)
   if (isAuthenticatedDashboardRoute) {
     return (
-      <div className="min-h-screen flex bg-[#F5F2EA] text-[#171717]">
+      <div className="min-h-screen flex bg-[#F9F8F6] text-[#171717]">
         <Sidebar currentPath={currentPath} onNavigate={navigate} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto min-h-screen">
           <div className="max-w-7xl mx-auto">
@@ -160,7 +160,7 @@ const AppContent: React.FC = () => {
   // Dedicated Login / Register Screen: NO NAVBAR and NO FOOTER, centered vertically and horizontally
   if (currentPath === '/login' || currentPath === '/register') {
     return (
-      <div className="min-h-screen bg-[#F5F2EA] text-[#171717] flex items-center justify-center p-4 sm:p-6">
+      <div className="min-h-screen bg-[#F9F8F6] text-[#171717] flex items-center justify-center p-4 sm:p-6">
         {renderContent()}
       </div>
     );
@@ -168,14 +168,14 @@ const AppContent: React.FC = () => {
 
   // If on public pages: Render Navbar, content, and footer
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F2EA] text-[#171717]">
+    <div className="min-h-screen flex flex-col bg-[#F9F8F6] text-[#171717]">
       <Navbar currentPath={currentPath} onNavigate={navigate} />
       <main className="flex-1">
         {renderContent()}
       </main>
 
       {/* Institutional Editorial Footer */}
-      <footer className="bg-white border-t border-[#D8D4CC] py-8 text-xs text-[#68655F]">
+      <footer className="bg-white border-t border-[#EAE6DC] py-8 text-xs text-[#68655F]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             <span className="font-bold text-[#171717]">Ekskul-Hub</span> — Sistem Informasi Ekstrakurikuler & Portofolio Siswa.

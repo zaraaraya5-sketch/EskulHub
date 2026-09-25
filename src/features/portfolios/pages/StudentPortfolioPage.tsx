@@ -44,7 +44,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D8D4CC] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
             Portofolio Non-Akademik Siswa
@@ -94,7 +94,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
       </div>
 
       {/* Document Simulation Sheet (Official School Editorial Style) */}
-      <div className="bg-white border border-[#D8D4CC] rounded-lg p-6 sm:p-10 shadow-xs space-y-6 max-w-4xl mx-auto">
+      <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 sm:p-10 shadow-xs space-y-6 max-w-4xl mx-auto">
         {/* Kop Surat Resmi */}
         <div className="text-center border-b-2 border-[#234B36] pb-4 space-y-0.5">
           <div className="text-xs font-bold text-[#171717] tracking-wider uppercase">
@@ -122,7 +122,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
         </div>
 
         {/* Student Identity Grid */}
-        <div className="bg-[#F5F2EA] border border-[#D8D4CC] rounded p-4 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded p-4 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <div className="text-[#68655F]">Nama Siswa Terdaftar:</div>
             <div className="text-sm font-bold text-[#171717]">{verification.student_name}</div>
@@ -143,13 +143,13 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 1: Extracurricular History */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#D8D4CC] pb-1.5 flex items-center justify-between">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
             <span>I. Riwayat Keanggotaan & Peran Organisasi</span>
             <span className="text-[11px] font-normal text-[#68655F]">Tingkat Kehadiran: {verification.summary_data.total_attendance_rate}</span>
           </div>
 
-          <table className="w-full text-xs text-left border border-[#D8D4CC]">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+          <table className="w-full text-xs text-left border border-[#EAE6DC]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2 px-3 font-semibold w-10">No</th>
                 <th className="py-2 px-3 font-semibold">Nama Ekstrakurikuler</th>
@@ -159,7 +159,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {verification.summary_data.ekskul_list.map((item, idx) => (
-                <tr key={idx} className="hover:bg-[#F5F2EA]/40">
+                <tr key={idx} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2 px-3 font-bold text-[#171717]">{item.name}</td>
                   <td className="py-2 px-3 font-semibold text-[#234B36]">{item.role}</td>
@@ -172,13 +172,13 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 2: Verified Achievements */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#D8D4CC] pb-1.5 flex items-center justify-between">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
             <span>II. Prestasi & Penghargaan (Terverifikasi Sekolah)</span>
             <Badge variant="warning">{verification.summary_data.verified_achievements_count} Prestasi</Badge>
           </div>
 
-          <table className="w-full text-xs text-left border border-[#D8D4CC]">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+          <table className="w-full text-xs text-left border border-[#EAE6DC]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2 px-3 font-semibold w-10">No</th>
                 <th className="py-2 px-3 font-semibold">Nama Kejuaraan / Kompetisi</th>
@@ -189,7 +189,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {verification.summary_data.achievements.map((ach, idx) => (
-                <tr key={idx} className="hover:bg-[#F5F2EA]/40">
+                <tr key={idx} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2 px-3 font-bold text-[#171717]">{ach.title}</td>
                   <td className="py-2 px-3 text-[#68655F]">{ach.level}</td>
@@ -203,12 +203,12 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 3: Committee Roles */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#D8D4CC] pb-1.5">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5">
             III. Partisipasi Kepanitiaan & Pengabdian Sekolah
           </div>
 
-          <table className="w-full text-xs text-left border border-[#D8D4CC]">
-            <thead className="bg-[#F5F2EA] border-b border-[#D8D4CC] text-[#171717]">
+          <table className="w-full text-xs text-left border border-[#EAE6DC]">
+            <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>
                 <th className="py-2 px-3 font-semibold w-10">No</th>
                 <th className="py-2 px-3 font-semibold">Agenda / Acara Sekolah</th>
@@ -218,7 +218,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
             </thead>
             <tbody className="divide-y divide-[#D8D4CC]">
               {verification.summary_data.committee_roles.map((com, idx) => (
-                <tr key={idx} className="hover:bg-[#F5F2EA]/40">
+                <tr key={idx} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2 px-3 font-bold text-[#171717]">{com.title}</td>
                   <td className="py-2 px-3 text-[#171717]">{com.role}</td>
@@ -230,7 +230,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
         </div>
 
         {/* Official Footer Signature Block */}
-        <div className="pt-6 border-t border-[#D8D4CC] flex flex-col sm:flex-row justify-between items-end gap-6 text-xs">
+        <div className="pt-6 border-t border-[#EAE6DC] flex flex-col sm:flex-row justify-between items-end gap-6 text-xs">
           <div className="space-y-1">
             <div className="font-bold text-[#234B36] uppercase">KODE VERIFIKASI QR DOKUMEN:</div>
             <div className="text-[11px] text-[#68655F]">
