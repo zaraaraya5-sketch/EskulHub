@@ -184,8 +184,6 @@ const AppContent: React.FC = () => {
           <div className="flex items-center gap-4 text-[11px]">
             <button onClick={() => navigate('/')} className="hover:text-[#234B36] cursor-pointer">Beranda</button>
             <button onClick={() => navigate('/ekskul')} className="hover:text-[#234B36] cursor-pointer">Katalog</button>
-            <button onClick={() => navigate('/calendar')} className="hover:text-[#234B36] cursor-pointer">Kalender</button>
-            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#234B36] cursor-pointer">Cek QR</button>
           </div>
         </div>
       </footer>

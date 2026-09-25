@@ -289,45 +289,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           </form>
         )}
 
-        {/* Demo Accounts Quick-Select (Only on Login mode) */}
-        {mode === 'login' && (
-          <div className="pt-4 border-t border-[#EAE6DC] space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F] flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-[#234B36]" />
-                Akun Demo Pengujian
-              </span>
-            </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => fillCredentials('student')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#234B36]">
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  <span>Akun Siswa</span>
-                </div>
-                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Budi Pratama</div>
-                <div className="text-[10px] text-[#68655F] truncate">budi@smknusantara...</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => fillCredentials('admin')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
-              >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#262522]">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Akun Admin</span>
-                </div>
-                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Drs. Bambang</div>
-                <div className="text-[10px] text-[#68655F] truncate">admin@smknusantara...</div>
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Security Notice */}
         <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#68655F] pt-1">
