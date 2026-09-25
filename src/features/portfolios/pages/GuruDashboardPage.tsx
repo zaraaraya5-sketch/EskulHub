@@ -30,7 +30,7 @@ interface StudentGradeRecord {
   notes: string;
 }
 
-export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void }> = ({ onNavigate }) => {
+export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, currentPath?: string }> = ({ onNavigate, currentPath = '/guru/dashboard' }) => {
   const { currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedClass, setSelectedClass] = useState('XII RPL 1');
@@ -127,7 +127,10 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void }
             Portal Guru Wali Kelas & Penilai Raport • {currentUser?.name || 'Dra. Hj. Sri Wahyuni, M.Pd.'}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-            Penilaian Karakter & Rekapitulasi Portofolio Kelas
+            {currentPath.includes('students') ? 'Data Siswa Kelas' : 
+             currentPath.includes('grades') ? 'Rekap Nilai Ekstrakurikuler' : 
+             currentPath.includes('verification') ? 'Verifikasi Nilai Raport' : 
+             'Penilaian Karakter & Rekapitulasi Portofolio Kelas'}
           </h1>
           <p className="text-xs text-[#68655F] mt-0.5">
             Mengesahkan predikat kegiatan ekstrakurikuler serta nilai pengembangan diri siswa untuk pelaporan buku induk / raport.

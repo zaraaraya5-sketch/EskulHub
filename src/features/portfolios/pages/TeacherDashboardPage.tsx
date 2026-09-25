@@ -20,9 +20,10 @@ import { ExtracurricularRegistration } from '@/types';
 
 interface TeacherDashboardPageProps {
   onNavigate?: (path: string) => void;
+  currentPath?: string;
 }
 
-export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = () => {
+export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ currentPath = '/teacher/dashboard' }) => {
   const { currentUser } = useAuth();
   const ekskuls = db.getExtracurriculars().slice(0, 2); // supervised clubs (e.g. Futsal & Basket)
   const [registrations, setRegistrations] = useState<ExtracurricularRegistration[]>(() => db.getRegistrations());
@@ -66,7 +67,11 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = () => {
           Panel Guru Pembina • {currentUser?.name || 'Hendra Wijaya, S.Pd.'}
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-          Monitoring, Pesan Masuk Pendaftaran, & Validasi Prestasi
+            {currentPath.includes('extracurriculars') ? 'Ekskul Binaan' : 
+             currentPath.includes('attendance') ? 'Rekap Presensi Siswa' : 
+             currentPath.includes('achievements') ? 'Validasi Prestasi Masuk Portofolio' : 
+             currentPath.includes('activities') ? 'Dokumentasi Kegiatan' : 
+             'Monitoring, Pesan Masuk Pendaftaran, & Validasi Prestasi'}
         </h1>
         <p className="text-xs text-[#68655F] mt-0.5">
           Memantau kesehatan presensi anggota, menyetujui pesan formulir permohonan anggota baru, serta mengesahkan capaian kejuaraan siswa.

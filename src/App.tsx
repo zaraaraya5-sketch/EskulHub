@@ -97,7 +97,7 @@ const AppContent: React.FC = () => {
       case '/pengurus/registrations':
       case '/pengurus/activities':
       case '/pengurus/achievements':
-        return <PengurusDashboardPage onNavigate={navigate} />;
+        return <PengurusDashboardPage currentPath={currentPath} onNavigate={navigate} />;
       case '/pengurus/attendance':
         return <PengurusAttendancePage />;
       case '/pengurus/schedule':
@@ -112,7 +112,7 @@ const AppContent: React.FC = () => {
       case '/teacher/attendance':
       case '/teacher/activities':
       case '/teacher/achievements':
-        return <TeacherDashboardPage onNavigate={navigate} />;
+        return <TeacherDashboardPage currentPath={currentPath} onNavigate={navigate} />;
 
       // Guru Wali Kelas routes
       case '/guru/dashboard':
@@ -120,7 +120,7 @@ const AppContent: React.FC = () => {
       case '/guru/students':
       case '/guru/grades':
       case '/guru/verification':
-        return <GuruDashboardPage onNavigate={navigate} />;
+        return <GuruDashboardPage currentPath={currentPath} onNavigate={navigate} />;
 
       // Admin routes
       case '/admin/dashboard':

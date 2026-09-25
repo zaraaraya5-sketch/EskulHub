@@ -62,6 +62,11 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   // Active Tab
   const [activeTab, setActiveTab] = useState<StudentDashboardTab>(initialTab);
 
+  // Fix: Sync tab state if URL changes (via initialTab prop)
+  React.useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
+
   // Queries from Mock Database
   const allEkskuls = db.getExtracurriculars();
   const myMemberships = db.getMembers().filter((m) => m.student_id === studentId && m.status === 'active');
