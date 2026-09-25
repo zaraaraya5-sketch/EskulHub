@@ -689,7 +689,11 @@ class MockDatabase {
       verifications: this.verifications,
       settings: this.settings,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+      console.warn('Failed to save to localStorage (Quota Exceeded?). Data will only persist in memory.', e);
+    }
   }
 
   public resetToDefaults() {

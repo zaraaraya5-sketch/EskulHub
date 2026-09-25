@@ -1,9 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { db } from '@/lib/storage/mockDatabase';
+import { api, getEkskulsAPI } from '@/lib/api';
+import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { EXTRACURRICULAR_CATEGORIES } from '@/lib/constants';
-import { Search, Filter, BookOpen, Users, Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { Search, Filter, BookOpen, Users, Calendar, MapPin, ArrowRight, Loader2 } from 'lucide-react';
 
 interface CatalogPageProps {
   onNavigate: (path: string) => void;
@@ -14,8 +16,28 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua Kategori');
   const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'closed'>('all');
   const [sortBy, setSortBy] = useState<'name' | 'capacity' | 'popular'>('name');
+  
+  const [allEkskuls, setAllEkskuls] = useState<Extracurricular[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const allEkskuls = db.getExtracurriculars();
+  useEffect(() => {
+    const fetchEkskuls = async () => {
+      try {
+        const data = await getEkskulsAPI();
+        if (data && data.length > 0) {
+          setAllEkskuls(data);
+        } else {
+          // Fallback to mock DB if API is down or empty
+          setAllEkskuls(db.getExtracurriculars());
+        }
+      } catch (err) {
+        setAllEkskuls(db.getExtracurriculars());
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEkskuls();
+  }, []);
 
   const filteredEkskuls = useMemo(() => {
     return allEkskuls
