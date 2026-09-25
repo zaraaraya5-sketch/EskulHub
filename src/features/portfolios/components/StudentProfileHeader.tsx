@@ -26,9 +26,9 @@ export const StudentProfileHeader: React.FC<StudentProfileHeaderProps> = ({
   onDownloadPdf,
 }) => {
   return (
-    <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-      <div className="flex items-start gap-4">
-        <div className="w-14 h-14 bg-[#234B36] text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
+    <div className="bg-white border border-[#F2F0EB] rounded-2xl p-5 sm:p-7 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:shadow-md">
+      <div className="flex items-start gap-5">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#234B36] to-[#347051] text-white rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm shrink-0">
           {studentName.charAt(0)}
         </div>
         <div>

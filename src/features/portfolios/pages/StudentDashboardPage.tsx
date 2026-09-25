@@ -5,37 +5,20 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
-import { Select } from '@/components/ui/Select';
 import { Textarea } from '@/components/ui/Textarea';
 import { generatePortfolioPdf } from '@/lib/pdf/generatePortfolioPdf';
-import {
-  BookOpen,
-  CheckSquare,
-  Trophy,
-  Calendar,
-  FileText,
-  Clock,
-  ArrowRight,
-  ShieldCheck,
-  Download,
-  Search,
-  Plus,
-  UploadCloud,
-  CheckCircle2,
-  AlertCircle,
-  ExternalLink,
-  Eye,
-  Award,
-  Users,
-  MapPin,
-  UserCheck,
-  FileCheck,
-  Sparkles,
-  Layers,
-  ChevronRight,
-} from 'lucide-react';
-import { Extracurricular, ExtracurricularRegistration, Certificate } from '@/types';
+import { Plus, CheckCircle2, AlertCircle, UploadCloud } from 'lucide-react';
+import { Extracurricular } from '@/types';
 import { StudentProfileHeader } from '../components/StudentProfileHeader';
+
+// Import Tabs
+import { StudentOverviewTab } from '../components/student/StudentOverviewTab';
+import { StudentBrowseTab } from '../components/student/StudentBrowseTab';
+import { StudentRegistrationsTab } from '../components/student/StudentRegistrationsTab';
+import { StudentAttendanceTab } from '../components/student/StudentAttendanceTab';
+import { StudentAchievementsTab } from '../components/student/StudentAchievementsTab';
+import { StudentDocumentsTab } from '../components/student/StudentDocumentsTab';
+import { StudentPortfolioTab } from '../components/student/StudentPortfolioTab';
 
 export type StudentDashboardTab =
   | 'overview'
@@ -60,15 +43,12 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const studentId = currentUser?.id || 'usr-student-1';
   const studentName = currentUser?.name || 'Siswa SMK Nusantara';
 
-  // Active Tab
   const [activeTab, setActiveTab] = useState<StudentDashboardTab>(initialTab);
 
-  // Fix: Sync tab state if URL changes (via initialTab prop)
   React.useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  // Queries from Mock Database
   const allEkskuls = db.getExtracurriculars();
   const myMemberships = db.getMembers().filter((m) => m.student_id === studentId && m.status === 'active');
   const myRegistrations = db.getRegistrations().filter((r) => r.student_id === studentId);
@@ -79,26 +59,20 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const upcomingEvents = db.getSchoolEvents().slice(0, 4);
   const verification = db.generatePortfolioVerification(studentId, 'Drs. Bambang Suryono');
 
-  // Personal Extracurricular Activities History (matches memberships or student activities)
   const myEkskulIds = new Set(myMemberships.map((m) => m.extracurricular_id));
   const myActivityHistory = allActivities.filter((act) => myEkskulIds.has(act.extracurricular_id));
 
-  // Attendance metrics
   const totalSessions = myAttendanceRecords.length;
   const presentCount = myAttendanceRecords.filter((r) => r.status === 'present').length;
   const lateCount = myAttendanceRecords.filter((r) => r.status === 'late').length;
   const excusedCount = myAttendanceRecords.filter((r) => r.status === 'excused').length;
   const absentCount = myAttendanceRecords.filter((r) => r.status === 'absent').length;
-  const attendanceRate =
-    totalSessions > 0 ? Math.round(((presentCount + lateCount) / totalSessions) * 100) : 100;
+  const attendanceRate = totalSessions > 0 ? Math.round(((presentCount + lateCount) / totalSessions) * 100) : 100;
 
-  // State: PDF Generation
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
-  // State: Detail Modal
   const [selectedEkskulDetail, setSelectedEkskulDetail] = useState<Extracurricular | null>(null);
 
-  // State: Registration Modal
   const [registerModalOpen, setRegisterModalOpen] = useState(false);
   const [regTargetEkskulId, setRegTargetEkskulId] = useState<string>('');
   const [regNisn, setRegNisn] = useState('0067823910');
@@ -107,7 +81,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const [regError, setRegError] = useState('');
   const [regSuccess, setRegSuccess] = useState('');
 
-  // State: Upload Supporting Document Modal
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [docTitle, setDocTitle] = useState('');
   const [docIssuer, setDocIssuer] = useState('');
@@ -117,18 +90,14 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const [docError, setDocError] = useState('');
   const [docSuccess, setDocSuccess] = useState('');
 
-  // State: Browse Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('Semua');
 
-  // State: Attendance Filters
   const [attendanceEkskulFilter, setAttendanceEkskulFilter] = useState('Semua');
   const [attendanceStatusFilter, setAttendanceStatusFilter] = useState('Semua');
 
-  // Categories list
   const categories = ['Semua', 'Olahraga', 'Seni & Budaya', 'Sains & Teknologi', 'Kepemimpinan', 'Bahasa & Literasi'];
 
-  // Filtered Ekskuls for Browse
   const filteredEkskuls = useMemo(() => {
     return allEkskuls.filter((eks) => {
       const matchCategory = categoryFilter === 'Semua' || eks.category === categoryFilter;
@@ -140,41 +109,32 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     });
   }, [allEkskuls, categoryFilter, searchQuery]);
 
-  // Filtered Attendance Records
   const filteredAttendance = useMemo(() => {
     return myAttendanceRecords.filter((rec) => {
-      const matchEkskul =
-        attendanceEkskulFilter === 'Semua' || rec.extracurricular_name === attendanceEkskulFilter;
-      const matchStatus =
-        attendanceStatusFilter === 'Semua' || rec.status === attendanceStatusFilter;
+      const matchEkskul = attendanceEkskulFilter === 'Semua' || rec.extracurricular_name === attendanceEkskulFilter;
+      const matchStatus = attendanceStatusFilter === 'Semua' || rec.status === attendanceStatusFilter;
       return matchEkskul && matchStatus;
     });
   }, [myAttendanceRecords, attendanceEkskulFilter, attendanceStatusFilter]);
 
-  // Handlers: PDF Export
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    try {
-      await generatePortfolioPdf(verification, settings);
-    } catch (err) {
-      console.error('Failed to generate PDF:', err);
-      alert('Gagal menerbitkan PDF portofolio. Silakan coba sesaat lagi.');
-    } finally {
+    setTimeout(() => {
+      generatePortfolioPdf(verification, settings, {
+        memberships: myMemberships,
+        attendanceRate,
+        presentCount,
+        totalSessions,
+      });
       setIsGeneratingPdf(false);
-    }
+    }, 1500);
   };
 
-  // Handlers: Registration
   const handleOpenRegisterModal = (ekskulId?: string) => {
     setRegError('');
     setRegSuccess('');
     setRegReason('');
-    if (ekskulId) {
-      setRegTargetEkskulId(ekskulId);
-    } else {
-      const firstAvailable = allEkskuls.find((e) => e.registration_status === 'open');
-      setRegTargetEkskulId(firstAvailable?.id || allEkskuls[0]?.id || '');
-    }
+    if (ekskulId) setRegTargetEkskulId(ekskulId);
     setRegisterModalOpen(true);
   };
 
@@ -184,18 +144,13 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     setRegSuccess('');
 
     if (!regTargetEkskulId) {
-      setRegError('Silakan pilih ekstrakurikuler yang ingin didaftar.');
-      return;
-    }
-    if (!regReason.trim()) {
-      setRegError('Mohon isi alasan atau motivasi Anda bergabung.');
+      setRegError('Silakan pilih ekstrakurikuler yang dituju.');
       return;
     }
 
-    const res = db.createRegistration({
-      extracurricular_id: regTargetEkskulId,
+    const res = db.addRegistration({
       student_id: studentId,
-      student_name: studentName,
+      extracurricular_id: regTargetEkskulId,
       student_class: regClass,
       student_nisn: regNisn,
       reason: regReason.trim(),
@@ -214,7 +169,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     }, 1200);
   };
 
-  // Handlers: Upload Supporting Document
   const handleUploadDocumentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setDocError('');
@@ -251,7 +205,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     }
   };
 
-  // Helper check for registration / membership status
   const getEkskulStudentStatus = (ekskulId: string) => {
     const isMember = myMemberships.some((m) => m.extracurricular_id === ekskulId);
     if (isMember) return 'member';
@@ -262,7 +215,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Top Banner & Student Profile Header (Modularized) */}
       <StudentProfileHeader
         studentName={studentName}
         regClass={regClass}
@@ -279,1034 +231,99 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         onDownloadPdf={handleDownloadPdf}
       />
 
-      {/* ========================================================================= */}
-      {/* TAB 1: OVERVIEW & EKSKUL SAYA */}
-      {/* ========================================================================= */}
       {activeTab === 'overview' && (
-        <div className="space-y-6">
-          {/* 5 Core Metrics Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-        <div
-          onClick={() => setActiveTab('overview')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
-        >
-          <div className="text-[11px] font-semibold text-[#68655F] uppercase">Ekskul Aktif</div>
-          <div className="text-2xl font-bold text-[#171717] mt-1">{myMemberships.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">Terdaftar resmi</div>
-        </div>
-
-        <div
-          onClick={() => setActiveTab('registrations')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
-        >
-          <div className="text-[11px] font-semibold text-[#68655F] uppercase">Pendaftaran Diajukan</div>
-          <div className="text-2xl font-bold text-[#171717] mt-1">
-            {myRegistrations.length}
-          </div>
-          <div className="text-[10px] text-[#B58A32] font-semibold mt-0.5">
-            {myRegistrations.filter((r) => r.status === 'pending').length} Menunggu review
-          </div>
-        </div>
-
-        <div
-          onClick={() => setActiveTab('attendance')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
-        >
-          <div className="text-[11px] font-semibold text-[#68655F] uppercase">Tingkat Kehadiran</div>
-          <div className="text-2xl font-bold text-[#234B36] mt-1">{attendanceRate}%</div>
-          <div className="text-[10px] text-[#68655F] mt-0.5">{presentCount} Hadir dari {totalSessions} sesi</div>
-        </div>
-
-        <div
-          onClick={() => setActiveTab('achievements')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
-        >
-          <div className="text-[11px] font-semibold text-[#68655F] uppercase">Prestasi Terdata</div>
-          <div className="text-2xl font-bold text-[#171717] mt-1">{myAchievements.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">
-            {myAchievements.filter((a) => a.is_verified).length} Tervalidasi resmi
-          </div>
-        </div>
-
-        <div
-          onClick={() => setActiveTab('documents')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
-        >
-          <div className="text-[11px] font-semibold text-[#68655F] uppercase">Dokumen Pendukung</div>
-          <div className="text-2xl font-bold text-[#171717] mt-1">{myCertificates.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">Piagam tersimpan</div>
-        </div>
-      </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column (8 cols): Memberships & Activity Overview */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Active Memberships */}
-            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#EAE6DC]">
-                <div>
-                  <h2 className="text-sm font-bold text-[#171717]">Ekstrakurikuler yang Diikuti</h2>
-                  <p className="text-xs text-[#68655F] mt-0.5">Daftar ekskul resmi tempat Anda terdaftar aktif sebagai anggota/pengurus.</p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setActiveTab('browse')}
-                  icon={<Search className="w-3.5 h-3.5" />}
-                >
-                  Jelajah Ekskul Lain
-                </Button>
-              </div>
-
-              {myMemberships.length === 0 ? (
-                <div className="text-center py-8 text-xs text-[#68655F] space-y-3">
-                  <p>Anda belum terdaftar dalam ekstrakurikuler manapun saat ini.</p>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => setActiveTab('browse')}
-                  >
-                    Daftar Sekarang
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {myMemberships.map((m) => {
-                    const ekskul = db.getExtracurricularById(m.extracurricular_id);
-                    return (
-                      <div
-                        key={m.id}
-                        className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/30 hover:bg-[#F9F8F6]/60 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                      >
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={ekskul?.profile_image || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150'}
-                            alt={ekskul?.name}
-                            className="w-14 h-14 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
-                          />
-                          <div>
-                            <div className="flex items-center gap-2 mb-1 flex-wrap">
-                              <span className="text-sm font-bold text-[#171717]">{ekskul?.name}</span>
-                              <Badge variant="success">{m.role}</Badge>
-                              <span className="text-[11px] text-[#68655F]">
-                                Bergabung: {m.joined_at}
-                              </span>
-                            </div>
-                            <div className="text-xs text-[#68655F] space-y-0.5">
-                              <div><strong className="text-[#171717]">Jadwal:</strong> {ekskul?.practice_schedule}</div>
-                              <div><strong className="text-[#171717]">Lokasi:</strong> {ekskul?.location} • <strong className="text-[#171717]">Pembina:</strong> {ekskul?.supervisor_name}</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedEkskulDetail(ekskul || null)}
-                            icon={<Eye className="w-3.5 h-3.5" />}
-                          >
-                            Detail
-                          </Button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* Recent Attendance Preview */}
-            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#EAE6DC]">
-                <div>
-                  <h2 className="text-sm font-bold text-[#171717]">Catatan Presensi Terkini</h2>
-                  <p className="text-xs text-[#68655F] mt-0.5">Rekap sesi latihan terakhir yang dicatat oleh pembina/pengurus ekskul.</p>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setActiveTab('attendance')}
-                  icon={<CheckSquare className="w-3.5 h-3.5" />}
-                >
-                  Buku Presensi Lengkap
-                </Button>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border border-[#EAE6DC]">
-                  <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
-                    <tr>
-                      <th className="py-2.5 px-3 font-semibold">Tanggal</th>
-                      <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
-                      <th className="py-2.5 px-3 font-semibold">Materi Latihan</th>
-                      <th className="py-2.5 px-3 font-semibold">Status Presensi</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#D8D4CC]">
-                    {myAttendanceRecords.slice(0, 5).map((rec) => (
-                      <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
-                        <td className="py-2.5 px-3 font-mono text-[#68655F]">{rec.session_date}</td>
-                        <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.extracurricular_name}</td>
-                        <td className="py-2.5 px-3 text-[#171717]">{rec.session_title}</td>
-                        <td className="py-2.5 px-3">
-                          <Badge
-                            variant={
-                              rec.status === 'present'
-                                ? 'success'
-                                : rec.status === 'late'
-                                ? 'warning'
-                                : rec.status === 'excused'
-                                ? 'info'
-                                : 'danger'
-                            }
-                          >
-                            {rec.status === 'present'
-                              ? 'Hadir'
-                              : rec.status === 'late'
-                              ? 'Terlambat'
-                              : rec.status === 'excused'
-                              ? 'Izin'
-                              : 'Alpa'}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                    {myAttendanceRecords.length === 0 && (
-                      <tr>
-                        <td colSpan={4} className="py-6 text-center text-[#68655F]">
-                          Belum ada catatan presensi latihan tercatat untuk akun Anda.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column (4 cols): Quick Portfolio Card & Upcoming Events */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Portfolio Status Card */}
-            <div className="bg-[#234B36] text-white rounded-xl p-5 shadow-xs space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/80">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Dokumen Portofolio Resmi</span>
-              </div>
-              <h3 className="text-base font-bold">Portofolio Non-Akademik TA. 2025/2026</h3>
-              <p className="text-xs text-white/85 leading-relaxed">
-                Seluruh rekam jejak ekskul, presensi ({attendanceRate}%), dan sertifikat prestasi telah diverifikasi dengan QR publik resmi.
-              </p>
-              <div className="pt-2 flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-center bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold"
-                  onClick={handleDownloadPdf}
-                  isLoading={isGeneratingPdf}
-                  icon={<Download className="w-3.5 h-3.5" />}
-                >
-                  Unduh Portofolio (PDF)
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('portfolio')}
-                  className="text-center text-xs text-white/80 hover:text-white underline cursor-pointer py-1"
-                >
-                  Pratinjau Lembar Portofolio
-                </button>
-              </div>
-            </div>
-
-            {/* Upcoming Agenda & Practices */}
-            <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs">
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#EAE6DC]">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F]">
-                  Agenda Mendatang
-                </h3>
-                <Calendar className="w-4 h-4 text-[#234B36]" />
-              </div>
-
-              <div className="space-y-3 text-xs">
-                {upcomingEvents.map((ev) => (
-                  <div key={ev.id} className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded-lg space-y-1">
-                    <div className="font-bold text-[#171717]">{ev.title}</div>
-                    <div className="text-[#68655F] flex items-center gap-1.5 text-[11px]">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>{ev.start_datetime.replace('T', ' ')}</span>
-                    </div>
-                    <div className="text-[11px] text-[#234B36] font-medium flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      <span>{ev.location}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        </div>
+        <StudentOverviewTab
+          myRegistrations={myRegistrations}
+          attendanceRate={attendanceRate}
+          presentCount={presentCount}
+          totalSessions={totalSessions}
+          myAchievements={myAchievements}
+          myCertificates={myCertificates}
+          myMemberships={myMemberships}
+          myAttendanceRecords={myAttendanceRecords}
+          upcomingEvents={upcomingEvents}
+          isGeneratingPdf={isGeneratingPdf}
+          setActiveTab={setActiveTab}
+          setSelectedEkskulDetail={setSelectedEkskulDetail}
+          handleDownloadPdf={handleDownloadPdf}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 2: BROWSE EXTRACURRICULARS */}
-      {/* ========================================================================= */}
       {activeTab === 'browse' && (
-        <div className="space-y-5">
-          {/* Search & Filter Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-            <div>
-              <h2 className="text-xl font-bold text-[#171717] tracking-tight">Katalog Ekstrakurikuler</h2>
-              <p className="text-sm text-[#68655F]">
-                Pilih ekskul yang sesuai dengan minat dan bakat Anda.
-              </p>
-            </div>
-            
-            <div className="relative w-full md:w-72">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#68655F]" />
-              <input
-                type="text"
-                placeholder="Cari ekskul atau pembina..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-[#EAE6DC] rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#234B36] shadow-sm"
-              />
-            </div>
-          </div>
-
-          {/* Category Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold cursor-pointer shrink-0 transition-colors shadow-sm ${
-                  categoryFilter === cat
-                    ? 'bg-[#234B36] text-white border border-[#234B36]'
-                    : 'bg-white text-[#68655F] border border-[#EAE6DC] hover:bg-[#F9F8F6]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* Extracurricular Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filteredEkskuls.map((ekskul) => {
-              const studentStatus = getEkskulStudentStatus(ekskul.id);
-              const isFull = ekskul.current_member_count >= ekskul.member_capacity;
-
-              return (
-                  <div
-                  key={ekskul.id}
-                  className="bg-white border border-[#EAE6DC]/60 rounded-2xl overflow-hidden shadow-sm hover:shadow-md flex flex-col justify-between transition-all group"
-                >
-                  <div>
-                    {/* Image Banner */}
-                    <div className="relative h-44 overflow-hidden bg-[#ECEAE4]">
-                      <img
-                        src={ekskul.profile_image}
-                        alt={ekskul.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 left-3">
-                        <Badge variant="neutral" className="bg-white/90 text-[#171717] backdrop-blur-md shadow-sm border-0 font-bold">
-                          {ekskul.category}
-                        </Badge>
-                      </div>
-                      <div className="absolute top-3 right-3">
-                        {ekskul.registration_status === 'open' && !isFull ? (
-                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#234B36] text-white shadow-sm tracking-wider uppercase">
-                            Dibuka
-                          </span>
-                        ) : (
-                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#A33D35] text-white shadow-sm tracking-wider uppercase">
-                            {isFull ? 'Penuh' : 'Ditutup'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-5 space-y-3">
-                      <div>
-                        <h3 className="font-bold text-lg text-[#171717] group-hover:text-[#234B36] transition-colors">{ekskul.name}</h3>
-                        <p className="text-sm text-[#68655F] line-clamp-2 mt-1.5 leading-relaxed">
-                          {ekskul.short_description}
-                        </p>
-                      </div>
-
-                      <div className="space-y-2 text-xs border-t border-[#EAE6DC]/60 pt-4 text-[#68655F]">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-[#234B36]" />
-                          <span>Pembina: <strong className="text-[#171717]">{ekskul.supervisor_name}</strong></span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-[#234B36]" />
-                          <span>{ekskul.practice_schedule}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[#234B36]" />
-                          <span>{ekskul.location}</span>
-                        </div>
-                      </div>
-
-                      {/* Quota Progress */}
-                      <div className="pt-2">
-                        <div className="flex justify-between text-[11px] text-[#68655F] mb-1.5">
-                          <span>Kapasitas Anggota</span>
-                          <span className="font-bold text-[#171717]">
-                            {ekskul.current_member_count} / {ekskul.member_capacity} Siswa
-                          </span>
-                        </div>
-                        <div className="w-full bg-[#F9F8F6] h-1.5 rounded-full overflow-hidden border border-[#EAE6DC]">
-                          <div
-                            className="bg-[#234B36] h-full rounded-full transition-all"
-                            style={{
-                              width: `${Math.min(
-                                100,
-                                Math.round((ekskul.current_member_count / ekskul.member_capacity) * 100)
-                              )}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Actions footer */}
-                  <div className="p-4 pt-0 border-t border-[#EAE6DC]/60 mt-3 flex items-center justify-between gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedEkskulDetail(ekskul)}
-                      icon={<Eye className="w-3.5 h-3.5" />}
-                    >
-                      Detail
-                    </Button>
-
-                    {studentStatus === 'member' ? (
-                      <span className="px-2.5 py-1 rounded bg-[#E7EFEA] text-[#234B36] font-bold text-xs border border-[#B7D2C2] flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Anggota Aktif
-                      </span>
-                    ) : studentStatus === 'pending' ? (
-                      <span className="px-2.5 py-1 rounded bg-[#FDF5E6] text-[#8C6819] font-bold text-xs border border-[#D9C187] flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5" />
-                        Menunggu Review
-                      </span>
-                    ) : ekskul.registration_status === 'open' && !isFull ? (
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={() => handleOpenRegisterModal(ekskul.id)}
-                        icon={<Plus className="w-3.5 h-3.5" />}
-                      >
-                        Daftar Ekskul
-                      </Button>
-                    ) : (
-                      <Button variant="outline" size="sm" disabled>
-                        Penuh
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <StudentBrowseTab
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          categories={categories}
+          filteredEkskuls={filteredEkskuls}
+          getEkskulStudentStatus={getEkskulStudentStatus}
+          setSelectedEkskulDetail={setSelectedEkskulDetail}
+          handleOpenRegisterModal={handleOpenRegisterModal}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 3: REGISTRATION STATUS */}
-      {/* ========================================================================= */}
       {activeTab === 'registrations' && (
-        <div className="space-y-5">
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-bold text-[#171717]">Status Pendaftaran Ekstrakurikuler</h2>
-              <p className="text-xs text-[#68655F]">
-                Pantau pengajuan bergabung ekstrakurikuler Anda yang sedang ditinjau oleh guru pembina.
-              </p>
-            </div>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => handleOpenRegisterModal()}
-              icon={<Plus className="w-3.5 h-3.5" />}
-            >
-              Ajukan Pendaftaran Baru
-            </Button>
-          </div>
-
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            {myRegistrations.length === 0 ? (
-              <div className="text-center py-12 text-xs text-[#68655F] space-y-3">
-                <FileCheck className="w-10 h-10 text-[#68655F]/40 mx-auto" />
-                <p>Belum ada pengajuan pendaftaran ekstrakurikuler yang tercatat.</p>
-                <Button variant="primary" size="sm" onClick={() => setActiveTab('browse')}>
-                  Buka Katalog Ekskul
-                </Button>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-xs text-left border border-[#EAE6DC]">
-                  <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
-                    <tr>
-                      <th className="py-2.5 px-3 font-semibold">No</th>
-                      <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
-                      <th className="py-2.5 px-3 font-semibold">Tanggal Daftar</th>
-                      <th className="py-2.5 px-3 font-semibold">Alasan / Motivasi</th>
-                      <th className="py-2.5 px-3 font-semibold">Catatan Reviewer</th>
-                      <th className="py-2.5 px-3 font-semibold">Status Pendaftaran</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#D8D4CC]">
-                    {myRegistrations.map((reg, idx) => (
-                      <tr key={reg.id} className="hover:bg-[#F9F8F6]/40">
-                        <td className="py-2.5 px-3 font-mono text-[#68655F]">{idx + 1}</td>
-                        <td className="py-2.5 px-3 font-bold text-[#171717]">
-                          {reg.extracurricular_name}
-                        </td>
-                        <td className="py-2.5 px-3 font-mono text-[#68655F]">
-                          {reg.registration_date.split('T')[0]}
-                        </td>
-                        <td className="py-2.5 px-3 text-[#171717] max-w-xs">{reg.reason}</td>
-                        <td className="py-2.5 px-3 text-[#68655F] italic">
-                          {reg.notes || (reg.status === 'pending' ? 'Sedang menunggu kuota & jadwal seleksi berkas.' : '-')}
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <Badge
-                            variant={
-                              reg.status === 'approved'
-                                ? 'success'
-                                : reg.status === 'rejected'
-                                ? 'danger'
-                                : 'warning'
-                            }
-                          >
-                            {reg.status === 'approved'
-                              ? 'Diterima'
-                              : reg.status === 'rejected'
-                              ? 'Ditolak'
-                              : 'Menunggu Persetujuan'}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {/* Note on workflow */}
-            <div className="p-3.5 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded-lg text-xs text-[#68655F] space-y-1">
-              <strong className="text-[#171717]">Alur Pendaftaran:</strong>
-              <p>
-                Setiap pendaftaran yang diajukan akan diverifikasi oleh Pembina Kesiswaan berdasarkan kapasitas ruang latihan dan kriteria anggota. Setelah status berubah menjadi <strong>Diterima</strong>, data Anda otomatis masuk ke dalam rekap absensi dan portofolio resmi.
-              </p>
-            </div>
-          </div>
-        </div>
+        <StudentRegistrationsTab
+          myRegistrations={myRegistrations}
+          handleOpenRegisterModal={handleOpenRegisterModal}
+          setActiveTab={setActiveTab}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 4: ATTENDANCE HISTORY */}
-      {/* ========================================================================= */}
       {activeTab === 'attendance' && (
-        <div className="space-y-5">
-          {/* Attendance Overview Card */}
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EAE6DC] pb-3">
-              <div>
-                <h2 className="text-base font-bold text-[#171717]">Buku Presensi Kegiatan & Sesi Latihan</h2>
-                <p className="text-xs text-[#68655F]">
-                  Rekapitulasi resmi kehadiran yang dicatat oleh guru pembina untuk penilaian portofolio kearsipan.
-                </p>
-              </div>
-              <div className="px-3 py-1 bg-[#E7EFEA] border border-[#B7D2C2] rounded text-xs font-bold text-[#234B36]">
-                Persentase Kehadiran: {attendanceRate}%
-              </div>
-            </div>
-
-            {/* Quick stats grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center text-xs">
-              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-                <span className="text-[#68655F] block text-[11px]">Total Sesi</span>
-                <span className="text-lg font-bold text-[#171717]">{totalSessions}</span>
-              </div>
-              <div className="p-3 bg-[#E7EFEA]/50 border border-[#B7D2C2] rounded">
-                <span className="text-[#234B36] block text-[11px]">Hadir</span>
-                <span className="text-lg font-bold text-[#234B36]">{presentCount}</span>
-              </div>
-              <div className="p-3 bg-[#FDF5E6] border border-[#D9C187] rounded">
-                <span className="text-[#8C6819] block text-[11px]">Terlambat</span>
-                <span className="text-lg font-bold text-[#8C6819]">{lateCount}</span>
-              </div>
-              <div className="p-3 bg-[#EEF2F6] border border-[#C5D3E8] rounded">
-                <span className="text-[#3E6399] block text-[11px]">Izin / Sakit</span>
-                <span className="text-lg font-bold text-[#3E6399]">{excusedCount}</span>
-              </div>
-              <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] rounded">
-                <span className="text-[#A33D35] block text-[11px]">Alpa</span>
-                <span className="text-lg font-bold text-[#A33D35]">{absentCount}</span>
-              </div>
-            </div>
-
-            {/* Filter controls */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <div className="flex items-center gap-2 text-xs">
-                <span className="font-semibold text-[#171717]">Filter Ekskul:</span>
-                <select
-                  value={attendanceEkskulFilter}
-                  onChange={(e) => setAttendanceEkskulFilter(e.target.value)}
-                  className="px-2.5 py-1.5 border border-[#EAE6DC] rounded text-xs bg-white focus:outline-none"
-                >
-                  <option value="Semua">Semua Ekskul</option>
-                  {myMemberships.map((m) => {
-                    const eks = db.getExtracurricularById(m.extracurricular_id);
-                    return (
-                      <option key={m.id} value={eks?.name}>
-                        {eks?.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-
-              <div className="flex items-center gap-2 text-xs">
-                <span className="font-semibold text-[#171717]">Status:</span>
-                <select
-                  value={attendanceStatusFilter}
-                  onChange={(e) => setAttendanceStatusFilter(e.target.value)}
-                  className="px-2.5 py-1.5 border border-[#EAE6DC] rounded text-xs bg-white focus:outline-none"
-                >
-                  <option value="Semua">Semua Status</option>
-                  <option value="present">Hadir</option>
-                  <option value="late">Terlambat</option>
-                  <option value="excused">Izin</option>
-                  <option value="absent">Alpa</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Attendance Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left border border-[#EAE6DC]">
-                <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
-                  <tr>
-                    <th className="py-2.5 px-3 font-semibold">Tanggal</th>
-                    <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
-                    <th className="py-2.5 px-3 font-semibold">Materi / Sesi</th>
-                    <th className="py-2.5 px-3 font-semibold">Status Presensi</th>
-                    <th className="py-2.5 px-3 font-semibold">Catatan Pembina</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#D8D4CC]">
-                  {filteredAttendance.map((rec) => (
-                    <tr key={rec.id} className="hover:bg-[#F9F8F6]/40">
-                      <td className="py-2.5 px-3 font-mono text-[#68655F]">{rec.session_date}</td>
-                      <td className="py-2.5 px-3 font-bold text-[#171717]">{rec.extracurricular_name}</td>
-                      <td className="py-2.5 px-3 text-[#171717]">{rec.session_title}</td>
-                      <td className="py-2.5 px-3">
-                        <Badge
-                          variant={
-                            rec.status === 'present'
-                              ? 'success'
-                              : rec.status === 'late'
-                              ? 'warning'
-                              : rec.status === 'excused'
-                              ? 'info'
-                              : 'danger'
-                          }
-                        >
-                          {rec.status === 'present'
-                            ? 'Hadir'
-                            : rec.status === 'late'
-                            ? 'Terlambat'
-                            : rec.status === 'excused'
-                            ? 'Izin'
-                            : 'Alpa'}
-                        </Badge>
-                      </td>
-                      <td className="py-2.5 px-3 text-[#68655F] italic">
-                        {rec.notes || 'Hadir pada sesi terjadwal.'}
-                      </td>
-                    </tr>
-                  ))}
-                  {filteredAttendance.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-[#68655F]">
-                        Tidak ada riwayat presensi yang cocok dengan filter yang dipilih.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <StudentAttendanceTab
+          attendanceRate={attendanceRate}
+          totalSessions={totalSessions}
+          presentCount={presentCount}
+          lateCount={lateCount}
+          excusedCount={excusedCount}
+          absentCount={absentCount}
+          attendanceEkskulFilter={attendanceEkskulFilter}
+          setAttendanceEkskulFilter={setAttendanceEkskulFilter}
+          attendanceStatusFilter={attendanceStatusFilter}
+          setAttendanceStatusFilter={setAttendanceStatusFilter}
+          myMemberships={myMemberships}
+          filteredAttendance={filteredAttendance}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 5: ACHIEVEMENTS & COMMITTEES & ACTIVITIES */}
-      {/* ========================================================================= */}
       {activeTab === 'achievements' && (
-        <div className="space-y-6">
-          {/* Section: Achievements (Prestasi) */}
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-[#EAE6DC] pb-3">
-              <div>
-                <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
-                  <Trophy className="w-4 h-4 text-[#B58A32]" />
-                  <span>Daftar Prestasi & Penghargaan Kompetisi</span>
-                </h2>
-                <p className="text-xs text-[#68655F]">
-                  Pencapaian kejuaraan resmi yang telah diverifikasi oleh tim Kesiswaan sekolah.
-                </p>
-              </div>
-              <span className="px-2.5 py-1 rounded bg-[#E7EFEA] text-[#234B36] font-bold text-xs border border-[#B7D2C2]">
-                {myAchievements.filter((a) => a.is_verified).length} Tervalidasi
-              </span>
-            </div>
-
-            {myAchievements.length === 0 ? (
-              <div className="text-center py-8 text-xs text-[#68655F]">
-                Belum ada data prestasi yang terdaftar. Anda dapat mengajukan piagam di tab "Dokumen Pendukung".
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {myAchievements.map((ach) => (
-                  <div
-                    key={ach.id}
-                    className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/30 hover:bg-[#F9F8F6]/60 transition-colors space-y-2"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-bold text-sm text-[#171717]">{ach.title}</h4>
-                      <Badge variant={ach.is_verified ? 'success' : 'warning'}>
-                        {ach.is_verified ? 'Tervalidasi' : 'Menunggu Validasi'}
-                      </Badge>
-                    </div>
-                    <div className="text-xs text-[#68655F] space-y-0.5">
-                      <div><strong className="text-[#171717]">Ajang:</strong> {ach.competition_name}</div>
-                      <div><strong className="text-[#171717]">Tingkat:</strong> {ach.level} • <strong className="text-[#171717]">Peringkat:</strong> {ach.rank}</div>
-                      <div><strong className="text-[#171717]">Ekskul:</strong> {ach.extracurricular_name} ({ach.achievement_date})</div>
-                      {ach.verified_by_name && (
-                        <div className="text-[11px] text-[#234B36] font-medium pt-1">
-                          Disahkan oleh: {ach.verified_by_name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Section: Committees & School Events (Kepanitiaan & Event) */}
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="border-b border-[#EAE6DC] pb-3">
-              <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#234B36]" />
-                <span>Kepanitiaan & Partisipasi Event Sekolah</span>
-              </h2>
-              <p className="text-xs text-[#68655F]">
-                Peran aktif dalam kepanitiaan kegiatan OSIS, turnamen antar-sekolah, dan pengabdian siswa.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {verification.summary_data.committee_roles?.map((comm, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 border border-[#EAE6DC] rounded-lg bg-white space-y-1 hover:border-[#234B36] transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#171717]">{comm.title}</span>
-                    <span className="text-[11px] text-[#68655F] font-mono">{comm.year}</span>
-                  </div>
-                  <div className="text-xs text-[#234B36] font-semibold">{comm.role}</div>
-                  <div className="text-[11px] text-[#68655F]">Tercatat dalam rekam jejak portofolio non-akademik siswa.</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Section: Personal Extracurricular Activity History */}
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            <div className="border-b border-[#EAE6DC] pb-3">
-              <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#234B36]" />
-                <span>Riwayat Kegiatan & Dokumentasi Ekskul</span>
-              </h2>
-              <p className="text-xs text-[#68655F]">
-                Aktivitas program kerja, turnamen, dan workshop yang dilaksanakan oleh ekstrakurikuler Anda.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              {myActivityHistory.map((act) => (
-                <div
-                  key={act.id}
-                  className="p-4 border border-[#EAE6DC] rounded-lg bg-[#F9F8F6]/20 flex flex-col md:flex-row gap-4 items-start"
-                >
-                  {act.documentation_urls?.[0] && (
-                    <img
-                      src={act.documentation_urls[0]}
-                      alt={act.title}
-                      className="w-full md:w-36 h-24 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
-                    />
-                  )}
-                  <div className="space-y-1 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-[#171717]">{act.title}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36]">
-                        {act.extracurricular_name}
-                      </span>
-                    </div>
-                    <p className="text-[#68655F] leading-relaxed">{act.description}</p>
-                    <div className="text-[#68655F] pt-1 flex items-center gap-3 text-[11px]">
-                      <span>Tanggal: <strong className="text-[#171717]">{act.activity_date}</strong></span>
-                      <span>Lokasi: <strong className="text-[#171717]">{act.location}</strong></span>
-                      <span>Peserta: <strong className="text-[#171717]">{act.participant_count} Orang</strong></span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        <StudentAchievementsTab
+          myAchievements={myAchievements}
+          verification={verification}
+          myActivityHistory={myActivityHistory}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 6: SUPPORTING DOCUMENTS (UPLOAD & VIEW) */}
-      {/* ========================================================================= */}
       {activeTab === 'documents' && (
-        <div className="space-y-5">
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h2 className="text-base font-bold text-[#171717]">Dokumen Pendukung & Piagam Prestasi</h2>
-              <p className="text-xs text-[#68655F]">
-                Unggah salinan sertifikat kompetisi atau piagam keikutsertaan untuk memperkuat verifikasi portofolio.
-              </p>
-            </div>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                setDocError('');
-                setDocSuccess('');
-                setUploadModalOpen(true);
-              }}
-              icon={<UploadCloud className="w-3.5 h-3.5" />}
-            >
-              Unggah Dokumen Baru
-            </Button>
-          </div>
-
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
-            {myCertificates.length === 0 ? (
-              <div className="text-center py-10 text-xs text-[#68655F] space-y-3">
-                <UploadCloud className="w-10 h-10 text-[#68655F]/40 mx-auto" />
-                <p>Belum ada berkas sertifikat yang diunggah.</p>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => setUploadModalOpen(true)}
-                >
-                  Unggah Dokumen Pertama
-                </Button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {myCertificates.map((cert) => (
-                  <div
-                    key={cert.id}
-                    className="p-4 border border-[#EAE6DC] rounded-lg bg-white hover:border-[#234B36] transition-colors flex flex-col justify-between gap-3"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shrink-0 border border-[#B7D2C2]">
-                        <Award className="w-5 h-5" />
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-xs text-[#171717]">{cert.title}</h4>
-                          <Badge variant={cert.is_verified ? 'success' : 'warning'}>
-                            {cert.is_verified ? 'Terverifikasi' : 'Menunggu Review'}
-                          </Badge>
-                        </div>
-                        <div className="text-[11px] text-[#68655F]">
-                          Penerbit: <strong className="text-[#171717]">{cert.issuer}</strong>
-                        </div>
-                        <div className="text-[11px] font-mono text-[#68655F]">
-                          No: {cert.certificate_number || '-'} • Tanggal: {cert.issue_date}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-[#EAE6DC] flex items-center justify-between text-xs">
-                      <span className="text-[11px] text-[#68655F]">Format: Digital Tersimpan</span>
-                      {cert.file_url && (
-                        <a
-                          href={cert.file_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-bold text-[#234B36] hover:underline"
-                        >
-                          <span>Buka Berkas</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+        <StudentDocumentsTab
+          myCertificates={myCertificates}
+          setUploadModalOpen={setUploadModalOpen}
+          setDocError={setDocError}
+          setDocSuccess={setDocSuccess}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* TAB 7: OFFICIAL PORTFOLIO (PDF & QR) */}
-      {/* ========================================================================= */}
       {activeTab === 'portfolio' && (
-        <div className="space-y-6">
-          {/* Header Action Banner */}
-          <div className="bg-[#234B36] text-white rounded-xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="space-y-2">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-white/10 rounded text-xs font-semibold uppercase tracking-wider text-white">
-                <ShieldCheck className="w-4 h-4 text-white" />
-                <span>Dokumen Resmi Validasi Kearsipan Sekolah</span>
-              </div>
-              <h2 className="text-xl font-bold">Portofolio Non-Akademik Terverifikasi</h2>
-              <p className="text-xs text-white/80 max-w-2xl leading-relaxed">
-                Portofolio ini berisi rekam jejak resmi keikutsertaan ekskul, persentase kehadiran digital ({attendanceRate}%), pencapaian prestasi lomba, serta peran kepanitiaan yang disahkan dengan QR Code institusi.
-              </p>
-            </div>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold shrink-0 shadow-sm"
-              onClick={handleDownloadPdf}
-              isLoading={isGeneratingPdf}
-              icon={<Download className="w-4 h-4" />}
-            >
-              Unduh Dokumen PDF
-            </Button>
-          </div>
-
-          {/* Document Preview Card */}
-          <div className="bg-white border border-[#EAE6DC] rounded-xl p-6 shadow-xs space-y-6">
-            <div className="border-b-2 border-[#234B36] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <div className="text-[11px] uppercase tracking-wider font-bold text-[#234B36]">
-                  {settings.school_name}
-                </div>
-                <h3 className="text-lg font-bold text-[#171717] mt-0.5">
-                  SURAT KETERANGAN PORTOFOLIO EKSTRAKURIKULER
-                </h3>
-                <div className="text-xs text-[#68655F]">
-                  Nomor Surat: <span className="font-mono text-[#171717]">{verification.verification_id}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => onNavigate(`/verify/${verification.verification_id}`)}
-                  className="px-3 py-1.5 bg-[#E7EFEA] hover:bg-[#d8e7de] border border-[#B7D2C2] text-[#234B36] text-xs font-bold rounded flex items-center gap-1.5 cursor-pointer transition-colors"
-                >
-                  <ShieldCheck className="w-4 h-4" />
-                  <span>Uji Validasi QR Publik</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Student info grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-                <span className="text-[#68655F] block text-[11px]">Nama Lengkap Siswa</span>
-                <span className="text-sm font-bold text-[#171717]">{studentName}</span>
-              </div>
-              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-                <span className="text-[#68655F] block text-[11px]">Nomor Induk Siswa (NISN)</span>
-                <span className="text-sm font-bold font-mono text-[#171717]">{regNisn}</span>
-              </div>
-              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-                <span className="text-[#68655F] block text-[11px]">Rombongan Belajar (Kelas)</span>
-                <span className="text-sm font-bold text-[#171717]">{regClass}</span>
-              </div>
-              <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-                <span className="text-[#68655F] block text-[11px]">Tingkat Kehadiran Latihan</span>
-                <span className="text-sm font-bold text-[#234B36]">{attendanceRate}% ({presentCount}/{totalSessions} Sesi)</span>
-              </div>
-            </div>
-
-            {/* Ekstrakurikuler Rekap List */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
-                1. Keikutsertaan Ekstrakurikuler
-              </h4>
-              <div className="border border-[#EAE6DC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
-                {myMemberships.map((m) => {
-                  const eks = db.getExtracurricularById(m.extracurricular_id);
-                  return (
-                    <div key={m.id} className="p-3 flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-[#171717]">{eks?.name}</span>
-                        <span className="text-[#68655F] ml-2">({eks?.category})</span>
-                      </div>
-                      <Badge variant="success">{m.role}</Badge>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Achievements Summary */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
-                2. Rekam Jejak Prestasi & Kompetisi
-              </h4>
-              <div className="border border-[#EAE6DC] rounded-lg divide-y divide-[#D8D4CC] text-xs">
-                {myAchievements.map((ach) => (
-                  <div key={ach.id} className="p-3 flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-[#171717]">{ach.title}</div>
-                      <div className="text-[11px] text-[#68655F]">{ach.competition_name} ({ach.level})</div>
-                    </div>
-                    <Badge variant={ach.is_verified ? 'success' : 'neutral'}>{ach.rank}</Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Signatures & Certification footnote */}
-            <div className="pt-4 border-t border-[#EAE6DC] flex flex-col sm:flex-row justify-between items-end gap-4 text-xs text-[#68655F]">
-              <div>
-                <div>Diterbitkan di: Kota Bandung</div>
-                <div>Tanggal Pengesahan: 20 September 2026</div>
-                <div className="font-semibold text-[#171717] mt-2">Wakasek Kesiswaan: Drs. Bambang Suryono</div>
-              </div>
-
-              <Button
-                variant="primary"
-                onClick={handleDownloadPdf}
-                isLoading={isGeneratingPdf}
-                icon={<Download className="w-3.5 h-3.5" />}
-              >
-                Unduh Lembar PDF Resmi
-              </Button>
-            </div>
-          </div>
-        </div>
+        <StudentPortfolioTab
+          attendanceRate={attendanceRate}
+          presentCount={presentCount}
+          totalSessions={totalSessions}
+          studentName={studentName}
+          regNisn={regNisn}
+          regClass={regClass}
+          myMemberships={myMemberships}
+          myAchievements={myAchievements}
+          verification={verification}
+          settings={settings}
+          handleDownloadPdf={handleDownloadPdf}
+          isGeneratingPdf={isGeneratingPdf}
+          onNavigate={onNavigate}
+        />
       )}
 
-      {/* ========================================================================= */}
-      {/* MODAL 1: DETAIL EKSTRAKURIKULER */}
-      {/* ========================================================================= */}
+      {/* MODALS */}
       <Modal
         isOpen={Boolean(selectedEkskulDetail)}
         onClose={() => setSelectedEkskulDetail(null)}
@@ -1394,9 +411,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         )}
       </Modal>
 
-      {/* ========================================================================= */}
-      {/* MODAL 2: FORM PENDAFTARAN EKSTRAKURIKULER */}
-      {/* ========================================================================= */}
       <Modal
         isOpen={registerModalOpen}
         onClose={() => setRegisterModalOpen(false)}
@@ -1497,9 +511,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         </form>
       </Modal>
 
-      {/* ========================================================================= */}
-      {/* MODAL 3: UNGGAH DOKUMEN PENDUKUNG / SERTIFIKAT */}
-      {/* ========================================================================= */}
       <Modal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
