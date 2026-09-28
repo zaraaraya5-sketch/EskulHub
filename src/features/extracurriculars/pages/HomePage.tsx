@@ -25,11 +25,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-[#F9F8F6] to-white pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-[#EAE6DC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge variant="success" className="mb-6 mx-auto inline-flex shadow-sm bg-[#E7EFEA] text-[#234B36] border-[#B7D2C2]">
+          <Badge variant="success" className="mb-6 mx-auto inline-flex shadow-sm bg-[#FDEDE9] text-[#D15B40] border-[#F2C9C0]">
             Tahun Ajaran {settings.academic_year}
           </Badge>
           <h1 className="text-4xl md:text-6xl font-extrabold text-[#171717] tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
-            Sistem Informasi Terpadu Ekstrakurikuler <span className="text-[#234B36]">{settings.school_name}</span>
+            Sistem Informasi Terpadu Ekstrakurikuler <span className="text-[#D15B40]">{settings.school_name}</span>
           </h1>
           <p className="text-lg md:text-xl text-[#68655F] mb-10 max-w-2xl mx-auto">
             Kelola pendaftaran ekskul, presensi digital, pencatatan prestasi, hingga pencetakan portofolio non-akademik resmi dengan validasi publik.
@@ -50,7 +50,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="bg-white border border-[#EAE6DC] p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1">
             <h3 className="font-bold text-lg text-[#171717] flex items-center gap-2 mb-1">
-              <ShieldCheck className="w-5 h-5 text-[#234B36]" /> Verifikasi Dokumen
+              <ShieldCheck className="w-5 h-5 text-[#D15B40]" /> Verifikasi Dokumen
             </h3>
             <p className="text-sm text-[#68655F]">Masukkan kode sertifikat atau portofolio untuk mengecek validitas data institusional.</p>
           </div>
@@ -60,7 +60,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               placeholder="Contoh: EKH-2026-000184" 
               value={searchVerifyId} 
               onChange={(e) => setSearchVerifyId(e.target.value)} 
-              className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium focus:outline-none focus:border-[#234B36] focus:ring-1 focus:ring-[#234B36] transition-all" 
+              className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D15B40] focus:ring-1 focus:ring-[#D15B40] transition-all" 
             />
             <Button type="submit" size="lg" className="rounded-xl">Cek Data</Button>
           </form>
@@ -82,7 +82,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               { title: 'Portofolio Terintegrasi', desc: 'Cetak lembar portofolio digital bertanda-tangan dengan barcode resmi untuk syarat kelulusan.', icon: FileText }
             ].map((step, i) => (
               <div key={i} className="bg-[#F9F8F6] p-8 rounded-2xl border border-[#EAE6DC] hover:shadow-md transition-shadow hover:border-[#D8D4CC] group">
-                <div className="w-14 h-14 bg-white border border-[#EAE6DC] rounded-xl flex items-center justify-center text-[#234B36] mb-6 group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 bg-white border border-[#EAE6DC] rounded-xl flex items-center justify-center text-[#D15B40] mb-6 group-hover:scale-110 transition-transform">
                   <step.icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg mb-3 text-[#171717]">{step.title}</h3>

@@ -75,7 +75,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
             Panel Pengurus • {managedEkskul.name}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
@@ -109,7 +109,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
           <div className="text-2xl font-bold text-[#171717]">{members.length} / {managedEkskul.member_capacity}</div>
           <div className="w-full h-1 bg-[#F9F8F6] rounded-full overflow-hidden mt-2">
             <div
-              className="h-full bg-[#234B36]"
+              className="h-full bg-[#D15B40]"
               style={{ width: `${(members.length / managedEkskul.member_capacity) * 100}%` }}
             />
           </div>
@@ -117,19 +117,19 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
 
         <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Pendaftaran Baru</div>
-          <div className="text-2xl font-bold text-[#B84A3A]">{registrations.length}</div>
+          <div className="text-2xl font-bold text-[#3B7A82]">{registrations.length}</div>
           <div className="text-[11px] text-[#68655F] mt-1">Perlu Persetujuan</div>
         </div>
 
         <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Sesi Presensi Selesai</div>
-          <div className="text-2xl font-bold text-[#234B36]">{sessions.length}</div>
-          <div className="text-[11px] text-[#234B36] font-medium mt-1">Semester Ganjil</div>
+          <div className="text-2xl font-bold text-[#D15B40]">{sessions.length}</div>
+          <div className="text-[11px] text-[#D15B40] font-medium mt-1">Semester Ganjil</div>
         </div>
 
         <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
           <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Rata-rata Kehadiran</div>
-          <div className="text-2xl font-bold text-[#234B36]">94.2%</div>
+          <div className="text-2xl font-bold text-[#D15B40]">94.2%</div>
           <div className="text-[11px] text-[#68655F] mt-1">Kategori Sangat Baik</div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F]">
                 Sesi Latihan Terakhir
               </h3>
-              <CheckSquare className="w-4 h-4 text-[#234B36]" />
+              <CheckSquare className="w-4 h-4 text-[#D15B40]" />
             </div>
 
             {latestSession && (
@@ -212,7 +212,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
                 <div className="p-3 bg-[#F9F8F6] rounded border border-[#EAE6DC] grid grid-cols-2 gap-2 text-center text-xs mt-3">
                   <div>
                     <span className="text-[#68655F] block text-[10px]">Hadir</span>
-                    <strong className="text-[#234B36]">{latestSession.present_count} Siswa</strong>
+                    <strong className="text-[#D15B40]">{latestSession.present_count} Siswa</strong>
                   </div>
                   <div>
                     <span className="text-[#68655F] block text-[10px]">Terlambat</span>
@@ -242,7 +242,7 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
       >
         <form onSubmit={handleConfirmReview} className="space-y-4 text-xs">
           {actionSuccess ? (
-            <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] rounded flex items-center gap-2">
+            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] rounded flex items-center gap-2">
               <CheckCircle className="w-4 h-4" />
               <span>{actionSuccess}</span>
             </div>

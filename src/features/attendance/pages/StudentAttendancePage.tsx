@@ -36,7 +36,7 @@ export const StudentAttendancePage: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="border-b border-[#EAE6DC] pb-5">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+        <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
           Buku Induk Presensi Digital
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
@@ -56,7 +56,7 @@ export const StudentAttendancePage: React.FC = () => {
           </div>
           <div className="py-2 px-3">
             <span className="text-[#68655F] block text-[11px] uppercase">Hadir Tepat Waktu</span>
-            <span className="text-base font-bold text-[#234B36]">{presentCount}</span>
+            <span className="text-base font-bold text-[#D15B40]">{presentCount}</span>
           </div>
           <div className="py-2 px-3">
             <span className="text-[#68655F] block text-[11px] uppercase">Terlambat</span>
@@ -72,7 +72,7 @@ export const StudentAttendancePage: React.FC = () => {
           </div>
           <div className="py-2 px-3">
             <span className="text-[#68655F] block text-[11px] uppercase">Persentase Kehadiran</span>
-            <span className="text-base font-bold text-[#234B36]">{attendanceRate}%</span>
+            <span className="text-base font-bold text-[#D15B40]">{attendanceRate}%</span>
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@ export const StudentAttendancePage: React.FC = () => {
           <select
             value={selectedEkskul}
             onChange={(e) => setSelectedEkskul(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
           >
             <option value="all">Semua Ekstrakurikuler</option>
             {myMemberships.map(m => {
@@ -99,7 +99,7 @@ export const StudentAttendancePage: React.FC = () => {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="w-full px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
           >
             <option value="all">Semua Status</option>
             <option value="present">Hadir Saja</option>
@@ -155,7 +155,7 @@ export const StudentAttendancePage: React.FC = () => {
                       </Badge>
                     </td>
                     <td className="py-2.5 px-3 text-[#68655F] max-w-xs truncate">{rec.notes || '-'}</td>
-                    <td className="py-2.5 px-3 text-[#234B36] font-medium">{rec.verified_by_name || 'Pembina'}</td>
+                    <td className="py-2.5 px-3 text-[#D15B40] font-medium">{rec.verified_by_name || 'Pembina'}</td>
                   </tr>
                 ))
               )}

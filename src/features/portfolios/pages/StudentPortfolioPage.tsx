@@ -46,7 +46,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
             Portofolio Non-Akademik Siswa
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
@@ -70,14 +70,14 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
       </div>
 
       {/* Official Verification Notice Banner */}
-      <div className="p-4 bg-[#E7EFEA] border border-[#B7D2C2] rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-4 bg-[#FDEDE9] border border-[#F2C9C0] rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5">
-          <ShieldCheck className="w-5 h-5 text-[#234B36] shrink-0" />
+          <ShieldCheck className="w-5 h-5 text-[#D15B40] shrink-0" />
           <div>
-            <div className="font-bold text-[#234B36]">
+            <div className="font-bold text-[#D15B40]">
               Nomor Registrasi Verifikasi: <span className="font-mono">{verification.verification_id}</span>
             </div>
-            <div className="text-[#234B36]/80">
+            <div className="text-[#D15B40]/80">
               Disahkan oleh Kesiswaan {settings.school_name} pada {verification.issue_date}.
             </div>
           </div>
@@ -85,7 +85,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
         {onNavigate && (
           <button
             onClick={() => onNavigate(`/verify/${verification.verification_id}`)}
-            className="text-xs text-[#234B36] font-bold hover:underline inline-flex items-center gap-1 cursor-pointer shrink-0"
+            className="text-xs text-[#D15B40] font-bold hover:underline inline-flex items-center gap-1 cursor-pointer shrink-0"
           >
             <span>Uji Halaman Verifikasi Publik</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -96,14 +96,14 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
       {/* Document Simulation Sheet (Official School Editorial Style) */}
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 sm:p-10 shadow-xs space-y-6 max-w-4xl mx-auto">
         {/* Kop Surat Resmi */}
-        <div className="text-center border-b-2 border-[#234B36] pb-4 space-y-0.5">
+        <div className="text-center border-b-2 border-[#D15B40] pb-4 space-y-0.5">
           <div className="text-xs font-bold text-[#171717] tracking-wider uppercase">
             PEMERINTAH DAERAH PROVINSI JAWA BARAT
           </div>
           <div className="text-xs font-semibold text-[#68655F] uppercase">
             DINAS PENDIDIKAN & KEBUDAYAAN
           </div>
-          <div className="text-lg font-bold text-[#234B36] uppercase tracking-wide">
+          <div className="text-lg font-bold text-[#D15B40] uppercase tracking-wide">
             {settings.school_name}
           </div>
           <div className="text-[11px] text-[#68655F]">
@@ -143,7 +143,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 1: Extracurricular History */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
             <span>I. Riwayat Keanggotaan & Peran Organisasi</span>
             <span className="text-[11px] font-normal text-[#68655F]">Tingkat Kehadiran: {verification.summary_data.total_attendance_rate}</span>
           </div>
@@ -162,7 +162,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
                 <tr key={idx} className="hover:bg-[#F9F8F6]/40">
                   <td className="py-2 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2 px-3 font-bold text-[#171717]">{item.name}</td>
-                  <td className="py-2 px-3 font-semibold text-[#234B36]">{item.role}</td>
+                  <td className="py-2 px-3 font-semibold text-[#D15B40]">{item.role}</td>
                   <td className="py-2 px-3 font-mono text-[#68655F]">{item.period}</td>
                 </tr>
               ))}
@@ -172,7 +172,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 2: Verified Achievements */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] border-b border-[#EAE6DC] pb-1.5 flex items-center justify-between">
             <span>II. Prestasi & Penghargaan (Terverifikasi Sekolah)</span>
             <Badge variant="warning">{verification.summary_data.verified_achievements_count} Prestasi</Badge>
           </div>
@@ -193,7 +193,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
                   <td className="py-2 px-3 text-[#68655F]">{idx + 1}</td>
                   <td className="py-2 px-3 font-bold text-[#171717]">{ach.title}</td>
                   <td className="py-2 px-3 text-[#68655F]">{ach.level}</td>
-                  <td className="py-2 px-3 font-semibold text-[#234B36]">{ach.rank}</td>
+                  <td className="py-2 px-3 font-semibold text-[#D15B40]">{ach.rank}</td>
                   <td className="py-2 px-3 font-mono text-[#68655F]">{ach.year}</td>
                 </tr>
               ))}
@@ -203,7 +203,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
         {/* Section 3: Committee Roles */}
         <div className="space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] border-b border-[#EAE6DC] pb-1.5">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] border-b border-[#EAE6DC] pb-1.5">
             III. Partisipasi Kepanitiaan & Pengabdian Sekolah
           </div>
 
@@ -232,7 +232,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
         {/* Official Footer Signature Block */}
         <div className="pt-6 border-t border-[#EAE6DC] flex flex-col sm:flex-row justify-between items-end gap-6 text-xs">
           <div className="space-y-1">
-            <div className="font-bold text-[#234B36] uppercase">KODE VERIFIKASI QR DOKUMEN:</div>
+            <div className="font-bold text-[#D15B40] uppercase">KODE VERIFIKASI QR DOKUMEN:</div>
             <div className="text-[11px] text-[#68655F]">
               Dokumen ini dilengkapi QR Code verifikasi resmi untuk keperluan seleksi beasiswa dan seleksi perguruan tinggi negeri (SNBP).
             </div>

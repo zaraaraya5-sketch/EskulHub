@@ -90,7 +90,7 @@ const AppContent: React.FC = () => {
       case '/student/portfolio':
         return <StudentDashboardPage onNavigate={navigate} initialTab="portfolio" />;
 
-      // Pengurus routes
+      // Pengurus routes (Legacy fallbacks)
       case '/pengurus/dashboard':
       case '/pengurus':
       case '/pengurus/members':
@@ -103,9 +103,13 @@ const AppContent: React.FC = () => {
       case '/pengurus/schedule':
         return <CalendarPage onNavigate={navigate} />;
 
-      // Teacher & Pembina routes
+      // Unified Teacher, Pembina & Pengurus routes
       case '/pembina/dashboard':
       case '/pembina':
+      case '/pembina/members':
+      case '/pembina/extracurriculars':
+      case '/pembina/attendance':
+      case '/pembina/achievements':
       case '/teacher/dashboard':
       case '/teacher':
       case '/teacher/extracurriculars':
@@ -113,6 +117,8 @@ const AppContent: React.FC = () => {
       case '/teacher/activities':
       case '/teacher/achievements':
         return <TeacherDashboardPage currentPath={currentPath} onNavigate={navigate} />;
+      case '/pembina/schedule':
+        return <CalendarPage onNavigate={navigate} />;
 
       // Guru Wali Kelas routes
       case '/guru/dashboard':
@@ -182,10 +188,10 @@ const AppContent: React.FC = () => {
             <div className="text-[11px] mt-0.5">Dikembangkan untuk Satuan Pendidikan Indonesia. Berbasis Standar Kearsipan Nasional.</div>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <button onClick={() => navigate('/')} className="hover:text-[#234B36] cursor-pointer">Beranda</button>
-            <button onClick={() => navigate('/ekskul')} className="hover:text-[#234B36] cursor-pointer">Katalog</button>
-            <button onClick={() => navigate('/calendar')} className="hover:text-[#234B36] cursor-pointer">Kalender</button>
-            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#234B36] cursor-pointer">Cek QR</button>
+            <button onClick={() => navigate('/')} className="hover:text-[#D15B40] cursor-pointer">Beranda</button>
+            <button onClick={() => navigate('/ekskul')} className="hover:text-[#D15B40] cursor-pointer">Katalog</button>
+            <button onClick={() => navigate('/calendar')} className="hover:text-[#D15B40] cursor-pointer">Kalender</button>
+            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#D15B40] cursor-pointer">Cek QR</button>
           </div>
         </div>
       </footer>

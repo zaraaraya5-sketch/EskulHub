@@ -101,7 +101,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
       <div>
         <button
           onClick={() => onNavigate('/ekskul')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#68655F] hover:text-[#234B36] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#68655F] hover:text-[#D15B40] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Kembali ke Katalog Ekstrakurikuler</span>
@@ -124,7 +124,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
                   {ekskul.category}
                 </span>
                 <span className={`px-2.5 py-0.5 rounded text-xs font-semibold ${
-                  ekskul.registration_status === 'open' ? 'bg-[#234B36] text-white' : 'bg-[#A33D35] text-white'
+                  ekskul.registration_status === 'open' ? 'bg-[#D15B40] text-white' : 'bg-[#A33D35] text-white'
                 }`}>
                   {ekskul.registration_status === 'open' ? 'Pendaftaran Dibuka' : 'Kuota Penuh'}
                 </span>
@@ -213,7 +213,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
                         {ach.competition_name} ({ach.level}) • Peraih: <span className="font-semibold text-[#171717]">{ach.student_name}</span>
                       </div>
                     </div>
-                    <div className="text-right text-[11px] text-[#234B36] font-semibold">
+                    <div className="text-right text-[11px] text-[#D15B40] font-semibold">
                       Terverifikasi
                     </div>
                   </div>
@@ -234,7 +234,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
                 {activities.map((act) => (
                   <div key={act.id} className="p-4 border border-[#EAE6DC] rounded bg-white">
                     <div className="flex items-center justify-between text-xs text-[#68655F] mb-1">
-                      <span className="font-semibold text-[#234B36]">{act.location}</span>
+                      <span className="font-semibold text-[#D15B40]">{act.location}</span>
                       <span>{act.activity_date}</span>
                     </div>
                     <h3 className="text-sm font-bold text-[#171717] mb-2">{act.title}</h3>
@@ -276,14 +276,14 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[#68655F]">Jumlah Anggota Aktif:</span>
-                <strong className="text-[#234B36]">{ekskul.current_member_count} Siswa</strong>
+                <strong className="text-[#D15B40]">{ekskul.current_member_count} Siswa</strong>
               </div>
             </div>
           </div>
 
           {/* Registration Requirement Box */}
           <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-5">
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#234B36] mb-2">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-2">
               <ShieldCheck className="w-4 h-4" />
               <span>Ketentuan Anggota</span>
             </div>
@@ -330,14 +330,14 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
           </div>
 
           {formError && (
-            <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded flex items-center gap-2">
+            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] text-[#A33D35] text-xs rounded flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{formError}</span>
             </div>
           )}
 
           {formSuccess && (
-            <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded flex items-center gap-2">
+            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] text-xs rounded flex items-center gap-2">
               <CheckCircle className="w-4 h-4 shrink-0" />
               <span>{formSuccess}</span>
             </div>

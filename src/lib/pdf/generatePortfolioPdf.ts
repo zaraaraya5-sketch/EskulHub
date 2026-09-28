@@ -25,7 +25,7 @@ export const generatePortfolioPdf = async (
 
   // Page 1 Setup (A4 is 210mm x 297mm)
   // Header: Kop Resmi Sekolah
-  doc.setDrawColor(35, 75, 54); // #234B36 Deep Forest
+  doc.setDrawColor(35, 75, 54); // #D15B40 Deep Forest
   doc.setLineWidth(1.2);
   doc.line(15, 34, 195, 34);
   doc.setLineWidth(0.4);

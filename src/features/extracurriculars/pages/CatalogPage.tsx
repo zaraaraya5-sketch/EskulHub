@@ -67,7 +67,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header */}
       <div className="border-b border-[#EAE6DC] pb-5">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+        <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
           Katalog Ekstrakurikuler Resmi
         </div>
         <h1 className="text-2xl sm:text-3xl font-bold text-[#171717]">
@@ -90,7 +90,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama ekskul, pembina, kata kunci..."
-              className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+              className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
             />
           </div>
 
@@ -99,7 +99,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
             >
               <option value="all">Semua Status Pendaftaran</option>
               <option value="open">Hanya Pendaftaran Terbuka</option>
@@ -112,7 +112,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
             >
               <option value="name">Urutkan: Nama (A - Z)</option>
               <option value="popular">Urutkan: Anggota Terbanyak</option>
@@ -130,7 +130,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
                 selectedCategory === cat
-                  ? 'bg-[#234B36] text-white border-[#234B36]'
+                  ? 'bg-[#D15B40] text-white border-[#D15B40]'
                   : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
               }`}
             >
@@ -164,7 +164,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
           {filteredEkskuls.map((item) => (
             <div
               key={item.id}
-              className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden flex flex-col justify-between hover:border-[#234B36] transition-colors"
+              className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden flex flex-col justify-between hover:border-[#D15B40] transition-colors"
             >
               <div>
                 <div className="h-44 relative bg-[#EAE6DC] overflow-hidden">
@@ -191,15 +191,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
 
                   <div className="space-y-2 text-xs text-[#68655F] border-t border-[#EAE6DC] pt-3">
                     <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-[#234B36] shrink-0" />
+                      <Users className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
                       <span>Pembina: <strong className="text-[#171717]">{item.supervisor_name}</strong></span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-[#234B36] shrink-0" />
+                      <Calendar className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
                       <span className="truncate">Jadwal: <strong className="text-[#171717]">{item.practice_schedule}</strong></span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-[#234B36] shrink-0" />
+                      <MapPin className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
                       <span className="truncate">Lokasi: <strong className="text-[#171717]">{item.location}</strong></span>
                     </div>
 
@@ -210,7 +210,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
                       </div>
                       <div className="w-full h-1.5 bg-[#F9F8F6] rounded-full overflow-hidden border border-[#EAE6DC]">
                         <div
-                          className="h-full bg-[#234B36] rounded-full"
+                          className="h-full bg-[#D15B40] rounded-full"
                           style={{ width: `${Math.min(100, (item.current_member_count / item.member_capacity) * 100)}%` }}
                         />
                       </div>

@@ -53,37 +53,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
     }
   ];
 
-  const pengurusMenu = [
+  const pembinaPengurusMenu = [
     {
       group: 'Utama',
       items: [
-        { label: 'Ringkasan Operasional', path: '/pengurus/dashboard', icon: LayoutDashboard },
-        { label: 'Verifikasi Pendaftaran', path: '/pengurus/registrations', icon: UserCheck },
+        { label: 'Dasbor', path: '/pembina/dashboard', icon: LayoutDashboard },
+        { label: 'Daftar Isi Ekskul', path: '/pembina/extracurriculars', icon: BookOpen },
+        { label: 'Verifikasi Portofolio Resmi', path: '/pembina/achievements', icon: ShieldCheck },
       ]
     },
     {
-      group: 'Kegiatan Latihan',
+      group: 'Operasional',
       items: [
-        { label: 'Presensi Digital', path: '/pengurus/attendance', icon: CheckSquare },
-        { label: 'Jadwal & Agenda', path: '/pengurus/schedule', icon: Calendar },
-        { label: 'Dokumentasi Acara', path: '/pengurus/activities', icon: Layers },
-      ]
-    }
-  ];
-
-  const teacherMenu = [
-    {
-      group: 'Utama',
-      items: [
-        { label: 'Dasbor Pembina', path: '/teacher/dashboard', icon: LayoutDashboard },
-        { label: 'Daftar Ekskul Binaan', path: '/teacher/extracurriculars', icon: BookOpen },
-      ]
-    },
-    {
-      group: 'Monitoring',
-      items: [
-        { label: 'Rekap Presensi', path: '/teacher/attendance', icon: CheckSquare },
-        { label: 'Validasi Prestasi', path: '/teacher/achievements', icon: Trophy },
+        { label: 'Manajemen Anggota', path: '/pembina/members', icon: Users },
+        { label: 'Jadwal & Agenda', path: '/pembina/schedule', icon: Calendar },
+        { label: 'Presensi Kehadiran', path: '/pembina/attendance', icon: CheckSquare },
       ]
     }
   ];
@@ -136,19 +120,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
       ? adminMenu
       : role === 'guru'
       ? guruMenu
-      : role === 'pembina' || role === 'teacher'
-      ? teacherMenu
-      : role === 'pengurus'
-      ? pengurusMenu
+      : role === 'pembina' || role === 'teacher' || role === 'pengurus'
+      ? pembinaPengurusMenu
       : studentMenu;
 
   const roleBadges: Record<string, { label: string; bgClass: string; textClass: string; lightBg: string; activeNavClass: string }> = {
     student: {
       label: 'Siswa',
-      bgClass: 'bg-[#234B36]', 
-      textClass: 'text-[#234B36]',
-      lightBg: 'bg-[#E7EFEA]',
-      activeNavClass: 'bg-[#234B36] text-white shadow-md',
+      bgClass: 'bg-[#D15B40]', 
+      textClass: 'text-[#D15B40]',
+      lightBg: 'bg-[#FDEDE9]',
+      activeNavClass: 'bg-[#D15B40] text-white shadow-md',
     },
     guru: {
       label: 'Guru Wali Kelas',
@@ -159,24 +141,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
     },
     pembina: {
       label: 'Guru Pembina Ekskul',
-      bgClass: 'bg-[#B84A3A]',
-      textClass: 'text-[#B84A3A]',
-      lightBg: 'bg-[#F9ECEB]',
-      activeNavClass: 'bg-[#B84A3A] text-white shadow-md',
+      bgClass: 'bg-[#3B7A82]',
+      textClass: 'text-[#3B7A82]',
+      lightBg: 'bg-[#E8F4F5]',
+      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
     },
     teacher: {
       label: 'Guru Pembina Ekskul',
-      bgClass: 'bg-[#B84A3A]',
-      textClass: 'text-[#B84A3A]',
-      lightBg: 'bg-[#F9ECEB]',
-      activeNavClass: 'bg-[#B84A3A] text-white shadow-md',
+      bgClass: 'bg-[#3B7A82]',
+      textClass: 'text-[#3B7A82]',
+      lightBg: 'bg-[#E8F4F5]',
+      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
     },
     pengurus: {
-      label: 'Pengurus Ekskul',
-      bgClass: 'bg-[#4B5E28]',
-      textClass: 'text-[#4B5E28]',
-      lightBg: 'bg-[#EDF2E6]',
-      activeNavClass: 'bg-[#4B5E28] text-white shadow-md',
+      label: 'Pembina & Pengurus Ekskul',
+      bgClass: 'bg-[#3B7A82]',
+      textClass: 'text-[#3B7A82]',
+      lightBg: 'bg-[#E8F4F5]',
+      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
     },
     admin: {
       label: 'Admin Kesiswaan',
@@ -198,15 +180,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
         className="p-5 border-b border-[#EAE6DC] flex items-center gap-4 cursor-pointer group bg-white hover:bg-[#F9F8F6] transition-colors"
         title="Kembali ke Beranda Publik"
       >
-        <div className="w-10 h-10 bg-gradient-to-br from-[#234B36] to-[#1A3A29] text-white rounded-lg flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
+        <div className="w-10 h-10 bg-gradient-to-br from-[#D15B40] to-[#A6432D] text-white rounded-lg flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
           EH
         </div>
         <div className="overflow-hidden">
           <div className="flex items-center gap-2">
-            <span className="text-base font-bold tracking-tight text-[#171717] group-hover:text-[#234B36] transition-colors leading-none truncate">
+            <span className="text-base font-bold tracking-tight text-[#171717] group-hover:text-[#D15B40] transition-colors leading-none truncate">
               EKSKUL-HUB
             </span>
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36] shrink-0">
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40] shrink-0">
               {settings.academic_year}
             </span>
           </div>
@@ -232,16 +214,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
             <img
               src={currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
               alt={currentUser?.name}
-              className="w-12 h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#234B36] transition-colors"
+              className="w-12 h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#D15B40] transition-colors"
             />
             {role === 'admin' && (
-              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#234B36] text-white border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
+              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#D15B40] text-white border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
                 ✎
               </span>
             )}
           </div>
           <div className="overflow-hidden flex-1">
-            <div className="text-sm font-bold text-[#171717] truncate group-hover:text-[#234B36] transition-colors">
+            <div className="text-sm font-bold text-[#171717] truncate group-hover:text-[#D15B40] transition-colors">
               {currentUser?.name}
             </div>
             <div className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${badgeInfo.textClass}`}>
@@ -287,7 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
       <div className="p-4 border-t border-[#EAE6DC] bg-white space-y-2">
         <button
           onClick={() => onNavigate('/')}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#234B36] font-semibold hover:bg-[#F9F8F6] rounded-lg transition-colors cursor-pointer border border-[#EAE6DC]"
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-[#D15B40] font-semibold hover:bg-[#F9F8F6] rounded-lg transition-colors cursor-pointer border border-[#EAE6DC]"
         >
           <ExternalLink className="w-4 h-4" />
           <span>Ke Halaman Publik</span>

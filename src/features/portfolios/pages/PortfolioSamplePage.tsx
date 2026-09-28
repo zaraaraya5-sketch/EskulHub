@@ -28,12 +28,12 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
           onClick={() => onNavigate('/')}
           className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-[#EAE6DC] rounded text-xs font-semibold text-[#171717] hover:bg-[#F9F8F6] transition-colors cursor-pointer w-fit"
         >
-          <ArrowLeft className="w-4 h-4 text-[#234B36]" />
+          <ArrowLeft className="w-4 h-4 text-[#D15B40]" />
           <span>Kembali ke Beranda</span>
         </button>
 
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-1 rounded bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2] text-xs font-bold uppercase tracking-wider">
+          <span className="px-2.5 py-1 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] text-xs font-bold uppercase tracking-wider">
             Format Resmi Portofolio Kesiswaan
           </span>
           <Button
@@ -51,7 +51,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
       <div className="bg-white border-2 border-[#EAE6DC] rounded-lg p-6 sm:p-10 shadow-sm space-y-8 font-sans">
         {/* Kop Surat Resmi */}
         <div className="border-b-2 border-[#171717] pb-6 flex items-center justify-between gap-6">
-          <div className="w-16 h-16 bg-[#234B36] text-white rounded flex items-center justify-center font-bold text-2xl shrink-0">
+          <div className="w-16 h-16 bg-[#D15B40] text-white rounded flex items-center justify-center font-bold text-2xl shrink-0">
             EH
           </div>
           <div className="flex-1 text-center">
@@ -69,7 +69,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
             </div>
           </div>
           <div className="w-16 h-16 shrink-0 hidden sm:flex items-center justify-center border border-[#EAE6DC] rounded p-1 bg-[#F9F8F6]">
-            <QrCode className="w-12 h-12 text-[#234B36]" />
+            <QrCode className="w-12 h-12 text-[#D15B40]" />
           </div>
         </div>
 
@@ -108,7 +108,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
             </div>
             <div className="flex">
               <span className="w-36 text-[#68655F]">Status Dokumen</span>
-              <span className="font-bold text-[#234B36]">: Terverifikasi & Sah</span>
+              <span className="font-bold text-[#D15B40]">: Terverifikasi & Sah</span>
             </div>
           </div>
         </div>
@@ -116,7 +116,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
         {/* Section 1: Extracurricular Activities History */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 border-b border-[#EAE6DC] pb-1.5">
-            <span className="w-6 h-6 rounded bg-[#234B36] text-white flex items-center justify-center font-bold text-xs shrink-0">
+            <span className="w-6 h-6 rounded bg-[#D15B40] text-white flex items-center justify-center font-bold text-xs shrink-0">
               I
             </span>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#171717]">
@@ -141,16 +141,16 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
                 <td className="p-2.5 font-bold text-[#171717]">Programming & Cyber Club</td>
                 <td className="p-2.5">Ketua Divisi Web</td>
                 <td className="p-2.5 text-[#68655F]">Dewi Lestari, M.Kom.</td>
-                <td className="p-2.5 text-center font-bold text-[#234B36]">96% (24/25 Sesi)</td>
-                <td className="p-2.5 text-center font-bold text-[#234B36]">Sangat Baik (A)</td>
+                <td className="p-2.5 text-center font-bold text-[#D15B40]">96% (24/25 Sesi)</td>
+                <td className="p-2.5 text-center font-bold text-[#D15B40]">Sangat Baik (A)</td>
               </tr>
               <tr>
                 <td className="p-2.5 text-[#68655F]">2</td>
                 <td className="p-2.5 font-bold text-[#171717]">Futsal Garuda Nusantara</td>
                 <td className="p-2.5">Anggota Reguler</td>
                 <td className="p-2.5 text-[#68655F]">Hendra Wijaya, S.Pd.</td>
-                <td className="p-2.5 text-center font-bold text-[#234B36]">92% (22/24 Sesi)</td>
-                <td className="p-2.5 text-center font-bold text-[#234B36]">Sangat Baik (A)</td>
+                <td className="p-2.5 text-center font-bold text-[#D15B40]">92% (22/24 Sesi)</td>
+                <td className="p-2.5 text-center font-bold text-[#D15B40]">Sangat Baik (A)</td>
               </tr>
             </tbody>
           </table>
@@ -159,7 +159,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
         {/* Section 2: Verified Achievements & Competitions */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 border-b border-[#EAE6DC] pb-1.5">
-            <span className="w-6 h-6 rounded bg-[#234B36] text-white flex items-center justify-center font-bold text-xs shrink-0">
+            <span className="w-6 h-6 rounded bg-[#D15B40] text-white flex items-center justify-center font-bold text-xs shrink-0">
               II
             </span>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#171717]">
@@ -183,7 +183,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
                   </div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2] rounded font-bold text-[10px] shrink-0">
+              <span className="px-2 py-0.5 bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] rounded font-bold text-[10px] shrink-0">
                 Tervalidasi
               </span>
             </div>
@@ -203,7 +203,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
                   </div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2] rounded font-bold text-[10px] shrink-0">
+              <span className="px-2 py-0.5 bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] rounded font-bold text-[10px] shrink-0">
                 Tervalidasi
               </span>
             </div>
@@ -213,7 +213,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
         {/* Section 3: Character & Soft Skills Evaluation */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 border-b border-[#EAE6DC] pb-1.5">
-            <span className="w-6 h-6 rounded bg-[#234B36] text-white flex items-center justify-center font-bold text-xs shrink-0">
+            <span className="w-6 h-6 rounded bg-[#D15B40] text-white flex items-center justify-center font-bold text-xs shrink-0">
               III
             </span>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#171717]">
@@ -224,19 +224,19 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-center">
             <div className="p-3 border border-[#EAE6DC] rounded bg-[#F9F8F6]/40">
               <span className="block text-[#68655F] text-[10px] uppercase font-bold">Kemandirian</span>
-              <span className="text-sm font-bold text-[#234B36] mt-1 block">Sangat Baik (A)</span>
+              <span className="text-sm font-bold text-[#D15B40] mt-1 block">Sangat Baik (A)</span>
             </div>
             <div className="p-3 border border-[#EAE6DC] rounded bg-[#F9F8F6]/40">
               <span className="block text-[#68655F] text-[10px] uppercase font-bold">Kepemimpinan</span>
-              <span className="text-sm font-bold text-[#234B36] mt-1 block">Sangat Baik (A)</span>
+              <span className="text-sm font-bold text-[#D15B40] mt-1 block">Sangat Baik (A)</span>
             </div>
             <div className="p-3 border border-[#EAE6DC] rounded bg-[#F9F8F6]/40">
               <span className="block text-[#68655F] text-[10px] uppercase font-bold">Gotong Royong</span>
-              <span className="text-sm font-bold text-[#234B36] mt-1 block">Sangat Baik (A)</span>
+              <span className="text-sm font-bold text-[#D15B40] mt-1 block">Sangat Baik (A)</span>
             </div>
             <div className="p-3 border border-[#EAE6DC] rounded bg-[#F9F8F6]/40">
               <span className="block text-[#68655F] text-[10px] uppercase font-bold">Integritas</span>
-              <span className="text-sm font-bold text-[#234B36] mt-1 block">Sangat Baik (A)</span>
+              <span className="text-sm font-bold text-[#D15B40] mt-1 block">Sangat Baik (A)</span>
             </div>
           </div>
         </div>
@@ -254,9 +254,9 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
           </div>
 
           <div className="flex flex-col items-center justify-center">
-            <div className="w-20 h-20 border-2 border-dashed border-[#234B36] rounded p-1 flex flex-col items-center justify-center bg-[#E7EFEA]/30">
-              <QrCode className="w-12 h-12 text-[#234B36]" />
-              <span className="text-[8px] font-bold text-[#234B36] mt-0.5">PINDAI UNTUK CEK</span>
+            <div className="w-20 h-20 border-2 border-dashed border-[#D15B40] rounded p-1 flex flex-col items-center justify-center bg-[#FDEDE9]/30">
+              <QrCode className="w-12 h-12 text-[#D15B40]" />
+              <span className="text-[8px] font-bold text-[#D15B40] mt-0.5">PINDAI UNTUK CEK</span>
             </div>
             <div className="text-[10px] text-[#68655F] font-mono mt-1">EKH-2026-000184</div>
           </div>
@@ -277,7 +277,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
       <div className="text-center pt-4">
         <button
           onClick={() => onNavigate('/')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#234B36] text-white rounded text-xs font-bold uppercase tracking-wider hover:bg-[#1a3828] transition-colors cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#D15B40] text-white rounded text-xs font-bold uppercase tracking-wider hover:bg-[#1a3828] transition-colors cursor-pointer shadow-xs"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Kembali ke Halaman Utama</span>

@@ -36,10 +36,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   // Solid institutional badge styles
   const roleBadges: Record<string, { label: string; bgClass: string; textClass: string }> = {
     admin: { label: 'Admin', bgClass: 'bg-[#262522]', textClass: 'text-white' },
-    student: { label: 'Siswa', bgClass: 'bg-[#234B36]', textClass: 'text-white' },
+    student: { label: 'Siswa', bgClass: 'bg-[#D15B40]', textClass: 'text-white' },
     guru: { label: 'Guru', bgClass: 'bg-[#8C6819]', textClass: 'text-white' },
-    pembina: { label: 'Pembina', bgClass: 'bg-[#B84A3A]', textClass: 'text-white' },
-    teacher: { label: 'Pembina', bgClass: 'bg-[#B84A3A]', textClass: 'text-white' },
+    pembina: { label: 'Pembina', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
+    teacher: { label: 'Pembina', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
     pengurus: { label: 'Pengurus', bgClass: 'bg-[#4B5E28]', textClass: 'text-white' },
   };
 
@@ -53,15 +53,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           onClick={() => onNavigate('/')}
           className="flex items-center gap-3 cursor-pointer group select-none"
         >
-          <div className="w-11 h-11 bg-[#234B36] text-white rounded flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
+          <div className="w-11 h-11 bg-[#D15B40] text-white rounded flex items-center justify-center font-bold text-lg shadow-xs shrink-0">
             EH
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-base sm:text-lg font-bold tracking-tight text-[#171717] group-hover:text-[#234B36] transition-colors leading-none">
+              <span className="text-base sm:text-lg font-bold tracking-tight text-[#171717] group-hover:text-[#D15B40] transition-colors leading-none">
                 EKSKUL-HUB
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2]">
+              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
                 {settings.academic_year}
               </span>
             </div>
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           <button
             onClick={() => onNavigate('/')}
             className={`transition-colors cursor-pointer hover:text-[#171717] ${
-              currentPath === '/' ? 'text-[#234B36] font-bold' : ''
+              currentPath === '/' ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
             Beranda
@@ -84,15 +84,23 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           <button
             onClick={() => onNavigate('/ekskul')}
             className={`transition-colors cursor-pointer hover:text-[#171717] ${
-              currentPath.startsWith('/ekskul') ? 'text-[#234B36] font-bold' : ''
+              currentPath.startsWith('/ekskul') ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
             Katalog Ekskul
           </button>
           <button
+            onClick={() => onNavigate('/calendar')}
+            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+              currentPath.startsWith('/calendar') ? 'text-[#D15B40] font-bold' : ''
+            }`}
+          >
+            Kalender
+          </button>
+          <button
             onClick={() => onNavigate('/verify/EKH-2026-000184')}
             className={`transition-colors cursor-pointer hover:text-[#171717] ${
-              currentPath.startsWith('/verify') ? 'text-[#234B36] font-bold' : ''
+              currentPath.startsWith('/verify') ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
             Verifikasi Portofolio
@@ -118,7 +126,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                   logout();
                   onNavigate('/');
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#F9ECEB] border border-[#EAE6DC] rounded text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#E8F4F5] border border-[#EAE6DC] rounded text-xs font-bold transition-colors cursor-pointer"
                 title="Keluar dari sesi"
               >
                 <LogOut className="w-3.5 h-3.5" />

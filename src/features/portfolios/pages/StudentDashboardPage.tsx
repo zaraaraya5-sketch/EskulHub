@@ -288,16 +288,16 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         <div
           onClick={() => setActiveTab('overview')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#D15B40] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Ekskul Aktif</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myMemberships.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">Terdaftar resmi</div>
+          <div className="text-[10px] text-[#D15B40] font-medium mt-0.5">Terdaftar resmi</div>
         </div>
 
         <div
           onClick={() => setActiveTab('registrations')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#D15B40] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Pendaftaran Diajukan</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">
@@ -310,31 +310,31 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
         <div
           onClick={() => setActiveTab('attendance')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#D15B40] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Tingkat Kehadiran</div>
-          <div className="text-2xl font-bold text-[#234B36] mt-1">{attendanceRate}%</div>
+          <div className="text-2xl font-bold text-[#D15B40] mt-1">{attendanceRate}%</div>
           <div className="text-[10px] text-[#68655F] mt-0.5">{presentCount} Hadir dari {totalSessions} sesi</div>
         </div>
 
         <div
           onClick={() => setActiveTab('achievements')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#D15B40] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Prestasi Terdata</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myAchievements.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">
+          <div className="text-[10px] text-[#D15B40] font-medium mt-0.5">
             {myAchievements.filter((a) => a.is_verified).length} Tervalidasi resmi
           </div>
         </div>
 
         <div
           onClick={() => setActiveTab('documents')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#234B36] transition-colors cursor-pointer shadow-xs"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-3.5 hover:border-[#D15B40] transition-colors cursor-pointer shadow-xs"
         >
           <div className="text-[11px] font-semibold text-[#68655F] uppercase">Dokumen Pendukung</div>
           <div className="text-2xl font-bold text-[#171717] mt-1">{myCertificates.length}</div>
-          <div className="text-[10px] text-[#234B36] font-medium mt-0.5">Piagam tersimpan</div>
+          <div className="text-[10px] text-[#D15B40] font-medium mt-0.5">Piagam tersimpan</div>
         </div>
       </div>
 
@@ -488,7 +488,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           {/* Right Column (4 cols): Quick Portfolio Card & Upcoming Events */}
           <div className="lg:col-span-4 space-y-6">
             {/* Portfolio Status Card */}
-            <div className="bg-[#234B36] text-white rounded-xl p-5 shadow-xs space-y-3">
+            <div className="bg-[#D15B40] text-white rounded-xl p-5 shadow-xs space-y-3">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-white/80">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Dokumen Portofolio Resmi</span>
@@ -501,7 +501,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full justify-center bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold"
+                  className="w-full justify-center bg-white text-[#D15B40] hover:bg-[#F9F8F6] border-transparent font-bold"
                   onClick={handleDownloadPdf}
                   isLoading={isGeneratingPdf}
                   icon={<Download className="w-3.5 h-3.5" />}
@@ -524,7 +524,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#68655F]">
                   Agenda Mendatang
                 </h3>
-                <Calendar className="w-4 h-4 text-[#234B36]" />
+                <Calendar className="w-4 h-4 text-[#D15B40]" />
               </div>
 
               <div className="space-y-3 text-xs">
@@ -535,7 +535,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                       <Clock className="w-3.5 h-3.5" />
                       <span>{ev.start_datetime.replace('T', ' ')}</span>
                     </div>
-                    <div className="text-[11px] text-[#234B36] font-medium flex items-center gap-1">
+                    <div className="text-[11px] text-[#D15B40] font-medium flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
                       <span>{ev.location}</span>
                     </div>
@@ -569,7 +569,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 placeholder="Cari ekskul atau pembina..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 border border-[#EAE6DC] rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#234B36] shadow-sm"
+                className="w-full pl-9 pr-4 py-2 border border-[#EAE6DC] rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-[#D15B40] shadow-sm"
               />
             </div>
           </div>
@@ -582,7 +582,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 onClick={() => setCategoryFilter(cat)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold cursor-pointer shrink-0 transition-colors shadow-sm ${
                   categoryFilter === cat
-                    ? 'bg-[#234B36] text-white border border-[#234B36]'
+                    ? 'bg-[#D15B40] text-white border border-[#D15B40]'
                     : 'bg-white text-[#68655F] border border-[#EAE6DC] hover:bg-[#F9F8F6]'
                 }`}
               >
@@ -617,7 +617,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                       </div>
                       <div className="absolute top-3 right-3">
                         {ekskul.registration_status === 'open' && !isFull ? (
-                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#234B36] text-white shadow-sm tracking-wider uppercase">
+                          <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-[#D15B40] text-white shadow-sm tracking-wider uppercase">
                             Dibuka
                           </span>
                         ) : (
@@ -631,7 +631,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                     {/* Content */}
                     <div className="p-5 space-y-3">
                       <div>
-                        <h3 className="font-bold text-lg text-[#171717] group-hover:text-[#234B36] transition-colors">{ekskul.name}</h3>
+                        <h3 className="font-bold text-lg text-[#171717] group-hover:text-[#D15B40] transition-colors">{ekskul.name}</h3>
                         <p className="text-sm text-[#68655F] line-clamp-2 mt-1.5 leading-relaxed">
                           {ekskul.short_description}
                         </p>
@@ -639,15 +639,15 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
                       <div className="space-y-2 text-xs border-t border-[#EAE6DC]/60 pt-4 text-[#68655F]">
                         <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-[#234B36]" />
+                          <Users className="w-4 h-4 text-[#D15B40]" />
                           <span>Pembina: <strong className="text-[#171717]">{ekskul.supervisor_name}</strong></span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-[#234B36]" />
+                          <Clock className="w-4 h-4 text-[#D15B40]" />
                           <span>{ekskul.practice_schedule}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-[#234B36]" />
+                          <MapPin className="w-4 h-4 text-[#D15B40]" />
                           <span>{ekskul.location}</span>
                         </div>
                       </div>
@@ -662,7 +662,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                         </div>
                         <div className="w-full bg-[#F9F8F6] h-1.5 rounded-full overflow-hidden border border-[#EAE6DC]">
                           <div
-                            className="bg-[#234B36] h-full rounded-full transition-all"
+                            className="bg-[#D15B40] h-full rounded-full transition-all"
                             style={{
                               width: `${Math.min(
                                 100,
@@ -687,7 +687,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                     </Button>
 
                     {studentStatus === 'member' ? (
-                      <span className="px-2.5 py-1 rounded bg-[#E7EFEA] text-[#234B36] font-bold text-xs border border-[#B7D2C2] flex items-center gap-1">
+                      <span className="px-2.5 py-1 rounded bg-[#FDEDE9] text-[#D15B40] font-bold text-xs border border-[#F2C9C0] flex items-center gap-1">
                         <CheckCircle2 className="w-3.5 h-3.5" />
                         Anggota Aktif
                       </span>
@@ -825,7 +825,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   Rekapitulasi resmi kehadiran yang dicatat oleh guru pembina untuk penilaian portofolio kearsipan.
                 </p>
               </div>
-              <div className="px-3 py-1 bg-[#E7EFEA] border border-[#B7D2C2] rounded text-xs font-bold text-[#234B36]">
+              <div className="px-3 py-1 bg-[#FDEDE9] border border-[#F2C9C0] rounded text-xs font-bold text-[#D15B40]">
                 Persentase Kehadiran: {attendanceRate}%
               </div>
             </div>
@@ -836,9 +836,9 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <span className="text-[#68655F] block text-[11px]">Total Sesi</span>
                 <span className="text-lg font-bold text-[#171717]">{totalSessions}</span>
               </div>
-              <div className="p-3 bg-[#E7EFEA]/50 border border-[#B7D2C2] rounded">
-                <span className="text-[#234B36] block text-[11px]">Hadir</span>
-                <span className="text-lg font-bold text-[#234B36]">{presentCount}</span>
+              <div className="p-3 bg-[#FDEDE9]/50 border border-[#F2C9C0] rounded">
+                <span className="text-[#D15B40] block text-[11px]">Hadir</span>
+                <span className="text-lg font-bold text-[#D15B40]">{presentCount}</span>
               </div>
               <div className="p-3 bg-[#FDF5E6] border border-[#D9C187] rounded">
                 <span className="text-[#8C6819] block text-[11px]">Terlambat</span>
@@ -848,7 +848,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <span className="text-[#3E6399] block text-[11px]">Izin / Sakit</span>
                 <span className="text-lg font-bold text-[#3E6399]">{excusedCount}</span>
               </div>
-              <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] rounded">
+              <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] rounded">
                 <span className="text-[#A33D35] block text-[11px]">Alpa</span>
                 <span className="text-lg font-bold text-[#A33D35]">{absentCount}</span>
               </div>
@@ -966,7 +966,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   Pencapaian kejuaraan resmi yang telah diverifikasi oleh tim Kesiswaan sekolah.
                 </p>
               </div>
-              <span className="px-2.5 py-1 rounded bg-[#E7EFEA] text-[#234B36] font-bold text-xs border border-[#B7D2C2]">
+              <span className="px-2.5 py-1 rounded bg-[#FDEDE9] text-[#D15B40] font-bold text-xs border border-[#F2C9C0]">
                 {myAchievements.filter((a) => a.is_verified).length} Tervalidasi
               </span>
             </div>
@@ -993,7 +993,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                       <div><strong className="text-[#171717]">Tingkat:</strong> {ach.level} • <strong className="text-[#171717]">Peringkat:</strong> {ach.rank}</div>
                       <div><strong className="text-[#171717]">Ekskul:</strong> {ach.extracurricular_name} ({ach.achievement_date})</div>
                       {ach.verified_by_name && (
-                        <div className="text-[11px] text-[#234B36] font-medium pt-1">
+                        <div className="text-[11px] text-[#D15B40] font-medium pt-1">
                           Disahkan oleh: {ach.verified_by_name}
                         </div>
                       )}
@@ -1008,7 +1008,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
             <div className="border-b border-[#EAE6DC] pb-3">
               <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#234B36]" />
+                <Users className="w-4 h-4 text-[#D15B40]" />
                 <span>Kepanitiaan & Partisipasi Event Sekolah</span>
               </h2>
               <p className="text-xs text-[#68655F]">
@@ -1020,13 +1020,13 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               {verification.summary_data.committee_roles?.map((comm, idx) => (
                 <div
                   key={idx}
-                  className="p-4 border border-[#EAE6DC] rounded-lg bg-white space-y-1 hover:border-[#234B36] transition-colors"
+                  className="p-4 border border-[#EAE6DC] rounded-lg bg-white space-y-1 hover:border-[#D15B40] transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#171717]">{comm.title}</span>
                     <span className="text-[11px] text-[#68655F] font-mono">{comm.year}</span>
                   </div>
-                  <div className="text-xs text-[#234B36] font-semibold">{comm.role}</div>
+                  <div className="text-xs text-[#D15B40] font-semibold">{comm.role}</div>
                   <div className="text-[11px] text-[#68655F]">Tercatat dalam rekam jejak portofolio non-akademik siswa.</div>
                 </div>
               ))}
@@ -1037,7 +1037,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
             <div className="border-b border-[#EAE6DC] pb-3">
               <h2 className="text-base font-bold text-[#171717] flex items-center gap-2">
-                <Layers className="w-4 h-4 text-[#234B36]" />
+                <Layers className="w-4 h-4 text-[#D15B40]" />
                 <span>Riwayat Kegiatan & Dokumentasi Ekskul</span>
               </h2>
               <p className="text-xs text-[#68655F]">
@@ -1061,7 +1061,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   <div className="space-y-1 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-sm text-[#171717]">{act.title}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36]">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40]">
                         {act.extracurricular_name}
                       </span>
                     </div>
@@ -1123,10 +1123,10 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 {myCertificates.map((cert) => (
                   <div
                     key={cert.id}
-                    className="p-4 border border-[#EAE6DC] rounded-lg bg-white hover:border-[#234B36] transition-colors flex flex-col justify-between gap-3"
+                    className="p-4 border border-[#EAE6DC] rounded-lg bg-white hover:border-[#D15B40] transition-colors flex flex-col justify-between gap-3"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shrink-0 border border-[#B7D2C2]">
+                      <div className="w-10 h-10 rounded-lg bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center shrink-0 border border-[#F2C9C0]">
                         <Award className="w-5 h-5" />
                       </div>
                       <div className="space-y-1">
@@ -1152,7 +1152,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                           href={cert.file_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-bold text-[#234B36] hover:underline"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#D15B40] hover:underline"
                         >
                           <span>Buka Berkas</span>
                           <ExternalLink className="w-3 h-3" />
@@ -1173,7 +1173,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       {activeTab === 'portfolio' && (
         <div className="space-y-6">
           {/* Header Action Banner */}
-          <div className="bg-[#234B36] text-white rounded-xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="bg-[#D15B40] text-white rounded-xl p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-white/10 rounded text-xs font-semibold uppercase tracking-wider text-white">
                 <ShieldCheck className="w-4 h-4 text-white" />
@@ -1188,7 +1188,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             <Button
               variant="outline"
               size="lg"
-              className="bg-white text-[#234B36] hover:bg-[#F9F8F6] border-transparent font-bold shrink-0 shadow-sm"
+              className="bg-white text-[#D15B40] hover:bg-[#F9F8F6] border-transparent font-bold shrink-0 shadow-sm"
               onClick={handleDownloadPdf}
               isLoading={isGeneratingPdf}
               icon={<Download className="w-4 h-4" />}
@@ -1199,9 +1199,9 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
           {/* Document Preview Card */}
           <div className="bg-white border border-[#EAE6DC] rounded-xl p-6 shadow-xs space-y-6">
-            <div className="border-b-2 border-[#234B36] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="border-b-2 border-[#D15B40] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <div className="text-[11px] uppercase tracking-wider font-bold text-[#234B36]">
+                <div className="text-[11px] uppercase tracking-wider font-bold text-[#D15B40]">
                   {settings.school_name}
                 </div>
                 <h3 className="text-lg font-bold text-[#171717] mt-0.5">
@@ -1216,7 +1216,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate(`/verify/${verification.verification_id}`)}
-                  className="px-3 py-1.5 bg-[#E7EFEA] hover:bg-[#d8e7de] border border-[#B7D2C2] text-[#234B36] text-xs font-bold rounded flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-3 py-1.5 bg-[#FDEDE9] hover:bg-[#d8e7de] border border-[#F2C9C0] text-[#D15B40] text-xs font-bold rounded flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
                   <ShieldCheck className="w-4 h-4" />
                   <span>Uji Validasi QR Publik</span>
@@ -1240,7 +1240,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
               </div>
               <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
                 <span className="text-[#68655F] block text-[11px]">Tingkat Kehadiran Latihan</span>
-                <span className="text-sm font-bold text-[#234B36]">{attendanceRate}% ({presentCount}/{totalSessions} Sesi)</span>
+                <span className="text-sm font-bold text-[#D15B40]">{attendanceRate}% ({presentCount}/{totalSessions} Sesi)</span>
               </div>
             </div>
 
@@ -1405,14 +1405,14 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       >
         <form onSubmit={handleRegisterSubmit} className="space-y-4 text-xs">
           {regSuccess && (
-            <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] rounded-lg flex items-start gap-2.5 text-[#234B36]">
+            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] rounded-lg flex items-start gap-2.5 text-[#D15B40]">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="font-medium">{regSuccess}</span>
             </div>
           )}
 
           {regError && (
-            <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-[#A33D35]">
+            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-[#A33D35]">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="font-medium">{regError}</span>
             </div>
@@ -1425,7 +1425,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             <select
               value={regTargetEkskulId}
               onChange={(e) => setRegTargetEkskulId(e.target.value)}
-              className="w-full px-3 py-2 border border-[#EAE6DC] rounded-md text-xs bg-white focus:outline-none focus:border-[#234B36]"
+              className="w-full px-3 py-2 border border-[#EAE6DC] rounded-md text-xs bg-white focus:outline-none focus:border-[#D15B40]"
               required
             >
               <option value="" disabled>-- Pilih Ekstrakurikuler --</option>
@@ -1508,14 +1508,14 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
       >
         <form onSubmit={handleUploadDocumentSubmit} className="space-y-4 text-xs">
           {docSuccess && (
-            <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] rounded-lg flex items-start gap-2.5 text-[#234B36]">
+            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] rounded-lg flex items-start gap-2.5 text-[#D15B40]">
               <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="font-medium">{docSuccess}</span>
             </div>
           )}
 
           {docError && (
-            <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-[#A33D35]">
+            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-[#A33D35]">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="font-medium">{docError}</span>
             </div>

@@ -167,9 +167,9 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Rata-rata Presensi
             </span>
-            <CheckSquare className="w-4 h-4 text-[#234B36]" />
+            <CheckSquare className="w-4 h-4 text-[#D15B40]" />
           </div>
-          <div className="text-xl font-bold text-[#234B36] mt-1">91.8%</div>
+          <div className="text-xl font-bold text-[#D15B40] mt-1">91.8%</div>
           <div className="text-[11px] text-[#68655F] mt-0.5">Standar kelulusan min. 80%</div>
         </div>
 
@@ -191,9 +191,9 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F]">
               Siswa Berprestasi
             </span>
-            <Award className="w-4 h-4 text-[#B84A3A]" />
+            <Award className="w-4 h-4 text-[#3B7A82]" />
           </div>
-          <div className="text-xl font-bold text-[#B84A3A] mt-1">7 Medali</div>
+          <div className="text-xl font-bold text-[#3B7A82] mt-1">7 Medali</div>
           <div className="text-[11px] text-[#68655F] mt-0.5">Tingkat Kota & Provinsi</div>
         </div>
       </div>
@@ -273,7 +273,7 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
                     <span className="block text-[10px] text-[#68655F]">{item.ekskulCount} Kegiatan Diikuti</span>
                   </td>
                   <td className="py-3 px-3 text-center">
-                    <span className="font-bold text-[#234B36]">{item.attendancePct}%</span>
+                    <span className="font-bold text-[#D15B40]">{item.attendancePct}%</span>
                   </td>
                   <td className="py-3 px-3">
                     <span className="inline-flex items-center gap-1 font-semibold text-[#8C6819]">

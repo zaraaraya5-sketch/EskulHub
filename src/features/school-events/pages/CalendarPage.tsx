@@ -95,7 +95,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
             Kalender Kegiatan & Fasilitas Terpusat
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#171717]">
@@ -123,7 +123,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           onClick={() => setSelectedType('all')}
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'all'
-              ? 'bg-[#234B36] text-white border-[#234B36]'
+              ? 'bg-[#D15B40] text-white border-[#D15B40]'
               : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
@@ -133,7 +133,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           onClick={() => setSelectedType('extracurricular_practice')}
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'extracurricular_practice'
-              ? 'bg-[#234B36] text-white border-[#234B36]'
+              ? 'bg-[#D15B40] text-white border-[#D15B40]'
               : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
@@ -143,7 +143,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           onClick={() => setSelectedType('competition')}
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'competition'
-              ? 'bg-[#234B36] text-white border-[#234B36]'
+              ? 'bg-[#D15B40] text-white border-[#D15B40]'
               : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
@@ -153,7 +153,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
           onClick={() => setSelectedType('school_event')}
           className={`px-3 py-1.5 rounded font-medium transition-colors cursor-pointer border ${
             selectedType === 'school_event'
-              ? 'bg-[#234B36] text-white border-[#234B36]'
+              ? 'bg-[#D15B40] text-white border-[#D15B40]'
               : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
           }`}
         >
@@ -166,7 +166,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
         {filteredEvents.map((ev) => (
           <div
             key={ev.id}
-            className="bg-white border border-[#EAE6DC] rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#234B36] transition-colors"
+            className="bg-white border border-[#EAE6DC] rounded-lg p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-[#D15B40] transition-colors"
           >
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -181,7 +181,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
 
             <div className="shrink-0 flex flex-col md:items-end gap-1.5 text-xs text-[#68655F] border-t md:border-t-0 pt-3 md:pt-0 border-[#EAE6DC]">
               <div className="flex items-center gap-1.5 font-medium text-[#171717]">
-                <MapPin className="w-3.5 h-3.5 text-[#234B36]" />
+                <MapPin className="w-3.5 h-3.5 text-[#D15B40]" />
                 <span>{ev.location}</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -203,21 +203,21 @@ export const CalendarPage: React.FC<CalendarPageProps> = () => {
       >
         <form onSubmit={handleAddEventSubmit} className="space-y-4 text-xs">
           {conflictWarning && (
-            <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded flex items-start gap-2">
+            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] text-[#A33D35] rounded flex items-start gap-2">
               <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
               <span className="leading-relaxed">{conflictWarning}</span>
             </div>
           )}
 
           {submitError && (
-            <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded flex items-center gap-2">
+            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] text-[#A33D35] rounded flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <span>{submitError}</span>
             </div>
           )}
 
           {submitSuccess && (
-            <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] rounded flex items-center gap-2">
+            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] rounded flex items-center gap-2">
               <CheckCircle className="w-4 h-4 shrink-0" />
               <span>{submitSuccess}</span>
             </div>

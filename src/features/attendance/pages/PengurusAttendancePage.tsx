@@ -71,7 +71,7 @@ export const PengurusAttendancePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DC] pb-5">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-1">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
             Presensi Digital • {managedEkskul.name}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
@@ -101,7 +101,7 @@ export const PengurusAttendancePage: React.FC = () => {
           <select
             value={selectedSessionId}
             onChange={(e) => setSelectedSessionId(e.target.value)}
-            className="px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] font-semibold focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="px-3 py-1.5 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] font-semibold focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
           >
             {sessions.map((sess) => (
               <option key={sess.id} value={sess.id}>
@@ -135,7 +135,7 @@ export const PengurusAttendancePage: React.FC = () => {
             </div>
             <div className="py-1">
               <span className="text-[#68655F] block text-[10px] uppercase font-semibold">Hadir</span>
-              <span className="text-base font-bold text-[#234B36]">{activeSession.present_count}</span>
+              <span className="text-base font-bold text-[#D15B40]">{activeSession.present_count}</span>
             </div>
             <div className="py-1">
               <span className="text-[#68655F] block text-[10px] uppercase font-semibold">Terlambat</span>
@@ -182,7 +182,7 @@ export const PengurusAttendancePage: React.FC = () => {
                       <button
                         onClick={() => handleStatusChange(rec.id, 'present')}
                         className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors cursor-pointer ${
-                          rec.status === 'present' ? 'bg-[#234B36] text-white' : 'text-[#171717] hover:bg-white'
+                          rec.status === 'present' ? 'bg-[#D15B40] text-white' : 'text-[#171717] hover:bg-white'
                         }`}
                       >
                         Hadir

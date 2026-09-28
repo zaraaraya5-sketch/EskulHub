@@ -13,6 +13,7 @@ import {
   KeyRound,
   UserPlus,
   ShieldCheck,
+  BookOpen,
 } from 'lucide-react';
 import { UserRole } from '@/types';
 
@@ -125,12 +126,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
     setRegPassword('');
   };
 
-  const fillCredentials = (type: 'student' | 'admin') => {
+  const fillCredentials = (type: 'student' | 'admin' | 'pembina' | 'pengurus') => {
     if (type === 'student') {
       setLoginIdentifier('budi@smknusantara.sch.id');
       setLoginPassword('password123');
-    } else {
+    } else if (type === 'admin') {
       setLoginIdentifier('admin@smknusantara.sch.id');
+      setLoginPassword('password123');
+    } else if (type === 'pembina') {
+      setLoginIdentifier('hendra@smknusantara.sch.id');
+      setLoginPassword('password123');
+    } else if (type === 'pengurus') {
+      setLoginIdentifier('rizky@smknusantara.sch.id');
       setLoginPassword('password123');
     }
     setError('');
@@ -144,7 +151,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           onClick={() => onNavigate('/')}
           className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#EAE6DC] rounded text-xs font-bold text-[#171717] hover:bg-[#F9F8F6] transition-colors cursor-pointer shadow-xs"
         >
-          <ArrowLeft className="w-4 h-4 text-[#234B36]" />
+          <ArrowLeft className="w-4 h-4 text-[#D15B40]" />
           <span>Kembali ke Beranda</span>
         </button>
       </div>
@@ -153,14 +160,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       <div className="bg-white border border-[#EAE6DC] rounded-xl shadow-sm overflow-hidden p-6 sm:p-8 space-y-6">
         {/* Brand & Page Header */}
         <div className="text-center">
-          <div className="w-13 h-13 bg-[#234B36] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
+          <div className="w-13 h-13 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
             {mode === 'login' ? (
               <GraduationCap className="w-7 h-7 text-white" />
             ) : (
               <UserPlus className="w-7 h-7 text-white" />
             )}
           </div>
-          <div className="inline-block px-2.5 py-0.5 rounded bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2] text-[11px] font-bold uppercase tracking-wider mb-2">
+          <div className="inline-block px-2.5 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] text-[11px] font-bold uppercase tracking-wider mb-2">
             {mode === 'login' ? 'Portal Masuk Terpadu' : 'Registrasi Akun Baru'}
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[#171717]">
@@ -173,15 +180,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
 
         {/* Success Alert */}
         {successMessage && (
-          <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] rounded-lg flex items-start gap-2.5 text-xs text-[#234B36]">
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-[#234B36]" />
+          <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] rounded-lg flex items-start gap-2.5 text-xs text-[#D15B40]">
+            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-[#D15B40]" />
             <span className="font-medium leading-relaxed">{successMessage}</span>
           </div>
         )}
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-xs text-[#A33D35]">
+          <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-xs text-[#A33D35]">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#A33D35]" />
             <span className="font-medium leading-relaxed">{error}</span>
           </div>
@@ -227,7 +234,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                   setError('');
                   setSuccessMessage('');
                 }}
-                className="font-bold text-[#234B36] hover:underline cursor-pointer ml-1"
+                className="font-bold text-[#D15B40] hover:underline cursor-pointer ml-1"
               >
                 Buat akun
               </button>
@@ -281,7 +288,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                   setMode('login');
                   setError('');
                 }}
-                className="font-bold text-[#234B36] hover:underline cursor-pointer ml-1"
+                className="font-bold text-[#D15B40] hover:underline cursor-pointer ml-1"
               >
                 Masuk di sini
               </button>
@@ -294,7 +301,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           <div className="pt-4 border-t border-[#EAE6DC] space-y-2.5">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#68655F] flex items-center gap-1.5">
-                <KeyRound className="w-3.5 h-3.5 text-[#234B36]" />
+                <KeyRound className="w-3.5 h-3.5 text-[#D15B40]" />
                 Akun Demo Pengujian
               </span>
             </div>
@@ -305,12 +312,38 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                 onClick={() => fillCredentials('student')}
                 className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#234B36]">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#D15B40]">
                   <GraduationCap className="w-3.5 h-3.5" />
                   <span>Akun Siswa</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Budi Pratama</div>
                 <div className="text-[10px] text-[#68655F] truncate">budi@smknusantara...</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => fillCredentials('pengurus')}
+                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#4B5E28]">
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Akun Pengurus</span>
+                </div>
+                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Rizky Ramadhan</div>
+                <div className="text-[10px] text-[#68655F] truncate">rizky@smknusantara...</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => fillCredentials('pembina')}
+                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+              >
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Akun Pembina</span>
+                </div>
+                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Hendra Wijaya, S.Pd.</div>
+                <div className="text-[10px] text-[#68655F] truncate">hendra@smknusantara...</div>
               </button>
 
               <button
@@ -331,7 +364,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
 
         {/* Security Notice */}
         <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#68655F] pt-1">
-          <Lock className="w-3 h-3 text-[#234B36]" />
+          <Lock className="w-3 h-3 text-[#D15B40]" />
           <span>Akses terenkripsi & diaudit untuk kepatuhan kearsipan sekolah.</span>
         </div>
       </div>

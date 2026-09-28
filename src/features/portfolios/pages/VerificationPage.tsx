@@ -24,8 +24,8 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Search Header */}
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 shadow-xs">
-        <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-[#234B36] mb-2">
-          <ShieldCheck className="w-5 h-5 text-[#234B36]" />
+        <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-2">
+          <ShieldCheck className="w-5 h-5 text-[#D15B40]" />
           <span>Verifikasi Resmi Portofolio Siswa</span>
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-[#171717] mb-2">
@@ -41,7 +41,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="Masukkan Nomor Verifikasi (Contoh: EKH-2026-000184)"
-            className="flex-1 px-3.5 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
+            className="flex-1 px-3.5 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
           />
           <Button type="submit" variant="primary">
             Cek Keabsahan
@@ -53,7 +53,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
       {verification ? (
         <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden shadow-xs">
           {/* Certificate Top Banner */}
-          <div className="bg-[#234B36] text-white p-5 flex items-center justify-between">
+          <div className="bg-[#D15B40] text-white p-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                 <CheckCircle2 className="w-6 h-6 text-white" />
@@ -74,7 +74,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg text-xs">
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#68655F] uppercase">
-                  <User className="w-3.5 h-3.5 text-[#234B36]" />
+                  <User className="w-3.5 h-3.5 text-[#D15B40]" />
                   <span>Identitas Siswa</span>
                 </div>
                 <div>
@@ -85,7 +85,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
 
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#68655F] uppercase">
-                  <School className="w-3.5 h-3.5 text-[#234B36]" />
+                  <School className="w-3.5 h-3.5 text-[#D15B40]" />
                   <span>Satuan Pendidikan Penerbit</span>
                 </div>
                 <div>
@@ -134,13 +134,13 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
             </div>
 
             {/* Official Validation Notice */}
-            <div className="p-4 border-l-4 border-[#234B36] bg-[#F9F8F6] text-xs text-[#68655F] space-y-1">
+            <div className="p-4 border-l-4 border-[#D15B40] bg-[#F9F8F6] text-xs text-[#68655F] space-y-1">
               <div className="font-bold text-[#171717]">Catatan Pengesahan Institusional:</div>
               <p>
                 Dokumen ini sah dan dikeluarkan secara elektronik oleh Kesiswaan {verification.school_name}.
                 Data riwayat ini bersumber langsung dari buku induk presensi dan pencatatan prestasi resmi sekolah.
               </p>
-              <div className="pt-2 text-[11px] text-[#234B36] font-semibold">
+              <div className="pt-2 text-[11px] text-[#D15B40] font-semibold">
                 Diverifikasi oleh: {verification.verified_by_name}
               </div>
             </div>
@@ -148,7 +148,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({ verification
         </div>
       ) : (
         <div className="bg-white border border-[#EAE6DC] rounded-lg p-10 text-center space-y-3">
-          <div className="w-12 h-12 rounded-full bg-[#F9ECEB] text-[#A33D35] flex items-center justify-center mx-auto">
+          <div className="w-12 h-12 rounded-full bg-[#E8F4F5] text-[#A33D35] flex items-center justify-center mx-auto">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <h2 className="text-base font-bold text-[#171717]">Data Verifikasi Tidak Ditemukan</h2>

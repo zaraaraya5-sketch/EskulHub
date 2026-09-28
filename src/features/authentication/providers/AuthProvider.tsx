@@ -25,10 +25,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   useEffect(() => {
-    if (currentUser) {
-      localStorage.setItem('ekskul_auth_user_id', currentUser.id);
-    } else {
-      localStorage.removeItem('ekskul_auth_user_id');
+    try {
+      if (currentUser) {
+        localStorage.setItem('ekskul_auth_user_id', currentUser.id);
+      } else {
+        localStorage.removeItem('ekskul_auth_user_id');
+      }
+    } catch (error) {
+      console.warn('Gagal menyimpan sesi ke localStorage, mungkin memori penuh:', error);
     }
   }, [currentUser]);
 
