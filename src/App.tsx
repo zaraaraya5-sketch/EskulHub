@@ -188,10 +188,10 @@ const AppContent: React.FC = () => {
             <div className="text-[11px] mt-0.5">Dikembangkan untuk Satuan Pendidikan Indonesia. Berbasis Standar Kearsipan Nasional.</div>
           </div>
           <div className="flex items-center gap-4 text-[11px]">
-            <button onClick={() => navigate('/')} className="hover:text-[#D15B40] cursor-pointer">Beranda</button>
-            <button onClick={() => navigate('/ekskul')} className="hover:text-[#D15B40] cursor-pointer">Katalog</button>
-            <button onClick={() => navigate('/calendar')} className="hover:text-[#D15B40] cursor-pointer">Kalender</button>
-            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#D15B40] cursor-pointer">Cek QR</button>
+            <button onClick={() => navigate('/')} className="hover:text-[#234B36] cursor-pointer">Beranda</button>
+            <button onClick={() => navigate('/ekskul')} className="hover:text-[#234B36] cursor-pointer">Katalog</button>
+            <button onClick={() => navigate('/calendar')} className="hover:text-[#234B36] cursor-pointer">Kalender</button>
+            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#234B36] cursor-pointer">Cek QR</button>
           </div>
         </div>
       </footer>

@@ -26,17 +26,17 @@ export const StudentProfileHeader: React.FC<StudentProfileHeaderProps> = ({
   onDownloadPdf,
 }) => {
   return (
-    <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
-      <div className="flex items-start gap-4">
-        <div className="w-14 h-14 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
+    <div className="bg-white border border-[#F2F0EB] rounded-2xl p-5 sm:p-7 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all hover:shadow-md">
+      <div className="flex items-start gap-5">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#234B36] to-[#347051] text-white rounded-2xl flex items-center justify-center font-bold text-2xl shadow-sm shrink-0">
           {studentName.charAt(0)}
         </div>
         <div>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#D15B40]">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#234B36]">
               Portal Siswa Resmi
             </span>
-            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
+            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#E7EFEA] text-[#234B36] border border-[#B7D2C2]">
               TA {academicYear}
             </span>
             <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#ECEAE4] text-[#171717] border border-[#EAE6DC]">
@@ -57,7 +57,7 @@ export const StudentProfileHeader: React.FC<StudentProfileHeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onOpenRegisterModal}
-          icon={<Plus className="w-3.5 h-3.5 text-[#D15B40]" />}
+          icon={<Plus className="w-3.5 h-3.5 text-[#234B36]" />}
         >
           Daftar Ekskul Baru
         </Button>
@@ -66,7 +66,7 @@ export const StudentProfileHeader: React.FC<StudentProfileHeaderProps> = ({
           variant="outline"
           size="sm"
           onClick={onOpenUploadModal}
-          icon={<UploadCloud className="w-3.5 h-3.5 text-[#D15B40]" />}
+          icon={<UploadCloud className="w-3.5 h-3.5 text-[#234B36]" />}
         >
           Unggah Dokumen
         </Button>
