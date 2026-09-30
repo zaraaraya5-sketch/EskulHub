@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
+    public function index()
+    {
+        return response()->json(PortfolioVerification::all());
+    }
+
     public function show(string $id)
     {
         $verification = PortfolioVerification::where('verification_id', $id)

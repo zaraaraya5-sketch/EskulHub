@@ -62,6 +62,7 @@ class SQLiteDatabaseClient {
         events,
         achievements,
         certificates,
+        verifications,
       ] = await Promise.all([
         apiService.getSettingsAPI(),
         apiService.getUsersAPI(),
@@ -73,6 +74,7 @@ class SQLiteDatabaseClient {
         apiService.getEventsAPI(),
         apiService.getAchievementsAPI(),
         apiService.getCertificatesAPI(),
+        apiService.getVerificationsAPI(),
       ]);
 
       if (settings) this.settings.setSettings(settings);
@@ -85,6 +87,7 @@ class SQLiteDatabaseClient {
       if (events && events.length > 0) this.events.setEvents(events);
       if (achievements && achievements.length > 0) this.achievements.setAchievements(achievements);
       if (certificates && certificates.length > 0) this.achievements.setCertificates(certificates);
+      if (verifications && verifications.length > 0) this.verifications.setVerifications(verifications);
 
       this.notify();
     } catch (err) {

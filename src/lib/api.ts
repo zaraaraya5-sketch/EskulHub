@@ -417,6 +417,16 @@ export const deleteCertificateAPI = async (id: string) => {
 // ==========================================
 // 9. Portfolio Verification
 // ==========================================
+export const getVerificationsAPI = async (): Promise<PortfolioVerification[]> => {
+  try {
+    const res = await api.get('/verifications');
+    return res.data;
+  } catch (err) {
+    console.error('Error fetching verifications list from API:', err);
+    return [];
+  }
+};
+
 export const getVerificationAPI = async (id: string): Promise<PortfolioVerification | null> => {
   try {
     const res = await api.get(`/verification/${id}`);

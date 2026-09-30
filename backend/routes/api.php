@@ -60,6 +60,7 @@ Route::post('/certificates', [CertificateController::class, 'store']);
 Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
 
 // 8. Verification & Portfolios
+Route::get('/verifications', [VerificationController::class, 'index']);
 Route::get('/verification/{id}', [VerificationController::class, 'show']);
 Route::post('/verification', [VerificationController::class, 'store']);
 

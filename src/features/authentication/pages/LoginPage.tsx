@@ -306,14 +306,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-2 gap-2.5 text-xs">
               <button
                 type="button"
                 onClick={() => fillCredentials('student')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#D15B40]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#D15B40]">
-                  <GraduationCap className="w-3.5 h-3.5" />
+                  <GraduationCap className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
                   <span>Akun Siswa</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Budi Pratama</div>
@@ -323,10 +323,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pengurus')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#4B5E28]">
-                  <UserPlus className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
+                  <UserPlus className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
                   <span>Akun Pengurus</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Rizky Ramadhan</div>
@@ -336,10 +336,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pembina')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#8C6819]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
-                  <BookOpen className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#8C6819]">
+                  <BookOpen className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
                   <span>Akun Pembina</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Hendra Wijaya, S.Pd.</div>
@@ -349,10 +349,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('admin')}
-                className="p-2.5 text-left border border-[#EAE6DC] rounded-lg bg-[#F9F8F6] hover:bg-[#eae6db] transition-colors cursor-pointer group"
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#171717]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#262522]">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#171717]">
+                  <ShieldCheck className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
                   <span>Akun Admin</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Drs. Bambang</div>

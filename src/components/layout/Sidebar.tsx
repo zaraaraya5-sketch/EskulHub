@@ -249,13 +249,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
                   <button
                     key={item.path}
                     onClick={() => onNavigate(item.path)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer text-left ${
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ease-out active:scale-[0.98] cursor-pointer text-left select-none ${
                       isActive
-                        ? badgeInfo.activeNavClass
-                        : 'text-[#474540] hover:bg-[#F9F8F6] hover:text-[#171717]'
+                        ? `${badgeInfo.activeNavClass} shadow-xs`
+                        : 'text-[#474540] hover:bg-[#F9F8F6] hover:text-[#171717] hover:translate-x-0.5'
                     }`}
                   >
-                    <Icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-white' : 'text-[#888681]'}`} />
+                    <Icon className={`w-5 h-5 shrink-0 transition-transform duration-200 ${isActive ? 'text-white' : 'text-[#888681] group-hover:scale-110'}`} />
                     <span className="truncate">{item.label}</span>
                   </button>
                 );

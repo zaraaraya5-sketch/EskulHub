@@ -80,17 +80,17 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-white border border-[#EAE6DC] rounded-lg p-4 space-y-3">
+      <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 shadow-xs space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
           {/* Search box */}
           <div className="md:col-span-5 relative">
-            <Search className="w-4 h-4 text-[#68655F] absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#68655F] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari nama ekskul, pembina, kata kunci..."
-              className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
+              className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all duration-200 ease-out"
             />
           </div>
 
@@ -99,7 +99,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
+              className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all duration-200 ease-out cursor-pointer"
             >
               <option value="all">Semua Status Pendaftaran</option>
               <option value="open">Hanya Pendaftaran Terbuka</option>
@@ -112,7 +112,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="w-full px-3 py-2 text-sm bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#D15B40]"
+              className="w-full px-3.5 py-2.5 text-sm bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all duration-200 ease-out cursor-pointer"
             >
               <option value="name">Urutkan: Nama (A - Z)</option>
               <option value="popular">Urutkan: Anggota Terbanyak</option>
@@ -122,16 +122,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Categories Pill Bar */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-[#EAE6DC]">
-          <span className="text-xs font-semibold text-[#68655F] mr-2 shrink-0">Kategori:</span>
+        <div className="flex items-center gap-2 overflow-x-auto pt-2 border-t border-[#EAE6DC] pb-1">
+          <span className="text-xs font-semibold text-[#68655F] mr-1 shrink-0">Kategori:</span>
           {EXTRACURRICULAR_CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 rounded text-xs font-medium whitespace-nowrap transition-colors cursor-pointer border ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 active:scale-95 cursor-pointer border select-none ${
                 selectedCategory === cat
-                  ? 'bg-[#D15B40] text-white border-[#D15B40]'
-                  : 'bg-[#F9F8F6] text-[#171717] border-[#EAE6DC] hover:bg-[#EAE6DC]'
+                  ? 'bg-[#D15B40] text-white border-[#D15B40] shadow-2xs'
+                  : 'bg-[#F9F8F6] text-[#68655F] border-[#EAE6DC] hover:text-[#171717] hover:bg-[#EAE6DC] hover:border-[#D8D4CC]'
               }`}
             >
               {cat}

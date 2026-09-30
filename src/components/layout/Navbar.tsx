@@ -72,38 +72,53 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         </div>
 
         {/* Public Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-[#68655F]">
+        <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-[#68655F]">
           <button
             onClick={() => onNavigate('/')}
-            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+            className={`relative py-1.5 transition-all duration-200 cursor-pointer hover:text-[#171717] ${
               currentPath === '/' ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
-            Beranda
+            <span>Beranda</span>
+            {currentPath === '/' && (
+              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#D15B40] rounded-full animate-fade-in" />
+            )}
           </button>
+
           <button
             onClick={() => onNavigate('/ekskul')}
-            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+            className={`relative py-1.5 transition-all duration-200 cursor-pointer hover:text-[#171717] ${
               currentPath.startsWith('/ekskul') ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
-            Katalog Ekskul
+            <span>Katalog Ekskul</span>
+            {currentPath.startsWith('/ekskul') && (
+              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#D15B40] rounded-full animate-fade-in" />
+            )}
           </button>
+
           <button
             onClick={() => onNavigate('/calendar')}
-            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+            className={`relative py-1.5 transition-all duration-200 cursor-pointer hover:text-[#171717] ${
               currentPath.startsWith('/calendar') ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
-            Kalender
+            <span>Kalender</span>
+            {currentPath.startsWith('/calendar') && (
+              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#D15B40] rounded-full animate-fade-in" />
+            )}
           </button>
+
           <button
             onClick={() => onNavigate('/verify')}
-            className={`transition-colors cursor-pointer hover:text-[#171717] ${
+            className={`relative py-1.5 transition-all duration-200 cursor-pointer hover:text-[#171717] ${
               currentPath.startsWith('/verify') ? 'text-[#D15B40] font-bold' : ''
             }`}
           >
-            Verifikasi Portofolio
+            <span>Verifikasi Portofolio</span>
+            {currentPath.startsWith('/verify') && (
+              <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#D15B40] rounded-full animate-fade-in" />
+            )}
           </button>
         </nav>
 
@@ -114,9 +129,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
               {/* Active Dashboard Shortcut */}
               <button
                 onClick={() => onNavigate(getDashboardPath(role))}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F8F6] hover:bg-[#EAE6DC] text-[#171717] text-sm font-semibold rounded-lg transition-colors cursor-pointer border border-[#EAE6DC]"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#F9F8F6] hover:bg-[#EAE6DC] active:scale-[0.97] text-[#171717] text-sm font-semibold rounded-xl transition-all duration-200 cursor-pointer border border-[#EAE6DC] shadow-2xs hover:shadow-xs"
               >
-                <LayoutDashboard className="w-4 h-4" />
+                <LayoutDashboard className="w-4 h-4 text-[#D15B40]" />
                 <span>Buka Dasbor Utama</span>
               </button>
 
@@ -126,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                   logout();
                   onNavigate('/');
                 }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#E8F4F5] border border-[#EAE6DC] rounded text-xs font-bold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#FDF6F5] hover:border-[#FADBD8] active:scale-95 border border-[#EAE6DC] rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
                 title="Keluar dari sesi"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -136,7 +151,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           ) : (
             <button
               onClick={() => onNavigate('/login')}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#171717] text-white text-sm font-bold rounded-lg hover:bg-[#333333] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#171717] text-white text-sm font-bold rounded-xl hover:bg-[#333333] active:scale-[0.97] transition-all duration-200 cursor-pointer shadow-xs hover:shadow-sm"
             >
               <LogIn className="w-4 h-4" />
               <span>Masuk Sistem</span>

@@ -7,11 +7,20 @@
   --color-text-secondary: #68655F;
   --color-border: #EAE6DC;
   --color-primary: #D15B40;
-  --color-primary-hover: #1b3a2a;
+  --color-primary-hover: #B94931;
   --color-secondary: #3B7A82;
   --color-warning: #B58A32;
   --color-success: #D15B40;
   --color-danger: #A33D35;
+
+  /* Smooth Animation Timing Variables */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-soft: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -35,9 +44,145 @@ body {
 ::-webkit-scrollbar-thumb {
   background: #D8D4CC;
   border-radius: 3px;
+  transition: background 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #68655F;
+}
+
+/* ====================================================
+   SMOOTH TRANSITIONS & MICRO-ANIMATIONS
+   ==================================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Utility animation classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s var(--ease-spring) both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s var(--ease-spring) both;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s var(--ease-spring) both;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
+}
+
+/* Stagger delay helpers for listed items */
+.stagger-1 {
+  animation-delay: 50ms;
+}
+.stagger-2 {
+  animation-delay: 100ms;
+}
+.stagger-3 {
+  animation-delay: 150ms;
+}
+.stagger-4 {
+  animation-delay: 200ms;
+}
+
+/* Interactive Card Hover Transition */
+.card-interactive {
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring), border-color 0.2s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(23, 23, 23, 0.06), 0 8px 10px -6px rgba(23, 23, 23, 0.04);
+}
+
+/* Tactile button feedback */
+.btn-tactile {
+  transition: all 0.2s var(--ease-spring);
+}
+.btn-tactile:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Smooth input focus transition */
+.input-smooth {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Official Print Layout */

@@ -311,9 +311,9 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Pillar 1 */}
-              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between hover:border-[#D15B40]/40 transition-colors">
+              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between card-interactive hover:border-[#D15B40]/40">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-bold text-[#171717]">Integritas & Anti-Pemalsuan</h3>
@@ -328,9 +328,9 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               </div>
 
               {/* Pillar 2 */}
-              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between hover:border-[#D15B40]/40 transition-colors">
+              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between card-interactive hover:border-[#D15B40]/40">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#E8F4F5] text-[#2A7B88] flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-[#E8F4F5] text-[#2A7B88] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <GraduationCap className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-bold text-[#171717]">Rujukan SNBP & Beasiswa</h3>
@@ -345,9 +345,9 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               </div>
 
               {/* Pillar 3 */}
-              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between hover:border-[#D15B40]/40 transition-colors">
+              <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs flex flex-col justify-between card-interactive hover:border-[#D15B40]/40">
                 <div className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#FBF3DC] text-[#8C6819] flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-xl bg-[#FBF3DC] text-[#8C6819] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <Building2 className="w-5 h-5" />
                   </div>
                   <h3 className="text-base font-bold text-[#171717]">Kredibilitas Mitra Industri (DUDI)</h3>
