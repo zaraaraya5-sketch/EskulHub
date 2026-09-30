@@ -54,7 +54,7 @@ const AppContent: React.FC = () => {
 
     // 2. Verification route: /verify/:verificationId
     if (currentPath.startsWith('/verify')) {
-      const id = currentPath.replace('/verify/', '').replace('/verify', '') || 'EKH-2026-000184';
+      const id = currentPath.replace(/^\/verify\/?/, '').trim();
       return <VerificationPage verificationId={id} onNavigate={navigate} />;
     }
 
@@ -191,7 +191,7 @@ const AppContent: React.FC = () => {
             <button onClick={() => navigate('/')} className="hover:text-[#234B36] cursor-pointer">Beranda</button>
             <button onClick={() => navigate('/ekskul')} className="hover:text-[#234B36] cursor-pointer">Katalog</button>
             <button onClick={() => navigate('/calendar')} className="hover:text-[#234B36] cursor-pointer">Kalender</button>
-            <button onClick={() => navigate('/verify/EKH-2026-000184')} className="hover:text-[#234B36] cursor-pointer">Cek QR</button>
+            <button onClick={() => navigate('/verify')} className="hover:text-[#234B36] cursor-pointer">Verifikasi Portofolio</button>
           </div>
         </div>
       </footer>

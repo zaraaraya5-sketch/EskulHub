@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
             Kalender
           </button>
           <button
-            onClick={() => onNavigate('/verify/EKH-2026-000184')}
+            onClick={() => onNavigate('/verify')}
             className={`transition-colors cursor-pointer hover:text-[#171717] ${
               currentPath.startsWith('/verify') ? 'text-[#D15B40] font-bold' : ''
             }`}

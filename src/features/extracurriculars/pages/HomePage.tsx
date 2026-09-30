@@ -20,7 +20,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchVerifyId.trim()) onNavigate(`/verify/${encodeURIComponent(searchVerifyId.trim())}`);
+    if (searchVerifyId.trim()) {
+      onNavigate(`/verify/${encodeURIComponent(searchVerifyId.trim())}`);
+    } else {
+      onNavigate('/verify');
+    }
   };
 
   // Select a few featured extracurriculars for the gallery
@@ -126,7 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           <form onSubmit={handleVerifySubmit} className="flex-1 flex w-full gap-3">
             <input 
               type="text" 
-              placeholder="Contoh: EKH-2026-000184" 
+              placeholder="Masukkan nomor verifikasi dokumen (misal: EKH-...)" 
               value={searchVerifyId} 
               onChange={(e) => setSearchVerifyId(e.target.value)} 
               className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D15B40] focus:ring-1 focus:ring-[#D15B40] transition-all" 

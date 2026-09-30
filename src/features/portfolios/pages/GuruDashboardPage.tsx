@@ -298,7 +298,10 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
                       </button>
                     ) : (
                       <button
-                        onClick={() => onNavigate?.('/verify/EKH-2026-000184')}
+                        onClick={() => {
+                          const verifiedDoc = db.getVerifications().find(v => v.student_id === item.id);
+                          onNavigate?.(verifiedDoc ? `/verify/${verifiedDoc.verification_id}` : '/verify');
+                        }}
                         className="px-2.5 py-1 bg-[#F9F8F6] text-[#171717] border border-[#EAE6DC] rounded text-[11px] font-semibold hover:bg-[#EAE6DC] transition-colors cursor-pointer"
                       >
                         Lihat Portofolio
