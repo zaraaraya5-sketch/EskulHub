@@ -164,71 +164,73 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
           {filteredEkskuls.map((item) => (
             <div
               key={item.id}
-              className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden flex flex-col justify-between hover:border-[#D15B40] transition-colors"
+              className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-[#171717] border border-[#EAE6DC] shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer"
+              onClick={() => onNavigate(`/ekskul/${item.slug}`)}
             >
-              <div>
-                <div className="h-44 relative bg-[#EAE6DC] overflow-hidden">
-                  <img
-                    src={item.profile_image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <Badge variant="neutral">{item.category}</Badge>
-                  </div>
-                  <div className="absolute top-3 right-3">
-                    <Badge variant={item.registration_status === 'open' ? 'success' : 'danger'}>
-                      {item.registration_status === 'open' ? 'Pendaftaran Dibuka' : 'Ditutup'}
-                    </Badge>
-                  </div>
-                </div>
+              {/* Full Landscape Image */}
+              <img
+                src={item.profile_image}
+                alt={item.name}
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              />
 
-                <div className="p-5">
-                  <h2 className="text-base font-bold text-[#171717] mb-1.5">{item.name}</h2>
-                  <p className="text-xs text-[#68655F] line-clamp-2 leading-relaxed mb-4">
-                    {item.short_description}
-                  </p>
+              {/* Ambient bottom gradient for title legibility in default state */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
 
-                  <div className="space-y-2 text-xs text-[#68655F] border-t border-[#EAE6DC] pt-3">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
-                      <span>Pembina: <strong className="text-[#171717]">{item.supervisor_name}</strong></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
-                      <span className="truncate">Jadwal: <strong className="text-[#171717]">{item.practice_schedule}</strong></span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
-                      <span className="truncate">Lokasi: <strong className="text-[#171717]">{item.location}</strong></span>
-                    </div>
-
-                    <div className="pt-2">
-                      <div className="flex justify-between text-[11px] mb-1">
-                        <span>Kapasitas Anggota:</span>
-                        <span className="font-semibold text-[#171717]">{item.current_member_count} / {item.member_capacity} Siswa</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-[#F9F8F6] rounded-full overflow-hidden border border-[#EAE6DC]">
-                        <div
-                          className="h-full bg-[#D15B40] rounded-full"
-                          style={{ width: `${Math.min(100, (item.current_member_count / item.member_capacity) * 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {/* Badges on image (default state) */}
+              <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none transition-opacity duration-300 group-hover:opacity-0 z-10">
+                <Badge variant="neutral" className="bg-white/90 text-[#171717] backdrop-blur-md border-0 shadow-sm text-xs font-semibold py-0.5 px-2.5">
+                  {item.category}
+                </Badge>
+                <Badge variant={item.registration_status === 'open' ? 'success' : 'danger'} className="shadow-sm text-xs font-semibold py-0.5 px-2.5">
+                  {item.registration_status === 'open' ? 'Pendaftaran Dibuka' : 'Ditutup'}
+                </Badge>
               </div>
 
-              <div className="p-5 pt-0">
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="w-full justify-center"
-                  onClick={() => onNavigate(`/ekskul/${item.slug}`)}
-                  icon={<ArrowRight className="w-4 h-4" />}
-                >
-                  Lihat Profil & Daftar
-                </Button>
+              {/* Default Title at bottom */}
+              <div className="absolute bottom-0 inset-x-0 p-4 pointer-events-none transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-2 z-10">
+                <h3 className="text-base sm:text-lg font-bold text-white tracking-wide drop-shadow-md leading-snug line-clamp-1">
+                  {item.name}
+                </h3>
+              </div>
+
+              {/* Hover Overlay: Bright Frosted Glass (Glassmorphism) */}
+              <div className="absolute inset-0 bg-white/85 backdrop-blur-md border border-white/70 p-4 sm:p-5 flex flex-col justify-between text-[#171717] opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out z-20 shadow-xl">
+                {/* Badges in hover */}
+                <div className="flex items-center justify-between gap-2">
+                  <Badge variant="neutral" className="bg-white/90 text-[#171717] border border-[#EAE6DC] text-[10px] py-0.5 px-2.5 shadow-xs font-semibold">
+                    {item.category}
+                  </Badge>
+                  <span className={`text-[10px] px-2.5 py-0.5 rounded font-bold tracking-wide uppercase ${item.registration_status === 'open' ? 'bg-emerald-50 text-emerald-700 border border-emerald-300/80 shadow-xs' : 'bg-rose-50 text-rose-700 border border-rose-300/80 shadow-xs'}`}>
+                    {item.registration_status === 'open' ? 'Dibuka' : 'Ditutup'}
+                  </span>
+                </div>
+
+                {/* Title & Bio in hover */}
+                <div className="my-auto py-1">
+                  <h3 className="text-base font-bold text-[#171717] mb-1.5 leading-snug line-clamp-1">
+                    {item.name}
+                  </h3>
+                  <p className="text-xs text-[#525049] line-clamp-2 leading-relaxed font-normal">
+                    {item.short_description}
+                  </p>
+                </div>
+
+                {/* Button CTA */}
+                <div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="w-full justify-center shadow-md hover:shadow-lg bg-[#D15B40] hover:bg-[#b84a32] text-white border-0 text-xs py-2 transition-transform active:scale-95 font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onNavigate(`/ekskul/${item.slug}`);
+                    }}
+                    icon={<ArrowRight className="w-3.5 h-3.5" />}
+                  >
+                    Lihat Profil & Daftar
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
