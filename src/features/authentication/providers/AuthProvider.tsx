@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 
 interface AuthContextType {
   currentUser: User | null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import {

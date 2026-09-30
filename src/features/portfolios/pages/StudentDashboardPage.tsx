@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';

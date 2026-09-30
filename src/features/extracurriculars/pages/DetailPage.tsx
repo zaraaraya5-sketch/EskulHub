@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
 

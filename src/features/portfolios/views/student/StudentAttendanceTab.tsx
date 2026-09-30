@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { AttendanceRecord, ExtracurricularMember } from '@/types';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 
 interface StudentAttendanceTabProps {
   attendanceRate: number;

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { api, getEkskulsAPI } from '@/lib/api';
 import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';

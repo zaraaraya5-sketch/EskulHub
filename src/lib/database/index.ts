@@ -1,0 +1,160 @@
+import * as apiService from '@/lib/api';
+import { SettingsModule } from './modules/settings';
+import { UsersModule } from './modules/users';
+import { ExtracurricularsModule } from './modules/extracurriculars';
+import { RegistrationsModule } from './modules/registrations';
+import { AttendanceModule } from './modules/attendance';
+import { EventsModule } from './modules/events';
+import { AchievementsModule } from './modules/achievements';
+import { VerificationsModule } from './modules/verifications';
+
+/**
+ * SQLiteDatabaseClient — Centralized, modular SQLite client layer for EskulHub.
+ * Coordinates all modular domain services and synchronizes with Laravel REST API endpoints.
+ */
+class SQLiteDatabaseClient {
+  private listeners: Set<() => void> = new Set();
+  private notify = () => {
+    this.listeners.forEach((fn) => {
+      try {
+        fn();
+      } catch (err) {
+        console.error('Error in db subscriber:', err);
+      }
+    });
+  };
+
+  public settings = new SettingsModule(this.notify);
+  public users = new UsersModule(this.notify);
+  public extracurriculars = new ExtracurricularsModule(this.notify);
+  public registrations = new RegistrationsModule(this.extracurriculars, this.notify);
+  public attendance = new AttendanceModule(this.extracurriculars, this.notify);
+  public events = new EventsModule(this.notify);
+  public achievements = new AchievementsModule(this.notify);
+  public verifications = new VerificationsModule(
+    this.users,
+    this.extracurriculars,
+    this.attendance,
+    this.achievements,
+    this.settings,
+    this.notify
+  );
+
+  constructor() {
+    this.syncWithBackend();
+  }
+
+  public subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  public async syncWithBackend(): Promise<void> {
+    try {
+      const [
+        settings,
+        users,
+        ekskuls,
+        members,
+        registrations,
+        sessions,
+        records,
+        events,
+        achievements,
+        certificates,
+      ] = await Promise.all([
+        apiService.getSettingsAPI(),
+        apiService.getUsersAPI(),
+        apiService.getEkskulsAPI(),
+        apiService.getAllMembersAPI(),
+        apiService.getRegistrationsAPI(),
+        apiService.getAttendanceSessionsAPI(),
+        apiService.getAttendanceRecordsAPI(),
+        apiService.getEventsAPI(),
+        apiService.getAchievementsAPI(),
+        apiService.getCertificatesAPI(),
+      ]);
+
+      if (settings) this.settings.setSettings(settings);
+      if (users && users.length > 0) this.users.setUsers(users);
+      if (ekskuls && ekskuls.length > 0) this.extracurriculars.setExtracurriculars(ekskuls);
+      if (members && members.length > 0) this.extracurriculars.setMembers(members);
+      if (registrations && registrations.length > 0) this.registrations.setRegistrations(registrations);
+      if (sessions && sessions.length > 0) this.attendance.setSessions(sessions);
+      if (records && records.length > 0) this.attendance.setRecords(records);
+      if (events && events.length > 0) this.events.setEvents(events);
+      if (achievements && achievements.length > 0) this.achievements.setAchievements(achievements);
+      if (certificates && certificates.length > 0) this.achievements.setCertificates(certificates);
+
+      this.notify();
+    } catch (err) {
+      console.error('Gagal mengambil data dari database lokal SQLite:', err);
+    }
+  }
+
+  public async refresh(): Promise<void> {
+    return this.syncWithBackend();
+  }
+
+  // Backward-compatible unified delegations for clean component ergonomics:
+  // Settings
+  public getSettings = () => this.settings.getSettings();
+  public updateSettings = (data: any) => this.settings.updateSettings(data);
+
+  // Users
+  public getUsers = () => this.users.getUsers();
+  public getUserById = (id: string) => this.users.getUserById(id);
+  public registerUser = (data: any) => this.users.registerUser(data);
+  public addUser = (data: any) => this.users.addUser(data);
+  public updateUser = (id: string, data: any) => this.users.updateUser(id, data);
+  public deleteUser = (id: string) => this.users.deleteUser(id);
+
+  // Extracurriculars & Members
+  public getExtracurriculars = () => this.extracurriculars.getExtracurriculars();
+  public getExtracurricularBySlug = (slug: string) => this.extracurriculars.getExtracurricularBySlug(slug);
+  public getExtracurricularById = (id: string) => this.extracurriculars.getExtracurricularById(id);
+  public addExtracurricular = (data: any) => this.extracurriculars.addExtracurricular(data);
+  public updateExtracurricular = (id: string, data: any) => this.extracurriculars.updateExtracurricular(id, data);
+  public deleteExtracurricular = (id: string) => this.extracurriculars.deleteExtracurricular(id);
+  public getMembers = () => this.extracurriculars.getMembers();
+  public getMembersByExtracurricularId = (id: string) => this.extracurriculars.getMembersByExtracurricularId(id);
+
+  // Registrations
+  public getRegistrations = () => this.registrations.getRegistrations();
+  public createRegistration = (data: any) => this.registrations.createRegistration(data);
+  public updateRegistrationStatus = (id: string, status: any, reviewerName: string, notes?: string) =>
+    this.registrations.updateRegistrationStatus(id, status, reviewerName, notes);
+
+  // Attendance
+  public getAttendanceSessions = () => this.attendance.getAttendanceSessions();
+  public getAttendanceRecords = () => this.attendance.getAttendanceRecords();
+  public createAttendanceSession = (data: any) => this.attendance.createAttendanceSession(data);
+  public updateAttendanceRecord = (recordId: string, status: any, notes?: string) =>
+    this.attendance.updateAttendanceRecord(recordId, status, notes);
+
+  // Events
+  public getSchoolEvents = () => this.events.getSchoolEvents();
+  public addSchoolEvent = (event: any) => this.events.addSchoolEvent(event);
+  public deleteSchoolEvent = (id: string) => this.events.deleteSchoolEvent(id);
+  public checkEventConflict = (location: string, start: string, end: string, excludeId?: string) =>
+    this.events.checkEventConflict(location, start, end, excludeId);
+
+  // Achievements & Activities
+  public getActivities = () => this.achievements.getActivities();
+  public getAchievements = () => this.achievements.getAchievements();
+  public addAchievement = (data: any) => this.achievements.addAchievement(data);
+  public verifyAchievement = (id: string, verifierName: string) => this.achievements.verifyAchievement(id, verifierName);
+  public getCertificates = () => this.achievements.getCertificates();
+  public addCertificate = (data: any) => this.achievements.addCertificate(data);
+
+  // Verifications
+  public getVerifications = () => this.verifications.getVerifications();
+  public getVerificationById = (id: string) => this.verifications.getVerificationById(id);
+  public generatePortfolioVerification = (studentId: string, verifierName: string) =>
+    this.verifications.generatePortfolioVerification(studentId, verifierName);
+  public updateVerificationStatus = (id: string, status: any) =>
+    this.verifications.updateVerificationStatus(id, status);
+}
+
+export const db = new SQLiteDatabaseClient();
+export { SQLiteDatabaseClient };

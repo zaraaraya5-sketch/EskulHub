@@ -15,10 +15,10 @@ class Ekskul extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'is_registration_open' => 'boolean',
         'syllabus' => 'array',
         'achievements' => 'array',
-        'current_members' => 'integer',
-        'max_quota' => 'integer',
+        'member_capacity' => 'integer',
+        'current_member_count' => 'integer',
+        'achievements_count' => 'integer',
     ];
 }

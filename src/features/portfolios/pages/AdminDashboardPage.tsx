@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { School, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react';
 import { User, Extracurricular, SchoolEvent, PortfolioVerification } from '@/types';

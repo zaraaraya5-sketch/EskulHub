@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import {
   LayoutDashboard,
   BookOpen,

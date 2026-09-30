@@ -1,5 +1,5 @@
 import React from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Extracurricular } from '@/types';

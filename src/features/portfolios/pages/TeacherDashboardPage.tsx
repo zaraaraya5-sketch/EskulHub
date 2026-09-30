@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
@@ -23,7 +23,7 @@ interface TeacherDashboardPageProps {
   currentPath?: string;
 }
 
-export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ currentPath = '/teacher/dashboard' }) => {
+export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ currentPath = '/teacher/dashboard', onNavigate }) => {
   const { currentUser } = useAuth();
   const ekskuls = db.getExtracurriculars().slice(0, 2); // supervised clubs (e.g. Futsal & Basket)
   const [registrations, setRegistrations] = useState<ExtracurricularRegistration[]>(() => db.getRegistrations());

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Extracurricular, SchoolEvent, AttendanceRecord, ExtracurricularMember, Achievement, Certificate } from '@/types';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import {
   CheckSquare,
   Calendar,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
-import { db } from '@/lib/storage/mockDatabase';
+import { db } from '@/lib/database';
 import { ShieldCheck } from 'lucide-react';
 import { Extracurricular } from '@/types';
 
