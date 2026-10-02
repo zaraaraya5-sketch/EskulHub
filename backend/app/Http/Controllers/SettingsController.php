@@ -25,12 +25,22 @@ class SettingsController extends Controller
 
     public function update(Request $request)
     {
+        $validated = $request->validate([
+            'school_name' => 'required|string|max:150',
+            'npsn' => 'required|string|max:25',
+            'address' => 'required|string|max:255',
+            'academic_year' => 'required|string|max:25',
+            'principal_name' => 'required|string|max:120',
+            'vice_principal_student_affairs' => 'required|string|max:120',
+        ]);
+
         $setting = SchoolSetting::first();
         if ($setting) {
-            $setting->update($request->all());
+            $setting->update($validated);
         } else {
-            $setting = SchoolSetting::create($request->all());
+            $setting = SchoolSetting::create($validated);
         }
+
         return response()->json(['success' => true, 'settings' => $setting]);
     }
 }

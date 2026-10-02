@@ -45,7 +45,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
   const [successMessage, setSuccessMessage] = useState('');
 
   // Handle Login submission
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
@@ -59,7 +59,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       return;
     }
 
-    const res = login(loginIdentifier, loginPassword);
+    const res = await login(loginIdentifier, loginPassword);
     if (!res.success || !res.user) {
       setError(res.message || 'Kredensial login tidak valid. Pastikan nama/email dan password sudah tepat.');
       return;

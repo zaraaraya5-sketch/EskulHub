@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
 import { db } from '@/lib/database';
+import { loginAPI, logoutAPI } from '@/lib/api';
 
 interface AuthContextType {
   currentUser: User | null;
   role: UserRole;
   isAuthenticated: boolean;
-  login: (identifier: string, password?: string) => { success: boolean; message?: string; user?: User };
+  login: (identifier: string, password?: string) => Promise<{ success: boolean; message?: string; user?: User }>;
   register: (name: string, email: string, role?: UserRole, password?: string, phone?: string) => { success: boolean; message: string; user?: User };
   logout: () => void;
   switchRole: (role: UserRole) => void;
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const users = db.getUsers();
+
   // Initialize from storage or null
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
     const savedId = localStorage.getItem('ekskul_auth_user_id');
@@ -30,26 +32,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem('ekskul_auth_user_id', currentUser.id);
       } else {
         localStorage.removeItem('ekskul_auth_user_id');
+        localStorage.removeItem('ekskul_auth_token');
       }
     } catch (error) {
-      console.warn('Gagal menyimpan sesi ke localStorage, mungkin memori penuh:', error);
+      console.warn('Gagal menyimpan sesi ke localStorage:', error);
     }
   }, [currentUser]);
 
-  const login = (identifier: string, password?: string): { success: boolean; message?: string; user?: User } => {
+  const login = async (
+    identifier: string,
+    password?: string
+  ): Promise<{ success: boolean; message?: string; user?: User }> => {
     const clean = identifier.trim().toLowerCase();
+
+    if (!clean) {
+      return { success: false, message: 'Silakan masukkan nama atau email akun Anda.' };
+    }
+
+    if (!password || !password.trim()) {
+      return { success: false, message: 'Kata sandi (password) harus diisi demi keamanan akun.' };
+    }
+
+    // 1. Attempt secure authentication with backend API first (Sanctum Token)
+    try {
+      const apiRes = await loginAPI(clean, password);
+      if (apiRes && apiRes.success && apiRes.user) {
+        setCurrentUser(apiRes.user);
+        return { success: true, user: apiRes.user, message: apiRes.message };
+      }
+    } catch {
+      // Fallback to local validation if backend is currently unreachable
+    }
+
+    // 2. Strict local validation fallback (No wildcard substring matching)
     const allUsers = db.getUsers();
     const found = allUsers.find(
-      u => u.email.toLowerCase() === clean ||
-           u.name.toLowerCase() === clean ||
-           u.name.toLowerCase().includes(clean)
+      u => u.email.toLowerCase() === clean || u.name.toLowerCase() === clean
     );
+
     if (!found) {
       return { success: false, message: 'Akun dengan nama atau email tersebut tidak ditemukan di sistem.' };
     }
-    if (found.password && password && found.password !== password) {
+
+    if (!found.is_active) {
+      return { success: false, message: 'Akun Anda dinonaktifkan oleh administrator sekolah.' };
+    }
+
+    // Default demo password is password123 or matches account
+    const expectedPassword = found.password || 'password123';
+    if (password !== expectedPassword) {
       return { success: false, message: 'Kata sandi (password) salah. Silakan coba lagi.' };
     }
+
     setCurrentUser(found);
     return { success: true, user: found };
   };
@@ -60,6 +94,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    logoutAPI().catch(() => {});
+    localStorage.removeItem('ekskul_auth_user_id');
+    localStorage.removeItem('ekskul_auth_token');
     setCurrentUser(null);
   };
 
@@ -67,6 +104,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const found = db.getUsers().find(u => u.role === newRole);
     if (found) {
       setCurrentUser(found);
+      // Attempt background token synchronization for demo switch
+      loginAPI(found.email, 'password123').catch(() => {});
     }
   };
 

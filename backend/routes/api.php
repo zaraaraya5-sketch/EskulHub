@@ -11,59 +11,86 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\SettingsController;
 
-// 1. Authentication & Users
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::put('/auth/profile/{id}', [AuthController::class, 'updateProfile']);
-Route::get('/users', [AuthController::class, 'index']);
-Route::post('/users', [AuthController::class, 'store']);
-Route::put('/users/{id}', [AuthController::class, 'update']);
-Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
 
-// 2. Extracurriculars & Members
+// ==========================================
+// 1. Public Routes (Throttled & Read-only)
+// ==========================================
+Route::middleware(['throttle:15,1'])->group(function () {
+    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::post('/auth/register', [AuthController::class, 'register']);
+});
+
+// Public Catalog, Calendar, Settings, and Verification
 Route::get('/ekskul', [EkskulController::class, 'index']);
 Route::get('/ekskul/{slug}', [EkskulController::class, 'show']);
-Route::post('/ekskul', [EkskulController::class, 'store']);
-Route::put('/ekskul/{id}', [EkskulController::class, 'update']);
-Route::delete('/ekskul/{id}', [EkskulController::class, 'destroy']);
 Route::get('/ekskul/{id}/members', [EkskulController::class, 'getMembers']);
 Route::get('/members', [EkskulController::class, 'allMembers']);
-Route::post('/ekskul/{id}/members', [EkskulController::class, 'addMember']);
-Route::delete('/ekskul/members/{memberId}', [EkskulController::class, 'removeMember']);
-
-// 3. Registrations
-Route::get('/registrations', [RegistrationController::class, 'index']);
-Route::post('/registrations', [RegistrationController::class, 'store']);
-Route::put('/registrations/{id}/status', [RegistrationController::class, 'updateStatus']);
-
-// 4. Attendance
-Route::get('/attendance/sessions', [AttendanceController::class, 'getSessions']);
-Route::post('/attendance/sessions', [AttendanceController::class, 'createSession']);
-Route::get('/attendance/records', [AttendanceController::class, 'getRecords']);
-Route::post('/attendance/records', [AttendanceController::class, 'saveRecord']);
-
-// 5. School Events
 Route::get('/events', [EventController::class, 'index']);
-Route::post('/events', [EventController::class, 'store']);
-Route::put('/events/{id}', [EventController::class, 'update']);
-Route::delete('/events/{id}', [EventController::class, 'destroy']);
-
-// 6. Achievements
-Route::get('/achievements', [AchievementController::class, 'index']);
-Route::post('/achievements', [AchievementController::class, 'store']);
-Route::put('/achievements/{id}/verify', [AchievementController::class, 'verify']);
-Route::delete('/achievements/{id}', [AchievementController::class, 'destroy']);
-
-// 7. Certificates
-Route::get('/certificates', [CertificateController::class, 'index']);
-Route::post('/certificates', [CertificateController::class, 'store']);
-Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
-
-// 8. Verification & Portfolios
-Route::get('/verifications', [VerificationController::class, 'index']);
-Route::get('/verification/{id}', [VerificationController::class, 'show']);
-Route::post('/verification', [VerificationController::class, 'store']);
-
-// 9. School Settings
 Route::get('/settings', [SettingsController::class, 'get']);
-Route::put('/settings', [SettingsController::class, 'update']);
+Route::get('/verification/{id}', [VerificationController::class, 'show']);
+
+// Public Read-Only data with privacy sanitization in controllers
+Route::get('/users', [AuthController::class, 'index']);
+Route::get('/achievements', [AchievementController::class, 'index']);
+Route::get('/certificates', [CertificateController::class, 'index']);
+Route::get('/verifications', [VerificationController::class, 'index']);
+Route::get('/attendance/sessions', [AttendanceController::class, 'getSessions']);
+Route::get('/attendance/records', [AttendanceController::class, 'getRecords']);
+
+// ==========================================
+// 2. Authenticated Routes (Requires Bearer Token)
+// ==========================================
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Auth & Profile
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::put('/auth/profile/{id}', [AuthController::class, 'updateProfile']);
+
+    // Registrations & Achievements creation
+    Route::get('/registrations', [RegistrationController::class, 'index']);
+    Route::post('/registrations', [RegistrationController::class, 'store']);
+    Route::post('/achievements', [AchievementController::class, 'store']);
+    Route::post('/verification', [VerificationController::class, 'store']);
+
+    // ==========================================
+    // 3. Operational Staff (Pengurus, Pembina, Guru, Teacher, Admin)
+    // ==========================================
+    Route::middleware(['role:pengurus,pembina,guru,teacher,admin'])->group(function () {
+        Route::put('/registrations/{id}/status', [RegistrationController::class, 'updateStatus']);
+        Route::post('/attendance/sessions', [AttendanceController::class, 'createSession']);
+        Route::post('/attendance/records', [AttendanceController::class, 'saveRecord']);
+        Route::post('/ekskul/{id}/members', [EkskulController::class, 'addMember']);
+        Route::delete('/ekskul/members/{memberId}', [EkskulController::class, 'removeMember']);
+    });
+
+    // ==========================================
+    // 4. Pedagogical & Advisory Staff (Pembina, Guru, Teacher, Admin)
+    // ==========================================
+    Route::middleware(['role:pembina,guru,teacher,admin'])->group(function () {
+        Route::put('/achievements/{id}/verify', [AchievementController::class, 'verify']);
+        Route::post('/certificates', [CertificateController::class, 'store']);
+        Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
+        Route::post('/events', [EventController::class, 'store']);
+        Route::put('/events/{id}', [EventController::class, 'update']);
+        Route::delete('/events/{id}', [EventController::class, 'destroy']);
+        Route::post('/ekskul', [EkskulController::class, 'store']);
+        Route::put('/ekskul/{id}', [EkskulController::class, 'update']);
+        Route::delete('/ekskul/{id}', [EkskulController::class, 'destroy']);
+    });
+
+    // ==========================================
+    // 5. High-Privilege Administration (Admin only)
+    // ==========================================
+    Route::middleware(['role:admin'])->group(function () {
+        Route::post('/users', [AuthController::class, 'store']);
+        Route::put('/users/{id}', [AuthController::class, 'update']);
+        Route::delete('/users/{id}', [AuthController::class, 'destroy']);
+        Route::put('/settings', [SettingsController::class, 'update']);
+        Route::delete('/achievements/{id}', [AchievementController::class, 'destroy']);
+    });
+});

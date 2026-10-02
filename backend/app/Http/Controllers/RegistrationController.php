@@ -13,19 +13,55 @@ class RegistrationController extends Controller
     public function index(Request $request)
     {
         $query = Registration::query();
-        if ($request->has('student_id')) {
-            $query->where('student_id', $request->student_id);
+        $user = $request->user();
+
+        // If the authenticated caller is a student, enforce seeing only their own registrations
+        if ($user && $user->role === 'student') {
+            $query->where('student_id', $user->id);
+        } else {
+            if ($request->has('student_id')) {
+                $query->where('student_id', $request->student_id);
+            }
         }
+
         if ($request->has('extracurricular_id')) {
             $query->where('extracurricular_id', $request->extracurricular_id);
         }
+
         return response()->json($query->orderBy('created_at', 'desc')->get());
     }
 
     public function store(Request $request)
     {
-        $studentId = $request->input('student_id');
-        $ekskulId = $request->input('extracurricular_id');
+        $validated = $request->validate([
+            'extracurricular_id' => 'required|string|exists:ekskuls,id',
+            'student_id' => 'required|string',
+            'student_name' => 'required|string|max:120',
+            'student_class' => 'required|string|max:50',
+            'student_nisn' => 'required|string|max:20',
+            'reason' => 'required|string|max:500',
+        ]);
+
+        $studentId = $validated['student_id'];
+        $ekskulId = $validated['extracurricular_id'];
+
+        $ekskul = Ekskul::findOrFail($ekskulId);
+
+        // Check if registration is open
+        if ($ekskul->registration_status === 'closed') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pendaftaran untuk ekstrakurikuler ini telah ditutup.'
+            ], 422);
+        }
+
+        // Check capacity
+        if ($ekskul->current_member_count >= $ekskul->member_capacity) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kuota anggota untuk ekstrakurikuler ini sudah penuh.'
+            ], 422);
+        }
 
         // Check if already registered
         $existing = Registration::where('student_id', $studentId)
@@ -36,31 +72,37 @@ class RegistrationController extends Controller
         if ($existing) {
             return response()->json([
                 'success' => false,
-                'message' => 'Anda sudah terdaftar atau memiliki pendaftaran aktif di ekskul ini.'
+                'message' => 'Anda sudah terdaftar atau memiliki pendaftaran aktif di ekstrakurikuler ini.'
             ], 422);
         }
 
-        $data = $request->all();
-        $data['id'] = 'reg-' . time() . '-' . Str::random(4);
-        $data['registration_date'] = $data['registration_date'] ?? now()->toIso8601String();
-        $data['status'] = 'pending';
+        $validated['id'] = 'reg-' . time() . '-' . Str::random(4);
+        $validated['extracurricular_name'] = $ekskul->name;
+        $validated['registration_date'] = now()->toIso8601String();
+        $validated['status'] = 'pending'; // Always pending on submission
 
-        $reg = Registration::create($data);
+        $reg = Registration::create($validated);
         return response()->json(['success' => true, 'registration' => $reg], 201);
     }
 
     public function updateStatus(Request $request, string $id)
     {
+        $validated = $request->validate([
+            'status' => 'required|in:approved,rejected',
+            'reviewer_name' => 'nullable|string|max:120',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
         $reg = Registration::findOrFail($id);
-        $status = $request->input('status'); // 'approved', 'rejected'
-        $reviewer = $request->input('reviewer_name', 'Pembina Ekskul');
-        $notes = $request->input('notes');
+        $status = $validated['status'];
+        $reviewer = $validated['reviewer_name'] ?? ($request->user()?->name ?? 'Pembina Ekskul');
+        $notes = $validated['notes'] ?? $reg->notes;
 
         $reg->update([
             'status' => $status,
             'reviewer_name' => $reviewer,
             'reviewed_at' => now()->toIso8601String(),
-            'notes' => $notes ?: $reg->notes,
+            'notes' => $notes,
         ]);
 
         // If approved, create member record if not already exists

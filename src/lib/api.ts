@@ -23,6 +23,15 @@ export const api = axios.create({
   timeout: 5000,
 });
 
+// Attach Authorization Bearer token to all requests if present in localStorage
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('ekskul_auth_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // ==========================================
 // 1. Settings
 // ==========================================
@@ -52,12 +61,26 @@ export const updateSettingsAPI = async (data: Partial<SchoolSetting>): Promise<S
 export const loginAPI = async (identifier: string, password?: string) => {
   try {
     const res = await api.post('/auth/login', { identifier, password });
+    if (res.data?.token) {
+      localStorage.setItem('ekskul_auth_token', res.data.token);
+    }
     return res.data;
   } catch (err: any) {
     return {
       success: false,
       message: err.response?.data?.message || 'Gagal terhubung ke server autentikasi lokal.',
     };
+  }
+};
+
+export const logoutAPI = async () => {
+  try {
+    const res = await api.post('/auth/logout');
+    localStorage.removeItem('ekskul_auth_token');
+    return res.data;
+  } catch (err) {
+    localStorage.removeItem('ekskul_auth_token');
+    return { success: true };
   }
 };
 
