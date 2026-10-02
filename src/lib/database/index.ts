@@ -41,7 +41,56 @@ class SQLiteDatabaseClient {
   );
 
   constructor() {
-    this.syncWithBackend();
+    this.hydrateFromCache();
+    if (typeof window !== 'undefined') {
+      setTimeout(() => this.syncWithBackend(), 50);
+    } else {
+      this.syncWithBackend();
+    }
+  }
+
+  private saveToCache() {
+    try {
+      if (typeof window === 'undefined') return;
+      const snapshot = {
+        settings: this.settings.getSettings(),
+        users: this.users.getUsers(),
+        ekskuls: this.extracurriculars.getExtracurriculars(),
+        members: this.extracurriculars.getMembers(),
+        registrations: this.registrations.getRegistrations(),
+        sessions: this.attendance.getAttendanceSessions(),
+        records: this.attendance.getAttendanceRecords(),
+        events: this.events.getSchoolEvents(),
+        achievements: this.achievements.getAchievements(),
+        certificates: this.achievements.getCertificates(),
+        verifications: this.verifications.getVerifications(),
+      };
+      localStorage.setItem('ekskul_cached_snapshot', JSON.stringify(snapshot));
+    } catch {
+      // Ignore cache storage errors in restricted contexts
+    }
+  }
+
+  private hydrateFromCache() {
+    try {
+      if (typeof window === 'undefined') return;
+      const raw = localStorage.getItem('ekskul_cached_snapshot');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.settings) this.settings.setSettings(data.settings);
+      if (data.users?.length) this.users.setUsers(data.users);
+      if (data.ekskuls?.length) this.extracurriculars.setExtracurriculars(data.ekskuls);
+      if (data.members?.length) this.extracurriculars.setMembers(data.members);
+      if (data.registrations?.length) this.registrations.setRegistrations(data.registrations);
+      if (data.sessions?.length) this.attendance.setSessions(data.sessions);
+      if (data.records?.length) this.attendance.setRecords(data.records);
+      if (data.events?.length) this.events.setEvents(data.events);
+      if (data.achievements?.length) this.achievements.setAchievements(data.achievements);
+      if (data.certificates?.length) this.achievements.setCertificates(data.certificates);
+      if (data.verifications?.length) this.verifications.setVerifications(data.verifications);
+    } catch {
+      // Fallback cleanly to defaults
+    }
   }
 
   public subscribe(listener: () => void): () => void {
@@ -96,6 +145,7 @@ class SQLiteDatabaseClient {
       if (certificates && certificates.length > 0) this.achievements.setCertificates(certificates);
       if (verifications && verifications.length > 0) this.verifications.setVerifications(verifications);
 
+      this.saveToCache();
       this.notify();
     } catch (err) {
       console.error('Gagal mengambil data dari database lokal SQLite:', err);

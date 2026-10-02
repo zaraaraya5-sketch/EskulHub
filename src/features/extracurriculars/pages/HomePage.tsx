@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import AccordionGallery, { AccordionGalleryItem } from '@/components/ui/AccordionGallery';
 import FoldText from '@/components/ui/FoldText';
-import GradientWaves from '@/components/ui/GradientWaves';
+const GradientWaves = React.lazy(() => import('@/components/ui/GradientWaves'));
 import {
   Compass, UserCheck, CheckCircle, FileText, ShieldCheck, Trophy, LogIn, ArrowRight
 } from 'lucide-react';
@@ -70,28 +70,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <section className="relative overflow-hidden bg-gradient-to-b from-[#F9F8F6] via-white to-white pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-[#EAE6DC]">
         {/* Ambient WebGL Gradient Waves matching website palette */}
         <div className="absolute inset-0 z-0 pointer-events-auto">
-          <GradientWaves
-            horizonColor="#F9F8F6"
-            waveColor="#D15B40"
-            crestColor="#FFF5F2"
-            speed={0.28}
-            amplitude={2.0}
-            waveScale={0.55}
-            waveRatio={0.85}
-            swell={28}
-            turbulence={16}
-            tilt={1.15}
-            zoom={1.05}
-            height={5.0}
-            fogDepth={18}
-            detail="medium"
-            brightness={1.05}
-            opacity={0.35}
-            mouseInteraction={true}
-            parallaxStrength={0.4}
-            grain={true}
-            grainIntensity={0.03}
-          />
+          <React.Suspense fallback={<div className="absolute inset-0 bg-[#F9F8F6]/50" />}>
+            <GradientWaves
+              horizonColor="#F9F8F6"
+              waveColor="#D15B40"
+              crestColor="#FFF5F2"
+              speed={0.28}
+              amplitude={2.0}
+              waveScale={0.55}
+              waveRatio={0.85}
+              swell={28}
+              turbulence={16}
+              tilt={1.15}
+              zoom={1.05}
+              height={5.0}
+              fogDepth={18}
+              detail="medium"
+              brightness={1.05}
+              opacity={0.35}
+              mouseInteraction={true}
+              parallaxStrength={0.4}
+              grain={true}
+              grainIntensity={0.03}
+            />
+          </React.Suspense>
         </div>
 
         {/* Soft atmospheric gradient overlay */}

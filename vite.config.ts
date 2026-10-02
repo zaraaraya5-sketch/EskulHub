@@ -14,6 +14,9 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'lucide-react', 'axios'],
+  },
   build: {
     chunkSizeWarningLimit: 600,
     rollupOptions: {
