@@ -81,19 +81,19 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
         <div>
           <div className="text-[11px] font-bold uppercase tracking-wider text-[#234B36] flex items-center gap-1.5 mb-1">
             <School className="w-3.5 h-3.5" />
-            <span>Pusat Kendali Administrasi Kesiswaan • {settings.school_name}</span>
+            <span>Panel Kesiswaan • {settings.school_name}</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-            {activeSection === 'dashboard' && 'Ringkasan Dasbor Kesiswaan'}
+            {activeSection === 'dashboard' && 'Dasbor Kesiswaan'}
             {activeSection === 'students' && 'Kelola Data Siswa'}
             {activeSection === 'teachers' && 'Kelola Guru & Wali Kelas'}
             {activeSection === 'pembina' && 'Kelola Guru Pembina Ekstrakurikuler'}
-            {activeSection === 'ekskul' && 'Master Data Ekstrakurikuler'}
+            {activeSection === 'ekskul' && 'Daftar Ekstrakurikuler'}
             {activeSection === 'schedule' && 'Jadwal Latihan & Kalender Kegiatan'}
-            {activeSection === 'verification' && 'Audit Verifikasi QR & Portofolio Sah'}
-            {activeSection === 'profile' && 'Kelola Profil & Foto Administrator'}
+            {activeSection === 'verification' && 'Verifikasi Portofolio & Kode QR'}
+            {activeSection === 'profile' && 'Profil Admin'}
           </h1>
-          <p className="text-xs text-[#68655F] mt-0.5">
+          <p className="text-xs text-[#525049] mt-0.5">
             Admin: <strong>{settings.vice_principal_student_affairs}</strong> • Tahun Ajaran {settings.academic_year}
           </p>
         </div>

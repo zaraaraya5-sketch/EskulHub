@@ -33,9 +33,9 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
     <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
         <div>
-          <h2 className="text-sm font-bold text-[#171717]">Arsip & Pengaturan Verifikasi QR Portofolio</h2>
-          <p className="text-xs text-[#68655F]">
-            Audit keabsahan dokumen, tanda tangan elektronik, serta kode QR portofolio siswa yang telah diterbitkan.
+          <h2 className="text-sm font-bold text-[#171717]">Arsip Verifikasi Portofolio & Kode QR</h2>
+          <p className="text-xs text-[#525049]">
+            Tinjau keabsahan berkas, pengesahan kesiswaan, dan kode QR portofolio siswa yang telah diterbitkan.
           </p>
         </div>
         <Button variant="outline" size="sm" onClick={() => onNavigate('/contoh-portofolio')} icon={<FileText className="w-3.5 h-3.5" />}>
@@ -46,26 +46,26 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
       {/* Institutional Verification Config Card */}
       <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-[#68655F]">Penandatangan Dokumen</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#525049]">Penandatangan Dokumen</div>
           <div className="font-bold text-[#171717] mt-0.5">{settings.principal_name}</div>
-          <div className="text-[11px] text-[#234B36]">Kepala Sekolah (Sertifikat Digital Valid)</div>
+          <div className="text-[11px] text-[#234B36]">Kepala Sekolah (Pengesahan Resmi)</div>
         </div>
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-[#68655F]">Verifikator Kesiswaan</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#525049]">Verifikator Kesiswaan</div>
           <div className="font-bold text-[#171717] mt-0.5">{settings.vice_principal_student_affairs}</div>
           <div className="text-[11px] text-[#8C6819]">Wakasek Bid. Kesiswaan</div>
         </div>
         <div>
-          <div className="text-[10px] font-bold uppercase tracking-wider text-[#68655F]">NPSN & Legalitas</div>
+          <div className="text-[10px] font-bold uppercase tracking-wider text-[#525049]">NPSN & Sekolah</div>
           <div className="font-bold text-[#171717] mt-0.5">NPSN: {settings.npsn}</div>
-          <div className="text-[11px] text-[#68655F]">{settings.school_name}</div>
+          <div className="text-[11px] text-[#525049]">{settings.school_name}</div>
         </div>
       </div>
 
       {/* List of Verified Documents */}
       <div className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[#234B36]">
-          Daftar Dokumen Portofolio Sah Terdaftar
+          Daftar Dokumen Portofolio Resmi
         </h3>
         {verifications.map((ver) => (
           <div
@@ -75,12 +75,12 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-[#171717] text-sm">{ver.student_name}</span>
-                <span className="text-[#68655F]">({ver.student_class})</span>
+                <span className="text-[#525049]">({ver.student_class})</span>
                 <Badge variant={ver.status === 'valid' ? 'success' : 'danger'}>
                   {ver.status === 'valid' ? 'Sah & Tervalidasi' : 'Dokumen Dicabut'}
                 </Badge>
               </div>
-              <div className="text-[11px] text-[#68655F] mt-1 font-mono">
+              <div className="text-[11px] text-[#525049] mt-1 font-mono">
                 Nomor Verifikasi: <strong className="text-[#234B36]">{ver.verification_id}</strong> • NISN: {ver.student_nisn}
               </div>
             </div>
@@ -92,7 +92,7 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
                 onClick={() => onNavigate(`/verify/${ver.verification_id}`)}
                 icon={<QrCode className="w-3.5 h-3.5" />}
               >
-                Uji QR Publik
+                Lihat Halaman Verifikasi
               </Button>
               <button
                 onClick={() => toggleVerificationStatus(ver.verification_id, ver.status)}
@@ -102,7 +102,7 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
                     : 'bg-[#E7EFEA] text-[#234B36] hover:bg-[#cde4d6]'
                 }`}
               >
-                {ver.status === 'valid' ? 'Cabut Akses' : 'Pulihkan Sah'}
+                {ver.status === 'valid' ? 'Cabut Validasi' : 'Pulihkan Validasi'}
               </button>
             </div>
           </div>

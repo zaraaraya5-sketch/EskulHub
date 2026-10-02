@@ -105,7 +105,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </Badge>
           <h1 className="text-4xl md:text-6xl font-extrabold text-[#171717] tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
             <FoldText
-              text="Sistem Informasi Terpadu Ekstrakurikuler"
+              text="Kembangkan Bakat dan Catat Prestasimu di"
               splitBy="word"
               hinge="top"
               trigger="mount"
@@ -131,8 +131,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               />
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-[#68655F] mb-10 max-w-2xl mx-auto">
-            Kelola pendaftaran ekskul, presensi digital, pencatatan prestasi, hingga pencetakan portofolio non-akademik resmi dengan validasi publik.
+          <p className="text-lg md:text-xl text-[#525049] mb-10 max-w-2xl mx-auto leading-relaxed">
+            Daftar ekskul pilihanmu, pantau kehadiran latihan rutin, dan unduh portofolio resmi ber-QR untuk beasiswa maupun lamaran kerja.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" onClick={() => onNavigate('/login')} icon={<LogIn className="w-5 h-5" />} className="w-full sm:w-auto shadow-md">
@@ -147,23 +147,44 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
       {/* Quick Verify Tool */}
       <section className="py-0 relative z-10 max-w-4xl mx-auto px-4 -mt-12">
-        <div className="bg-white border border-[#EAE6DC] p-6 rounded-2xl shadow-xl flex flex-col md:flex-row items-center gap-6">
-          <div className="flex-1">
-            <h3 className="font-bold text-lg text-[#171717] flex items-center gap-2 mb-1">
-              <ShieldCheck className="w-5 h-5 text-[#D15B40]" /> Verifikasi Dokumen
-            </h3>
-            <p className="text-sm text-[#68655F]">Masukkan kode sertifikat atau portofolio untuk mengecek validitas data institusional.</p>
+        <div className="bg-white border border-[#EAE6DC] p-6 sm:p-7 rounded-2xl shadow-xl space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="flex-1">
+              <h2 className="font-bold text-lg text-[#171717] flex items-center gap-2 mb-1">
+                <ShieldCheck className="w-5 h-5 text-[#D15B40]" /> Cek Keaslian Portofolio & Piagam
+              </h2>
+              <p className="text-sm text-[#525049] leading-relaxed">
+                Kampus, penyedia beasiswa, atau perusahaan dapat memastikan keaslian dokumen siswa langsung dari data sekolah.
+              </p>
+            </div>
+            <form onSubmit={handleVerifySubmit} className="flex-1 flex w-full gap-2.5">
+              <input 
+                type="text" 
+                aria-label="Nomor verifikasi dokumen"
+                placeholder="Contoh: EKH-2026-000184" 
+                value={searchVerifyId} 
+                onChange={(e) => setSearchVerifyId(e.target.value)} 
+                className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium text-[#171717] placeholder:text-[#78746B] focus:outline-none focus:border-[#D15B40] focus:ring-2 focus:ring-[#D15B40]/20 transition-all" 
+              />
+              <Button type="submit" size="lg" className="rounded-xl shrink-0">Cek Dokumen</Button>
+            </form>
           </div>
-          <form onSubmit={handleVerifySubmit} className="flex-1 flex w-full gap-3">
-            <input 
-              type="text" 
-              placeholder="Masukkan nomor verifikasi dokumen (misal: EKH-...)" 
-              value={searchVerifyId} 
-              onChange={(e) => setSearchVerifyId(e.target.value)} 
-              className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D15B40] focus:ring-1 focus:ring-[#D15B40] transition-all" 
-            />
-            <Button type="submit" size="lg" className="rounded-xl">Cek Data</Button>
-          </form>
+
+          {/* 3 Simple Steps Guidance */}
+          <div className="pt-4 border-t border-[#EAE6DC]/80 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#525049]">
+            <div className="flex items-start gap-2 bg-[#F9F8F6] p-2.5 rounded-xl border border-[#EAE6DC]/60">
+              <span className="w-5 h-5 rounded-full bg-[#FDEDE9] text-[#D15B40] font-bold flex items-center justify-center shrink-0 text-[11px]">1</span>
+              <span><strong>Lihat Dokumen:</strong> Temukan nomor seri di bawah kode QR pada portofolio cetak/PDF.</span>
+            </div>
+            <div className="flex items-start gap-2 bg-[#F9F8F6] p-2.5 rounded-xl border border-[#EAE6DC]/60">
+              <span className="w-5 h-5 rounded-full bg-[#FDEDE9] text-[#D15B40] font-bold flex items-center justify-center shrink-0 text-[11px]">2</span>
+              <span><strong>Ketikkan Nomor:</strong> Masukkan kodenya ke kolom di atas lalu tekan tombol <em>Cek Dokumen</em>.</span>
+            </div>
+            <div className="flex items-start gap-2 bg-[#F9F8F6] p-2.5 rounded-xl border border-[#EAE6DC]/60">
+              <span className="w-5 h-5 rounded-full bg-[#FDEDE9] text-[#D15B40] font-bold flex items-center justify-center shrink-0 text-[11px]">3</span>
+              <span><strong>Hasil Resmi Tampil:</strong> Rincian ekskul, presensi, dan bukti sah kesiswaan akan muncul seketika.</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -172,9 +193,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
             <div>
-              <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Eksplorasi Ekstrakurikuler</h2>
-              <p className="text-[#68655F] mt-3 text-lg max-w-2xl">
-                Temukan berbagai pilihan kegiatan ekstrakurikuler unggulan untuk mengembangkan potensi dan bakat siswa secara maksimal.
+              <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Pilihan Ekstrakurikuler</h2>
+              <p className="text-[#525049] mt-3 text-lg max-w-2xl">
+                Temukan kegiatan yang pas buat asah kemampuan, bangun jejaring pertemanan, dan raih prestasi.
               </p>
             </div>
             <Button 
@@ -182,7 +203,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               onClick={() => onNavigate('/ekskul')} 
               icon={<ArrowRight className="w-4 h-4" />}
             >
-              Lihat Semua Katalog
+              Lihat Semua Ekskul
             </Button>
           </div>
           
@@ -202,22 +223,22 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Alur Digital Terpadu</h2>
-            <p className="text-[#68655F] mt-4 text-lg">Platform end-to-end dari pemilihan ekskul hingga pelaporan akhir.</p>
+            <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Bagaimana Cara Kerjanya?</h2>
+            <p className="text-[#525049] mt-4 text-lg">Empat langkah mudah dari pertama kali daftar sampai jadi portofolio siap pakai.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { title: 'Pendaftaran Online', desc: 'Siswa dapat memilih dan mendaftar ekskul secara mandiri melalui katalog interaktif tanpa formulir kertas.', icon: UserCheck },
-              { title: 'Presensi Sesi Latihan', desc: 'Pengurus mencatat kehadiran secara real-time yang akan dipantau langsung oleh guru pembina.', icon: CheckCircle },
-              { title: 'Validasi Prestasi', desc: 'Kesiswaan mengesahkan capaian juara, kepanitiaan, dan organisasi ke dalam rekam jejak siswa.', icon: Trophy },
-              { title: 'Portofolio Terintegrasi', desc: 'Cetak lembar portofolio digital bertanda-tangan dengan barcode resmi untuk syarat kelulusan.', icon: FileText }
+              { title: 'Pilih Ekskul Favorit', desc: 'Cari ekskul yang kamu minati, cek jadwal latihannya, lalu daftar langsung secara mandiri.', icon: UserCheck },
+              { title: 'Ikuti Latihan & Absen', desc: 'Kehadiranmu dicatat tiap sesi latihan oleh pengurus ekskul dan langsung terekap rapi di sistem.', icon: CheckCircle },
+              { title: 'Kumpulkan Prestasi', desc: 'Catat partisipasi lomba, juara, hingga peran di kepanitiaan untuk diverifikasi pembina.', icon: Trophy },
+              { title: 'Unduh Portofolio Resmi', desc: 'Dapatkan transkrip bertanda tangan digital dan kode QR resmi yang siap dilampirkan ke kampus atau dunia kerja.', icon: FileText }
             ].map((step, i) => (
               <div key={i} className="bg-[#F9F8F6] p-8 rounded-2xl border border-[#EAE6DC] hover:shadow-md transition-shadow hover:border-[#D8D4CC] group">
                 <div className="w-14 h-14 bg-white border border-[#EAE6DC] rounded-xl flex items-center justify-center text-[#D15B40] mb-6 group-hover:scale-110 transition-transform">
                   <step.icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg mb-3 text-[#171717]">{step.title}</h3>
-                <p className="text-sm text-[#68655F] leading-relaxed">{step.desc}</p>
+                <p className="text-sm text-[#525049] leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>

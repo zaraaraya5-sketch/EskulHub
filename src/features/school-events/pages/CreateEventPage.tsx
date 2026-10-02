@@ -266,7 +266,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
           return;
         }
 
-        setSubmitSuccess('Agenda kegiatan baru berhasil disimpan ke database SQLite!');
+        setSubmitSuccess('Agenda kegiatan baru berhasil disimpan ke kalender sekolah!');
       }
 
       setTimeout(() => {
@@ -365,10 +365,10 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mt-0.5">
               {isEditMode ? 'Edit Agenda Kegiatan' : 'Tambah Agenda Kegiatan Baru'}
             </h1>
-            <p className="text-xs sm:text-sm text-[#68655F] mt-1 max-w-2xl">
+            <p className="text-xs sm:text-sm text-[#525049] mt-1 max-w-2xl">
               {isEditMode
-                ? 'Perbarui rincian waktu, lokasi, atau deskripsi agenda kegiatan yang sebelumnya telah dijadwalkan.'
-                : 'Jadwalkan agenda resmi sekolah, hari libur nasional, pertemuan rutin, atau kompetisi ekstrakurikuler ke database kalender sekolah.'}
+                ? 'Perbarui rincian waktu, lokasi, atau deskripsi agenda kegiatan yang telah dijadwalkan.'
+                : 'Jadwalkan agenda resmi sekolah, hari libur nasional, pertemuan rutin, atau kompetisi ekstrakurikuler ke kalender kegiatan sekolah.'}
             </p>
           </div>
 

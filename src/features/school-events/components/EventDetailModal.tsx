@@ -206,16 +206,16 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </div>
 
             {!canManage && currentUser && (
-              <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl flex items-start gap-2 text-2xs leading-relaxed">
+              <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl flex items-start gap-2 text-xs leading-relaxed">
                 <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <span>
-                  Jadwal ini dibuat oleh <strong>{creatorLabel}</strong>. Akun Anda (<strong>{userLabel}</strong>) tidak memiliki izin untuk mengedit atau menghapus jadwal tersebut.
+                  Jadwal ini dibuat oleh <strong>{creatorLabel}</strong>, sehingga hanya pembuat atau admin yang dapat mengubah atau menghapusnya.
                 </span>
               </div>
             )}
 
             {deleteError && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-2xs flex items-center gap-2">
+              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
                 <span>{deleteError}</span>
               </div>
@@ -224,10 +224,10 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             {showDeleteConfirm ? (
               <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5">
                 <div className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
-                  <AlertTriangle className="w-4 h-4 text-rose-600" /> Konfirmasi Hapus Jadwal
+                  <AlertTriangle className="w-4 h-4 text-rose-600" /> Hapus Jadwal Kegiatan
                 </div>
-                <p className="text-2xs text-rose-800 leading-relaxed">
-                  Apakah Anda yakin ingin menghapus agenda <strong>"{event.title}"</strong>? Jadwal akan dihapus secara permanen dari kalender dan database.
+                <p className="text-xs text-rose-800 leading-relaxed">
+                  Yakin ingin menghapus <strong>"{event.title}"</strong> dari kalender? Agenda ini tidak bisa dikembalikan setelah dihapus.
                 </p>
                 <div className="flex items-center justify-end gap-2 pt-1">
                   <button

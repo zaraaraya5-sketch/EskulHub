@@ -83,9 +83,9 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
              currentPath.includes('registrations') ? 'Verifikasi Pendaftaran' : 
              currentPath.includes('activities') ? 'Dokumentasi & Kegiatan' : 
              currentPath.includes('achievements') ? 'Prestasi Anggota' : 
-             'Dasbor Operasional Ekstrakurikuler'}
+             'Dasbor Pengurus Ekstrakurikuler'}
           </h1>
-          <p className="text-xs text-[#68655F] mt-0.5">
+          <p className="text-xs text-[#525049] mt-0.5">
             Ketua: <strong className="text-[#171717]">{managedEkskul.chairperson_name}</strong> • Pembina: <strong className="text-[#171717]">{managedEkskul.supervisor_name}</strong>
           </p>
         </div>

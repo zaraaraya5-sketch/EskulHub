@@ -15,10 +15,10 @@ export const GuestNotificationBanner: React.FC<GuestNotificationBannerProps> = (
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-bold text-sm sm:text-base text-[#171717]">Kalender Kegiatan Terpadu</span>
+            <span className="font-bold text-sm sm:text-base text-[#171717]">Jadwal & Agenda Sekolah</span>
           </div>
-          <p className="text-xs sm:text-sm text-[#68655F] mt-1 leading-relaxed max-w-3xl">
-            Menampilkan seluruh agenda resmi sekolah, hari libur nasional, jadwal latihan rutin, dan kompetisi ekstrakurikuler. Gunakan filter kategori di bawah untuk memilah jenis kegiatan.
+          <p className="text-xs sm:text-sm text-[#525049] mt-1 leading-relaxed max-w-3xl">
+            Lihat jadwal latihan ekskul, acara sekolah, dan hari libur. Masuk ke akunmu jika ingin menambah atau mengelola agenda.
           </p>
         </div>
       </div>

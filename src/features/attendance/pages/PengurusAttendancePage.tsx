@@ -77,7 +77,7 @@ export const PengurusAttendancePage: React.FC = () => {
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
             Pencatatan Presensi Sesi Latihan
           </h1>
-          <p className="text-xs text-[#68655F] mt-0.5">
+          <p className="text-xs text-[#525049] mt-0.5">
             Buku catatan kehadiran terhubung otomatis ke profil dan lembar portofolio resmi masing-masing anggota.
           </p>
         </div>

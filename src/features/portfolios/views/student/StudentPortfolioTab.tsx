@@ -43,11 +43,11 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-white/10 rounded text-xs font-semibold uppercase tracking-wider text-white">
             <ShieldCheck className="w-4 h-4 text-white" />
-            <span>Dokumen Resmi Validasi Kearsipan Sekolah</span>
+            <span>Dokumen Resmi Kesiswaan Sekolah</span>
           </div>
-          <h2 className="text-xl font-bold">Portofolio Non-Akademik Terverifikasi</h2>
+          <h2 className="text-xl font-bold">Portofolio Ekstrakurikuler Siswa</h2>
           <p className="text-xs text-white/80 max-w-2xl leading-relaxed">
-            Portofolio ini berisi rekam jejak resmi keikutsertaan ekskul, persentase kehadiran digital ({attendanceRate}%), pencapaian prestasi lomba, serta peran kepanitiaan yang disahkan dengan QR Code institusi.
+            Portofolio ini memuat rekam jejak keikutsertaan ekskul, kehadiran latihan ({attendanceRate}%), raihan prestasi lomba, serta peran organisasi yang disahkan dengan kode QR resmi sekolah.
           </p>
         </div>
 
@@ -73,8 +73,8 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
             <h3 className="text-lg font-bold text-[#171717] mt-0.5">
               SURAT KETERANGAN PORTOFOLIO EKSTRAKURIKULER
             </h3>
-            <div className="text-xs text-[#68655F]">
-              Nomor Surat: <span className="font-mono text-[#171717]">{verification.verification_id}</span>
+            <div className="text-xs text-[#525049]">
+              Nomor Dokumen: <span className="font-mono text-[#171717]">{verification.verification_id}</span>
             </div>
           </div>
 
@@ -85,7 +85,7 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
               className="px-3 py-1.5 bg-[#E7EFEA] hover:bg-[#d8e7de] border border-[#B7D2C2] text-[#234B36] text-xs font-bold rounded flex items-center gap-1.5 cursor-pointer transition-colors"
             >
               <ShieldCheck className="w-4 h-4" />
-              <span>Uji Validasi QR Publik</span>
+              <span>Lihat Halaman Verifikasi</span>
             </button>
           </div>
         </div>
@@ -93,19 +93,19 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
         {/* Student info grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-            <span className="text-[#68655F] block text-[11px]">Nama Lengkap Siswa</span>
+            <span className="text-[#525049] block text-[11px]">Nama Lengkap Siswa</span>
             <span className="text-sm font-bold text-[#171717]">{studentName}</span>
           </div>
           <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-            <span className="text-[#68655F] block text-[11px]">Nomor Induk Siswa (NISN)</span>
+            <span className="text-[#525049] block text-[11px]">Nomor Induk Siswa (NISN)</span>
             <span className="text-sm font-bold font-mono text-[#171717]">{regNisn}</span>
           </div>
           <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-            <span className="text-[#68655F] block text-[11px]">Rombongan Belajar (Kelas)</span>
+            <span className="text-[#525049] block text-[11px]">Kelas</span>
             <span className="text-sm font-bold text-[#171717]">{regClass}</span>
           </div>
           <div className="p-3 bg-[#F9F8F6]/40 border border-[#EAE6DC] rounded">
-            <span className="text-[#68655F] block text-[11px]">Tingkat Kehadiran Latihan</span>
+            <span className="text-[#525049] block text-[11px]">Kehadiran Latihan</span>
             <span className="text-sm font-bold text-[#234B36]">{attendanceRate}% ({presentCount}/{totalSessions} Sesi)</span>
           </div>
         </div>

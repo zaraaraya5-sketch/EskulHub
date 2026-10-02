@@ -62,12 +62,12 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
           onClick={() => setActiveTab('registrations')}
           className="bg-white border border-[#F2F0EB] rounded-2xl p-4 hover:shadow-md hover:border-[#234B36]/30 transition-all cursor-pointer shadow-sm flex flex-col justify-between group"
         >
-          <div className="text-[11px] font-bold text-[#68655F] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Pendaftaran</div>
+          <div className="text-[11px] font-bold text-[#525049] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Pendaftaran</div>
           <div className="text-3xl font-black text-[#171717] mt-2 group-hover:scale-105 transform origin-left transition-transform">
             {myRegistrations.length}
           </div>
           <div className="text-[11px] text-[#B58A32] font-semibold mt-1">
-            {myRegistrations.filter((r) => r.status === 'pending').length} Menunggu review
+            {myRegistrations.filter((r) => r.status === 'pending').length} Menunggu persetujuan
           </div>
         </div>
 
@@ -75,16 +75,16 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
           onClick={() => setActiveTab('attendance')}
           className="bg-white border border-[#F2F0EB] rounded-2xl p-4 hover:shadow-md hover:border-[#234B36]/30 transition-all cursor-pointer shadow-sm flex flex-col justify-between group"
         >
-          <div className="text-[11px] font-bold text-[#68655F] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Kehadiran</div>
+          <div className="text-[11px] font-bold text-[#525049] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Kehadiran</div>
           <div className="text-3xl font-black text-[#234B36] mt-2 group-hover:scale-105 transform origin-left transition-transform">{attendanceRate}%</div>
-          <div className="text-[11px] text-[#68655F] font-semibold mt-1">{presentCount} Hadir dari {totalSessions} sesi</div>
+          <div className="text-[11px] text-[#525049] font-semibold mt-1">{presentCount} Hadir dari {totalSessions} sesi</div>
         </div>
 
         <div
           onClick={() => setActiveTab('achievements')}
           className="bg-white border border-[#F2F0EB] rounded-2xl p-4 hover:shadow-md hover:border-[#234B36]/30 transition-all cursor-pointer shadow-sm flex flex-col justify-between group"
         >
-          <div className="text-[11px] font-bold text-[#68655F] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Prestasi</div>
+          <div className="text-[11px] font-bold text-[#525049] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Prestasi</div>
           <div className="text-3xl font-black text-[#171717] mt-2 group-hover:scale-105 transform origin-left transition-transform">{myAchievements.length}</div>
           <div className="text-[11px] text-[#234B36] font-semibold mt-1">
             {myAchievements.filter((a) => a.is_verified).length} Tervalidasi resmi
@@ -95,7 +95,7 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
           onClick={() => setActiveTab('documents')}
           className="bg-white border border-[#F2F0EB] rounded-2xl p-4 hover:shadow-md hover:border-[#234B36]/30 transition-all cursor-pointer shadow-sm flex flex-col justify-between group"
         >
-          <div className="text-[11px] font-bold text-[#68655F] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Dokumen</div>
+          <div className="text-[11px] font-bold text-[#525049] uppercase tracking-wide group-hover:text-[#234B36] transition-colors">Dokumen</div>
           <div className="text-3xl font-black text-[#171717] mt-2 group-hover:scale-105 transform origin-left transition-transform">{myCertificates.length}</div>
           <div className="text-[11px] text-[#234B36] font-semibold mt-1">Piagam tersimpan</div>
         </div>
@@ -109,7 +109,7 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
             <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#F2F0EB]">
               <div>
                 <h2 className="text-sm font-bold text-[#171717]">Ekstrakurikuler yang Diikuti</h2>
-                <p className="text-xs text-[#68655F] mt-0.5">Daftar ekskul resmi tempat Anda terdaftar aktif sebagai anggota/pengurus.</p>
+                <p className="text-xs text-[#525049] mt-0.5">Daftar ekskul resmi tempat kamu terdaftar aktif sebagai anggota atau pengurus.</p>
               </div>
               <Button
                 variant="outline"

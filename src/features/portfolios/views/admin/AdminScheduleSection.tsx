@@ -79,9 +79,9 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
           <div>
-            <h2 className="text-sm font-bold text-[#171717]">Jadwal Sesi Latihan & Kalender Ruangan</h2>
-            <p className="text-xs text-[#68655F]">
-              Sistem otomatis memverifikasi bentrok jadwal ruangan dan fasilitas antar-ekskul.
+            <h2 className="text-sm font-bold text-[#171717]">Jadwal Kegiatan & Pemakaian Ruangan</h2>
+            <p className="text-xs text-[#525049]">
+              Jadwal otomatis diperiksa agar tidak terjadi bentrok ruangan antar-ekskul.
             </p>
           </div>
           <Button variant="primary" size="sm" onClick={() => setIsAddEventModalOpen(true)} icon={<Plus className="w-3.5 h-3.5" />}>

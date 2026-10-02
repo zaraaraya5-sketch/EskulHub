@@ -37,13 +37,13 @@ export const StudentAttendancePage: React.FC = () => {
       {/* Header */}
       <div className="border-b border-[#EAE6DC] pb-5">
         <div className="text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
-          Buku Induk Presensi Digital
+          Presensi Kegiatan Siswa
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-          Rekapitulasi Kehadiran Latihan & Kegiatan
+          Rekap Kehadiran Latihan & Kegiatan
         </h1>
-        <p className="text-xs text-[#68655F] mt-1">
-          Catatan presensi ini menjadi salah satu komponen penilaian kelayakan verifikasi portofolio kelulusan.
+        <p className="text-xs text-[#525049] mt-1">
+          Kehadiran latihanmu terekam otomatis di sini dan menjadi bagian resmi dari transkrip portofolio.
         </p>
       </div>
 

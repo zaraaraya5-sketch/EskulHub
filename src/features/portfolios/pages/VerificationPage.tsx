@@ -90,32 +90,32 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] text-xs font-semibold rounded-full mb-3">
             <ShieldCheck className="w-4 h-4" />
-            <span>Layanan Publik Resmi • Satuan Pendidikan</span>
+            <span>Layanan Verifikasi Dokumen Sekolah</span>
           </div>
           
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mb-2">
-            Pusat Validasi Dokumen & Portofolio Siswa
+            Verifikasi Portofolio & Piagam Siswa
           </h1>
-          <p className="text-sm text-[#68655F] leading-relaxed mb-6">
-            Sistem kearsipan digital terpadu untuk memverifikasi keabsahan lembar portofolio kegiatan ekstrakurikuler,
-            piagam penghargaan, dan rekam jejak kepengurusan organisasi siswa yang diterbitkan secara resmi oleh sekolah.
+          <p className="text-sm text-[#525049] leading-relaxed mb-6">
+            Cek keaslian lembar portofolio kegiatan ekstrakurikuler, piagam penghargaan, dan rekam jejak organisasi siswa yang diterbitkan resmi oleh sekolah.
           </p>
 
           <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-2.5">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-[#A8A49C] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-[#78746B] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
+                aria-label="Nomor verifikasi dokumen"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Masukkan Nomor Verifikasi (Contoh: EKH-XXXX-XXXXXX)"
-                className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-[#EAE6DC] rounded-xl text-[#171717] placeholder:text-[#A8A49C] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all"
+                placeholder="Nomor verifikasi (contoh: EKH-2026-000184)"
+                className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-[#EAE6DC] rounded-xl text-[#171717] placeholder:text-[#78746B] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all"
               />
             </div>
             
             <div className="flex gap-2">
               <Button type="submit" variant="primary" className="rounded-xl px-5">
-                Cek Keabsahan
+                Cek Dokumen
               </Button>
               {hasQuery && (
                 <Button
@@ -133,9 +133,9 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
           {/* Quick Demo Hint */}
           {sampleVerification && !hasQuery && (
-            <div className="mt-3.5 flex items-center gap-2 text-xs text-[#68655F]">
+            <div className="mt-3.5 flex items-center gap-2 text-xs text-[#525049]">
               <Sparkles className="w-3.5 h-3.5 text-[#D15B40]" />
-              <span>Ingin mencoba simulasi validasi dokumen sah?</span>
+              <span>Ingin mencoba cek contoh dokumen resmi?</span>
               <button
                 type="button"
                 onClick={() => {
@@ -173,7 +173,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 {verification.security_seal && (
                   <div className="mt-1 flex items-center sm:justify-end gap-1 px-2 py-0.5 rounded bg-black/20 border border-white/20 text-[10px] font-mono text-white">
                     <ShieldCheck className="w-3 h-3 text-[#A7F3D0]" />
-                    <span>HMAC-SHA256: {verification.security_seal}</span>
+                    <span>Kode Pengaman: {verification.security_seal}</span>
                   </div>
                 )}
               </div>
@@ -193,26 +193,26 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             {/* Student & School Info Box */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-5 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs">
               <div className="space-y-2">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#68655F] uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#525049] uppercase tracking-wider">
                   <User className="w-3.5 h-3.5 text-[#D15B40]" />
-                  <span>Identitas Siswa Terdaftar</span>
+                  <span>Data Siswa</span>
                 </div>
                 <div>
                   <div className="text-base font-bold text-[#171717]">{verification.student_name}</div>
-                  <div className="text-[#68655F] mt-0.5">
+                  <div className="text-[#525049] mt-0.5">
                     NISN: <span className="font-mono font-semibold text-[#171717]">{verification.student_nisn}</span> • Kelas: <span className="font-semibold text-[#171717]">{verification.student_class}</span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#68655F] uppercase tracking-wider">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#525049] uppercase tracking-wider">
                   <School className="w-3.5 h-3.5 text-[#D15B40]" />
-                  <span>Satuan Pendidikan Penerbit</span>
+                  <span>Sekolah Penerbit</span>
                 </div>
                 <div>
                   <div className="text-base font-bold text-[#171717]">{verification.school_name}</div>
-                  <div className="text-[#68655F] mt-0.5">
+                  <div className="text-[#525049] mt-0.5">
                     Tahun Ajaran: <span className="font-semibold text-[#171717]">{verification.academic_year}</span> • Tanggal Terbit: <span className="font-semibold text-[#171717]">{verification.issue_date}</span>
                   </div>
                 </div>
@@ -223,18 +223,18 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             <div>
               <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC] mb-3">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] flex items-center gap-2">
-                  <span>1. Riwayat Keanggotaan Ekstrakurikuler yang Disahkan</span>
+                  <span>1. Riwayat Ekstrakurikuler yang Diikuti</span>
                 </h3>
-                <Badge variant="success">Tingkat Presensi: {verification.summary_data.total_attendance_rate}</Badge>
+                <Badge variant="success">Kehadiran Latihan: {verification.summary_data.total_attendance_rate}</Badge>
               </div>
               <div className="divide-y divide-[#EAE6DC] border border-[#EAE6DC] rounded-xl overflow-hidden bg-white">
                 {verification.summary_data.ekskul_list.map((item, idx) => (
                   <div key={idx} className="p-3.5 flex items-center justify-between text-xs hover:bg-[#F9F8F6]/60 transition-colors">
                     <div>
                       <span className="font-bold text-[#171717] text-sm">{item.name}</span>
-                      <span className="text-[#68655F] ml-2 font-medium">({item.role})</span>
+                      <span className="text-[#525049] ml-2 font-medium">({item.role})</span>
                     </div>
-                    <span className="text-[#68655F] font-mono bg-[#F9F8F6] px-2 py-0.5 rounded border border-[#EAE6DC]">{item.period}</span>
+                    <span className="text-[#525049] font-mono bg-[#F9F8F6] px-2 py-0.5 rounded border border-[#EAE6DC]">{item.period}</span>
                   </div>
                 ))}
               </div>
@@ -246,33 +246,31 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 <div className="flex items-center justify-between pb-2 border-b border-[#EAE6DC] mb-3">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#171717] flex items-center gap-1.5">
                     <Trophy className="w-4 h-4 text-[#B58A32]" />
-                    <span>2. Prestasi & Penghargaan Terverifikasi</span>
+                    <span>2. Prestasi & Penghargaan Resmi</span>
                   </h3>
-                  <span className="text-xs text-[#68655F] font-medium">{verification.summary_data.achievements.length} Capaian Resmi</span>
+                  <span className="text-xs text-[#525049] font-medium">{verification.summary_data.achievements.length} Capaian Resmi</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {verification.summary_data.achievements.map((ach, idx) => (
                     <div key={idx} className="p-3.5 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded-xl flex items-center justify-between text-xs">
                       <div>
                         <div className="font-bold text-[#171717]">{ach.title}</div>
-                        <div className="text-[#68655F] mt-0.5">Tingkat {ach.level} • Tahun {ach.year}</div>
+                        <div className="text-[#525049] mt-0.5">Tingkat {ach.level} • Tahun {ach.year}</div>
                       </div>
                       <Badge variant="warning">{ach.rank}</Badge>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-
-            {/* Official Validation Notice */}
-            <div className="p-4 border-l-4 border-[#D15B40] bg-[#F9F8F6] rounded-r-xl text-xs text-[#68655F] space-y-1.5">
-              <div className="font-bold text-[#171717]">Catatan Pengesahan Institusional:</div>
+            )}                {/* Official Validation Notice */}
+            <div className="p-4 border-l-4 border-[#D15B40] bg-[#F9F8F6] rounded-r-xl text-xs text-[#525049] space-y-1.5">
+              <div className="font-bold text-[#171717]">Catatan Pengesahan Sekolah:</div>
               <p className="leading-relaxed">
-                Dokumen ini merupakan wujud pengesahan elektronik resmi kesiswaan {verification.school_name}. 
-                Seluruh data kegiatan dan capaian bersumber langsung dari catatan buku induk presensi serta verifikasi berkala guru pembina ekstrakurikuler.
+                Dokumen ini diterbitkan secara sah oleh bagian kesiswaan {verification.school_name}. 
+                Seluruh catatan kegiatan, persentase kehadiran latihan, dan daftar prestasi dicatat berkala oleh guru pembina ekstrakurikuler.
               </p>
               <div className="pt-1.5 text-[11px] text-[#D15B40] font-semibold">
-                Diverifikasi secara sah oleh: {verification.verified_by_name}
+                Diverifikasi sah oleh: {verification.verified_by_name}
               </div>
             </div>
           </div>
@@ -286,10 +284,10 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
             <AlertTriangle className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-[#171717]">Nomor Dokumen Tidak Ditemukan</h2>
-            <p className="text-xs sm:text-sm text-[#68655F] max-w-lg mx-auto mt-1 leading-relaxed">
-              Nomor verifikasi <code className="font-mono font-bold text-[#171717] bg-[#F9F8F6] px-1.5 py-0.5 rounded border border-[#EAE6DC]">{cleanId}</code> tidak terdaftar dalam pangkalan data kesiswaan sekolah kami.
-              Pastikan Anda memasukkan kode persis seperti yang tercetak pada sertifikat atau transkrip portofolio resmi.
+            <h2 className="text-lg font-bold text-[#171717]">Dokumen Belum Ditemukan</h2>
+            <p className="text-xs sm:text-sm text-[#525049] max-w-lg mx-auto mt-1 leading-relaxed">
+              Kami tidak menemukan arsip dengan kode <code className="font-mono font-bold text-[#171717] bg-[#F9F8F6] px-1.5 py-0.5 rounded border border-[#EAE6DC]">{cleanId}</code>.
+              Coba periksa kembali apakah ada huruf atau angka yang salah ketik, atau scan langsung kode QR pada lembar portofolio.
             </p>
           </div>
 
@@ -300,7 +298,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               onClick={handleReset}
               className="rounded-xl"
             >
-              Kembali ke Panduan Verifikasi
+              Kembali ke Panduan
             </Button>
             
             {sampleVerification && (
@@ -328,10 +326,10 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
           <section className="space-y-6">
             <div className="text-center max-w-2xl mx-auto">
               <h2 className="text-xl sm:text-2xl font-bold text-[#171717] tracking-tight">
-                Mengapa Verifikasi Digital Portofolio Begitu Penting?
+                Kenapa Portofolio Siswa Perlu Diverifikasi?
               </h2>
-              <p className="text-xs sm:text-sm text-[#68655F] mt-2">
-                Menjembatani capaian non-akademik siswa dengan kebutuhan validasi institusional perguruan tinggi dan dunia kerja.
+              <p className="text-xs sm:text-sm text-[#525049] mt-2">
+                Biar seluruh keaktifan dan prestasi siswa selama di ekskul benar-benar diakui saat mendaftar kuliah, beasiswa, maupun melamar kerja.
               </p>
             </div>
 
@@ -342,14 +340,14 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                   <div className="w-10 h-10 rounded-xl bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base font-bold text-[#171717]">Integritas & Anti-Pemalsuan</h3>
-                  <p className="text-xs text-[#68655F] leading-relaxed">
-                    Setiap lembar portofolio dilindungi nomor seri verifikasi unik yang terintegrasi langsung dengan buku induk kesiswaan, menghilangkan potensi pemalsuan piagam dan sertifikat.
+                  <h3 className="text-base font-bold text-[#171717]">Aman & Bebas Pemalsuan</h3>
+                  <p className="text-xs text-[#525049] leading-relaxed">
+                    Setiap lembar portofolio punya nomor seri dan kode QR khusus yang terhubung langsung ke database sekolah. Keaslian dokumen bisa dicek siapa saja dalam hitungan detik.
                   </p>
                 </div>
-                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#68655F] font-semibold flex items-center gap-1">
+                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#525049] font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#234B36]" />
-                  <span>Tervalidasi Guru Pembina</span>
+                  <span>Langsung dari Kesiswaan</span>
                 </div>
               </div>
 
@@ -359,14 +357,14 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                   <div className="w-10 h-10 rounded-xl bg-[#E8F4F5] text-[#2A7B88] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <GraduationCap className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base font-bold text-[#171717]">Rujukan SNBP & Beasiswa</h3>
-                  <p className="text-xs text-[#68655F] leading-relaxed">
-                    Memberikan kepastian bagi panitia seleksi perguruan tinggi negeri maupun lembaga beasiswa untuk mengecek keaslian prestasi perlombaan dan riwayat keaktifan siswa.
+                  <h3 className="text-base font-bold text-[#171717]">Siap untuk Seleksi Kuliah & Beasiswa</h3>
+                  <p className="text-xs text-[#525049] leading-relaxed">
+                    Panitia seleksi perguruan tinggi atau pemberi beasiswa cukup membuka tautan verifikasi untuk memastikan riwayat perlombaan dan kejuaraan siswa tanpa minta legalisir manual.
                   </p>
                 </div>
-                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#68655F] font-semibold flex items-center gap-1">
+                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#525049] font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#234B36]" />
-                  <span>Siap Lampiran Portofolio PTN</span>
+                  <span>Cocok untuk Lampiran SNBP</span>
                 </div>
               </div>
 
@@ -376,14 +374,14 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                   <div className="w-10 h-10 rounded-xl bg-[#FBF3DC] text-[#8C6819] flex items-center justify-center font-bold transition-transform duration-300 group-hover:scale-105">
                     <Building2 className="w-5 h-5" />
                   </div>
-                  <h3 className="text-base font-bold text-[#171717]">Kredibilitas Mitra Industri (DUDI)</h3>
-                  <p className="text-xs text-[#68655F] leading-relaxed">
-                    Mitra magang dan rekruter industri dapat meninjau kedisiplinan tingkat presensi ekstrakurikuler serta rekam jejak kepemimpinan siswa sebagai indikator soft skill unggulan.
+                  <h3 className="text-base font-bold text-[#171717]">Bukti Nyata untuk Magang & Kerja</h3>
+                  <p className="text-xs text-[#525049] leading-relaxed">
+                    Perusahaan mitra magang bisa melihat tingkat kehadiran dan kepemimpinan siswa selama berorganisasi. Jadi bukti nyata kedisiplinan dan kemampuan kerja sama.
                   </p>
                 </div>
-                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#68655F] font-semibold flex items-center gap-1">
+                <div className="pt-4 mt-4 border-t border-[#EAE6DC] text-[11px] text-[#525049] font-semibold flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#234B36]" />
-                  <span>Transparansi Rekam Presensi</span>
+                  <span>Presensi & Peran Terdata Rapi</span>
                 </div>
               </div>
             </div>
@@ -391,33 +389,47 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
           {/* 3 Steps Guide on How It Works */}
           <section className="bg-white border border-[#EAE6DC] rounded-2xl p-6 sm:p-8 shadow-xs">
-            <h2 className="text-lg sm:text-xl font-bold text-[#171717] mb-6 flex items-center gap-2">
-              <QrCode className="w-5 h-5 text-[#D15B40]" />
-              <span>3 Langkah Mudah Melakukan Verifikasi Dokumen</span>
-            </h2>
+            <div className="max-w-2xl mb-6">
+              <h2 className="text-lg sm:text-xl font-bold text-[#171717] flex items-center gap-2">
+                <QrCode className="w-5 h-5 text-[#D15B40]" />
+                <span>3 Langkah Mudah Memeriksa Dokumen</span>
+              </h2>
+              <p className="text-xs sm:text-sm text-[#525049] mt-1">
+                Ikuti langkah sederhana ini untuk mengecek apakah portofolio atau sertifikat yang kamu terima asli.
+              </p>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-              <div className="space-y-2">
-                <div className="text-2xl font-black text-[#D15B40]/30 font-mono">01</div>
-                <h4 className="font-bold text-sm text-[#171717]">Temukan Kode pada Dokumen</h4>
-                <p className="text-xs text-[#68655F] leading-relaxed">
-                  Periksa lembar cetak Portofolio atau Sertifikat resmi yang dikeluarkan kesiswaan. Nomor verifikasi tercetak di bagian pojok kanan atas atau di bawah QR Code.
+              <div className="space-y-2.5 bg-[#F9F8F6] p-5 rounded-xl border border-[#EAE6DC]/80">
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-black text-[#D15B40] font-mono">01</div>
+                  <span className="text-[11px] font-semibold text-[#78746B] uppercase tracking-wide">Cek Berkas</span>
+                </div>
+                <h4 className="font-bold text-sm text-[#171717]">Lihat Nomor Dokumen</h4>
+                <p className="text-xs text-[#525049] leading-relaxed">
+                  Buka lembar portofolio cetak atau file PDF. Temukan nomor seri verifikasi di sudut kanan atas atau persis di bawah kode QR (misalnya: <code className="font-mono font-semibold text-[#171717]">EKH-2026-000184</code>).
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="text-2xl font-black text-[#D15B40]/30 font-mono">02</div>
-                <h4 className="font-bold text-sm text-[#171717]">Ketikkan Kode atau Pindai QR</h4>
-                <p className="text-xs text-[#68655F] leading-relaxed">
-                  Masukkan nomor verifikasi ke dalam kotak pencarian di halaman ini, atau pindai langsung QR Code menggunakan kamera ponsel Anda.
+              <div className="space-y-2.5 bg-[#F9F8F6] p-5 rounded-xl border border-[#EAE6DC]/80">
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-black text-[#D15B40] font-mono">02</div>
+                  <span className="text-[11px] font-semibold text-[#78746B] uppercase tracking-wide">Masukkan Kode</span>
+                </div>
+                <h4 className="font-bold text-sm text-[#171717]">Ketik Nomor atau Pindai QR</h4>
+                <p className="text-xs text-[#525049] leading-relaxed">
+                  Masukkan nomor tersebut ke kotak pencarian di atas lalu klik <em>Cek Dokumen</em>. Kamu juga bisa langsung mengarahkan kamera HP ke kode QR di dokumen.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="text-2xl font-black text-[#D15B40]/30 font-mono">03</div>
-                <h4 className="font-bold text-sm text-[#171717]">Dapatkan Hasil Validasi Sah</h4>
-                <p className="text-xs text-[#68655F] leading-relaxed">
-                  Sistem seketika mencocokkan kode dengan basis data sekolah dan menampilkan identitas siswa, daftar kegiatan, tingkat presensi, serta pengesahan kesiswaan.
+              <div className="space-y-2.5 bg-[#F9F8F6] p-5 rounded-xl border border-[#EAE6DC]/80">
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-black text-[#D15B40] font-mono">03</div>
+                  <span className="text-[11px] font-semibold text-[#78746B] uppercase tracking-wide">Hasil Validasi</span>
+                </div>
+                <h4 className="font-bold text-sm text-[#171717]">Lihat Bukti Keaslian Resmi</h4>
+                <p className="text-xs text-[#525049] leading-relaxed">
+                  Halaman ini seketika menampilkan identitas siswa, daftar kegiatan ekskul, persentase kehadiran, sertifikat juara, serta tanda tangan pembina sekolah.
                 </p>
               </div>
             </div>
@@ -425,29 +437,29 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
           {/* Types of Documents Covered */}
           <section className="space-y-4">
-            <h3 className="text-base font-bold text-[#171717]">Jenis Dokumen Kesiswaan yang Tervalidasi</h3>
+            <h3 className="text-base font-bold text-[#171717]">Dokumen Apa Saja yang Bisa Dicek di Sini?</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl flex items-start gap-3 text-xs">
                 <FileText className="w-5 h-5 text-[#D15B40] shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold text-[#171717]">Transkrip Ekstrakurikuler</div>
-                  <div className="text-[#68655F] mt-0.5">Memuat riwayat keanggotaan aktif dan persentase kehadiran per semester.</div>
+                  <div className="font-bold text-[#171717]">Transkrip Portofolio Ekskul</div>
+                  <div className="text-[#525049] mt-0.5">Memuat riwayat keikutsertaan ekskul, peran jabatan, dan persentase kehadiran latihan.</div>
                 </div>
               </div>
 
               <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl flex items-start gap-3 text-xs">
                 <Trophy className="w-5 h-5 text-[#B58A32] shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold text-[#171717]">Piagam Prestasi & Lomba</div>
-                  <div className="text-[#68655F] mt-0.5">Pengakuan kejuaraan dan capaian lomba akademik maupun non-akademik siswa.</div>
+                  <div className="font-bold text-[#171717]">Sertifikat Prestasi & Juara</div>
+                  <div className="text-[#525049] mt-0.5">Pengakuan resmi atas keikutsertaan lomba dan medali juara yang diraih siswa.</div>
                 </div>
               </div>
 
               <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl flex items-start gap-3 text-xs">
                 <Award className="w-5 h-5 text-[#2A7B88] shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold text-[#171717]">SK Kepengurusan Organisasi</div>
-                  <div className="text-[#68655F] mt-0.5">Pengesahan masa bakti ketua, pengurus harian, dan divisi kegiatan.</div>
+                  <div className="font-bold text-[#171717]">Surat Keterangan Pengurus</div>
+                  <div className="text-[#525049] mt-0.5">Bukti sah masa bakti ketua, pengurus inti, dan koordinator divisi organisasi ekskul.</div>
                 </div>
               </div>
             </div>
@@ -460,8 +472,8 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
                 <School className="w-5 h-5" />
               </div>
               <div>
-                <span className="font-bold text-[#171717] block">Standar Kearsipan Nasional Satuan Pendidikan</span>
-                <span className="text-[#68655F]">Data portofolio terkelola aman, terpusat, dan akuntabel di bawah pengawasan Kesiswaan Sekolah.</span>
+                <span className="font-bold text-[#171717] block">Terhubung Langsung dengan Kesiswaan Sekolah</span>
+                <span className="text-[#525049]">Semua data portofolio dan prestasi dikelola secara aman serta diverifikasi berkala oleh guru pembina.</span>
               </div>
             </div>
             
@@ -479,11 +491,10 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               </Button>
             )}
           </div>
-
         </div>
       )}
-
     </div>
   );
 };
+
 export default VerificationPage;

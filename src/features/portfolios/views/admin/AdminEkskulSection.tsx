@@ -56,8 +56,8 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
           <div>
-            <h2 className="text-sm font-bold text-[#171717]">Master Data Ekstrakurikuler Resmi</h2>
-            <p className="text-xs text-[#68655F]">Atur kuota daya tampung, jadwal rutin, penugasan guru pembina, dan status pendaftaran.</p>
+            <h2 className="text-sm font-bold text-[#171717]">Daftar Ekstrakurikuler Sekolah</h2>
+            <p className="text-xs text-[#525049]">Kelola kapasitas anggota, jadwal latihan, guru pembina, dan status pendaftaran.</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative">

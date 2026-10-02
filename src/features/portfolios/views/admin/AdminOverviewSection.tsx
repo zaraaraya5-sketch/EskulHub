@@ -112,26 +112,26 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             <BookOpen className="w-4 h-4 text-[#234B36]" />
           </div>
           <div className="text-2xl font-bold text-[#171717] group-hover:text-[#234B36]">{ekskuls.length}</div>
-          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Master Ekskul →</div>
+          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Kelola Ekskul →</div>
         </div>
 
         <div
           onClick={() => switchSection('verification')}
           className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#262522] transition-colors group col-span-2 lg:col-span-1"
         >
-          <div className="flex items-center justify-between text-[#68655F] mb-1">
+          <div className="flex items-center justify-between text-[#525049] mb-1">
             <span className="text-[10px] font-bold uppercase tracking-wider">Portofolio QR</span>
             <ShieldCheck className="w-4 h-4 text-[#262522]" />
           </div>
           <div className="text-2xl font-bold text-[#171717]">{verifications.length} Sah</div>
-          <div className="text-[11px] text-[#262522] font-semibold mt-0.5">Audit Dokumen →</div>
+          <div className="text-[11px] text-[#262522] font-semibold mt-0.5">Cek Dokumen →</div>
         </div>
       </div>
 
       {/* Quick Shortcuts Bar */}
       <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-4">
         <div className="text-xs font-bold uppercase tracking-wider text-[#234B36] mb-3">
-          Aksi Cepat Administrator
+          Aksi Cepat Kesiswaan
         </div>
         <div className="flex flex-wrap gap-2.5">
           <Button variant="outline" size="sm" onClick={() => openAddUserModal('student')} icon={<GraduationCap className="w-3.5 h-3.5" />}>
@@ -150,7 +150,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             + Jadwal Latihan
           </Button>
           <Button variant="outline" size="sm" onClick={() => switchSection('verification')} icon={<QrCode className="w-3.5 h-3.5" />}>
-            Audit QR Portofolio
+            Cek Dokumen & QR
           </Button>
         </div>
       </div>

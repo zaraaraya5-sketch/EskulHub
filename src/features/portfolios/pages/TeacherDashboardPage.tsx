@@ -67,15 +67,15 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
           Panel Guru Pembina • {currentUser?.name || 'Hendra Wijaya, S.Pd.'}
         </div>
         <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-            {currentPath.includes('extracurriculars') ? 'Daftar Isi Ekskul' : 
-             currentPath.includes('members') ? 'Manajemen Anggota & Pendaftaran' : 
+            {currentPath.includes('extracurriculars') ? 'Daftar Ekskul Binaan' : 
+             currentPath.includes('members') ? 'Daftar Anggota & Pendaftaran' : 
              currentPath.includes('attendance') ? 'Rekap Presensi Siswa' : 
-             currentPath.includes('achievements') ? 'Verifikasi Portofolio Resmi' : 
+             currentPath.includes('achievements') ? 'Verifikasi Prestasi Siswa' : 
              currentPath.includes('activities') ? 'Dokumentasi Kegiatan' : 
-             'Dasbor Ringkasan Pembina'}
+             'Dasbor Guru Pembina'}
         </h1>
-        <p className="text-xs text-[#68655F] mt-0.5">
-          Memantau kesehatan presensi anggota, menyetujui pesan formulir permohonan anggota baru, serta mengesahkan capaian kejuaraan siswa.
+        <p className="text-xs text-[#525049] mt-0.5">
+          Pantau kehadiran anggota latihan, tinjau pendaftaran anggota baru, dan sahkan prestasi lomba siswa binaan.
         </p>
       </div>
 
@@ -98,7 +98,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
                 <Badge variant="success">Binaan Aktif</Badge>
               </div>
               <h2 className="text-base font-bold text-[#171717]">{ekskul.name}</h2>
-              <div className="text-xs text-[#68655F] space-y-1">
+              <div className="text-xs text-[#525049] space-y-1">
                 <div>Ketua Siswa: <strong className="text-[#171717]">{ekskul.chairperson_name}</strong></div>
                 <div>Jadwal Rutin: <strong className="text-[#171717]">{ekskul.practice_schedule}</strong></div>
                 <div>Anggota Terdaftar: <strong className="text-[#171717]">{ekskul.current_member_count} / {ekskul.member_capacity} Siswa</strong></div>
@@ -112,22 +112,22 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
       {(currentPath.includes('dashboard') || currentPath === '/pembina' || currentPath === '/teacher') && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/extracurriculars')}>
-            <span className="text-xs font-bold text-[#68655F] uppercase">Total Binaan</span>
+            <span className="text-xs font-bold text-[#525049] uppercase">Total Binaan</span>
             <span className="text-2xl font-black text-[#171717]">{ekskuls.length} Ekskul</span>
             <div className="text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1 mt-1">
               <span>Lihat Detail</span> <ArrowRight className="w-3 h-3" />
             </div>
           </div>
           <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/members')}>
-            <span className="text-xs font-bold text-[#68655F] uppercase">Pendaftar Baru (Pending)</span>
+            <span className="text-xs font-bold text-[#525049] uppercase">Pendaftar Baru</span>
             <span className="text-2xl font-black text-[#D15B40]">{relevantRegistrations.filter(r => r.status === 'pending').length} Siswa</span>
             <div className="text-[11px] text-[#D15B40] font-semibold flex items-center gap-1 mt-1">
               <span>Kelola Pendaftar</span> <ArrowRight className="w-3 h-3" />
             </div>
           </div>
           <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/achievements')}>
-            <span className="text-xs font-bold text-[#68655F] uppercase">Antrian Validasi Prestasi</span>
-            <span className="text-2xl font-black text-[#8C6819]">{achievements.filter(a => !a.is_verified).length} Dokumen</span>
+            <span className="text-xs font-bold text-[#525049] uppercase">Prestasi Perlu Diverifikasi</span>
+            <span className="text-2xl font-black text-[#8C6819]">{achievements.filter(a => !a.is_verified).length} Prestasi</span>
             <div className="text-[11px] text-[#8C6819] font-semibold flex items-center gap-1 mt-1">
               <span>Verifikasi Sekarang</span> <ArrowRight className="w-3 h-3" />
             </div>

@@ -124,16 +124,16 @@ export const GuruDashboardPage: React.FC<{ onNavigate?: (path: string) => void, 
       <div className="border-b border-[#EAE6DC] pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-[#8C6819] mb-1">
-            Portal Guru Wali Kelas & Penilai Raport • {currentUser?.name || 'Dra. Hj. Sri Wahyuni, M.Pd.'}
+            Panel Wali Kelas • {currentUser?.name || 'Dra. Hj. Sri Wahyuni, M.Pd.'}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
             {currentPath.includes('students') ? 'Data Siswa Kelas' : 
              currentPath.includes('grades') ? 'Rekap Nilai Ekstrakurikuler' : 
-             currentPath.includes('verification') ? 'Verifikasi Nilai Raport' : 
-             'Penilaian Karakter & Rekapitulasi Portofolio Kelas'}
+             currentPath.includes('verification') ? 'Verifikasi Nilai Rapor' : 
+             'Rekap Nilai Ekstrakurikuler & Portofolio Siswa'}
           </h1>
-          <p className="text-xs text-[#68655F] mt-0.5">
-            Mengesahkan predikat kegiatan ekstrakurikuler serta nilai pengembangan diri siswa untuk pelaporan buku induk / raport.
+          <p className="text-xs text-[#525049] mt-0.5">
+            Tinjau keaktifan ekskul dan sahkan nilai pengembangan diri siswa untuk pengisian rapor.
           </p>
         </div>
 

@@ -44,11 +44,11 @@ export const CalendarFilterBar: React.FC<CalendarFilterBarProps> = ({
         })}
       </div>
 
-      <div className="text-[11px] text-[#68655F]">
+      <div className="text-[11px] text-[#525049]">
         {loading ? (
           <span className="inline-flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#D15B40] animate-ping" />
-            Memuat data dari SQLite...
+            Memuat jadwal agenda...
           </span>
         ) : (
           <span>Menampilkan {totalEventsCount} agenda di bulan ini</span>

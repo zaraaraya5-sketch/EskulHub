@@ -385,7 +385,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
       if (res && res.success) {
         setApiSuccess(
           res.message ||
-            `Sukses! Sebanyak ${parsedRows.length} kegiatan berhasil diimpor ke database SQLite.`
+            `Berhasil! Sebanyak ${parsedRows.length} agenda kegiatan berhasil ditambahkan ke kalender sekolah.`
         );
 
         // Keep local database also synchronized for immediate reactivity
@@ -412,7 +412,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
         }, 1600);
       } else {
         setApiError({
-          message: res?.message || 'Gagal menyimpan data import ke database SQLite.',
+          message: res?.message || 'Gagal menyimpan data kegiatan ke kalender sekolah.',
           row: res?.error_row,
           field: res?.error_field,
         });
@@ -642,8 +642,8 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
                 <span className="font-bold text-sm text-[#171717]">
                   Pratinjau Data ({parsedRows.length} Kegiatan Ditemukan)
                 </span>
-                <span className="text-2xs text-[#68655F]">
-                  Periksa keakuratan kolom sebelum disimpan ke database SQLite
+                <span className="text-2xs text-[#525049]">
+                  Periksa kembali daftar kegiatan sebelum disimpan ke kalender
                 </span>
               </div>
 
@@ -747,8 +747,8 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
             className="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold shadow-sm"
           >
             {isSubmitting
-              ? 'Menyimpan ke SQLite...'
-              : `Mulai Import (${parsedRows.length} Jadwal)`}
+              ? 'Menyimpan ke Kalender...'
+              : `Mulai Simpan (${parsedRows.length} Jadwal)`}
           </Button>
         </div>
 

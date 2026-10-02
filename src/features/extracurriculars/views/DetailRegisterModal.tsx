@@ -43,7 +43,7 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
     }
 
     if (!reason.trim()) {
-      setFormError('Mohon isi deskripsi mengenai alasan dan komitmen Anda masuk ekskul ini.');
+      setFormError('Tuliskan sedikit alasan atau motivasimu bergabung ke ekskul ini.');
       return;
     }
 
@@ -59,7 +59,7 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
     });
 
     if (result.success) {
-      setFormSuccess(`Formulir pendaftaran berhasil dikirim langsung ke Guru Pembina (${ekskul.supervisor_name}).`);
+      setFormSuccess(`Pendaftaran berhasil dikirim ke pembina ekskul (${ekskul.supervisor_name}).`);
       setReason('');
       setTimeout(() => {
         onClose();
@@ -77,28 +77,28 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
       title={`Pendaftaran: ${ekskul.name}`}
     >
       <form onSubmit={handleRegisterSubmit} className="space-y-4">
-        <div className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded text-xs space-y-1">
+        <div className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs space-y-1">
           <div className="flex items-center gap-1.5 font-bold text-[#8C6819]">
             <UserCheck className="w-4 h-4" />
-            <span>Formulir ini dikirim langsung ke Guru Pembina:</span>
+            <span>Pendaftaran akan ditinjau oleh:</span>
           </div>
           <div className="text-[#171717] font-bold pl-5">
             {ekskul.supervisor_name}
           </div>
-          <div className="text-[11px] text-[#68655F] pl-5">
-            Guru Pembina akan menerima pesan pendaftaran ini dan memverifikasi kelayakan anggota baru.
+          <div className="text-xs text-[#525049] pl-5">
+            Pembina ekskul akan memeriksa pendaftaranmu sebelum menyetujui keanggotaan.
           </div>
         </div>
 
         {formError && (
-          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded flex items-center gap-2">
+          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded-xl flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{formError}</span>
           </div>
         )}
 
         {formSuccess && (
-          <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded flex items-center gap-2">
+          <div className="p-3 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded-xl flex items-center gap-2">
             <CheckCircle className="w-4 h-4 shrink-0" />
             <span>{formSuccess}</span>
           </div>
@@ -109,7 +109,7 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
           type="text"
           value={studentName}
           onChange={(e) => setStudentName(e.target.value)}
-          placeholder="Masukkan nama lengkap siswa..."
+          placeholder="Nama lengkapmu..."
           required
         />
 
@@ -119,7 +119,7 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
             type="text"
             value={studentClass}
             onChange={(e) => setStudentClass(e.target.value)}
-            placeholder="Contoh: XII RPL 1 / X TKJ 2"
+            placeholder="Contoh: XII RPL 1"
             required
           />
           <Input
@@ -127,16 +127,16 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
             type="text"
             value={`${ekskul.member_capacity - ekskul.current_member_count} Kuota Tersedia`}
             readOnly
-            className="bg-[#F9F8F6]/60 text-[#68655F]"
+            className="bg-[#F9F8F6]/60 text-[#525049]"
           />
         </div>
 
         <Textarea
-          label="Deskripsi / Alasan Masuk Ekstrakurikuler"
-          rows={4}
+          label="Alasan Bergabung"
+          rows={3}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="Jelaskan minat Anda, pengalaman sebelumnya (bila ada), dan komitmen Anda masuk ekskul ini..."
+          placeholder="Ceritakan kenapa kamu tertarik ikut ekskul ini, atau pengalamanmu sebelumnya (kalau ada)..."
           required
         />
 
@@ -149,7 +149,7 @@ export const DetailRegisterModal: React.FC<DetailRegisterModalProps> = ({
             Batal
           </Button>
           <Button type="submit" variant="primary">
-            Kirim ke Pembina
+            Kirim Pendaftaran
           </Button>
         </div>
       </form>
