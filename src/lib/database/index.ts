@@ -138,7 +138,10 @@ class SQLiteDatabaseClient {
   // Events
   public getSchoolEvents = () => this.events.getSchoolEvents();
   public addSchoolEvent = (event: any) => this.events.addSchoolEvent(event);
-  public deleteSchoolEvent = (id: string) => this.events.deleteSchoolEvent(id);
+  public updateSchoolEvent = (id: string, data: any, userId?: string) =>
+    this.events.updateSchoolEvent(id, data, userId);
+  public deleteSchoolEvent = (id: string, userId?: string) =>
+    this.events.deleteSchoolEvent(id, userId);
   public checkEventConflict = (location: string, start: string, end: string, excludeId?: string) =>
     this.events.checkEventConflict(location, start, end, excludeId);
 

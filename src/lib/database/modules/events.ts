@@ -60,9 +60,19 @@ export class EventsModule {
     return { success: true, event: newEvent };
   }
 
-  public deleteSchoolEvent(id: string): { success: boolean; message: string } {
+  public updateSchoolEvent(id: string, data: Partial<SchoolEvent>, userId?: string): { success: boolean; message: string } {
+    const index = this.schoolEvents.findIndex((e) => e.id === id);
+    if (index !== -1) {
+      this.schoolEvents[index] = { ...this.schoolEvents[index], ...data };
+    }
+    apiService.updateEventAPI(id, data, userId);
+    this.notify();
+    return { success: true, message: 'Jadwal berhasil diperbarui.' };
+  }
+
+  public deleteSchoolEvent(id: string, userId?: string): { success: boolean; message: string } {
     this.schoolEvents = this.schoolEvents.filter((e) => e.id !== id);
-    apiService.deleteEventAPI(id);
+    apiService.deleteEventAPI(id, userId);
     this.notify();
     return { success: true, message: 'Jadwal latihan / agenda berhasil dihapus.' };
   }

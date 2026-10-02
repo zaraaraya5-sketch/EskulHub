@@ -6,6 +6,7 @@ import { HomePage } from '@/features/extracurriculars/pages/HomePage';
 import { CatalogPage } from '@/features/extracurriculars/pages/CatalogPage';
 import { DetailPage } from '@/features/extracurriculars/pages/DetailPage';
 import { CalendarPage } from '@/features/school-events/pages/CalendarPage';
+import { CreateEventPage } from '@/features/school-events/pages/CreateEventPage';
 import { VerificationPage } from '@/features/portfolios/pages/VerificationPage';
 import { LoginPage } from '@/features/authentication/pages/LoginPage';
 import { StudentDashboardPage } from '@/features/portfolios/pages/StudentDashboardPage';
@@ -74,6 +75,12 @@ const AppContent: React.FC = () => {
       return <VerificationPage verificationId={id} onNavigate={navigate} />;
     }
 
+    // 3. Calendar Edit route: /calendar/edit/:id
+    if (currentPath.startsWith('/calendar/edit/')) {
+      const editId = currentPath.replace('/calendar/edit/', '');
+      return <CreateEventPage onNavigate={navigate} editEventId={editId} />;
+    }
+
     // 3. Exact matching routes
     switch (currentPath) {
       case '/':
@@ -82,6 +89,9 @@ const AppContent: React.FC = () => {
         return <CatalogPage onNavigate={navigate} />;
       case '/calendar':
         return <CalendarPage onNavigate={navigate} />;
+      case '/calendar/create':
+      case '/events/create':
+        return <CreateEventPage onNavigate={navigate} />;
       case '/contoh-portofolio':
         return <PortfolioSamplePage onNavigate={navigate} />;
       case '/login':

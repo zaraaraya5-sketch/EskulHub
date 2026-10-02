@@ -31,6 +31,10 @@ Route::get('/ekskul/{slug}', [EkskulController::class, 'show']);
 Route::get('/ekskul/{id}/members', [EkskulController::class, 'getMembers']);
 Route::get('/members', [EkskulController::class, 'allMembers']);
 Route::get('/events', [EventController::class, 'index']);
+Route::post('/events', [EventController::class, 'store']);
+Route::put('/events/{id}', [EventController::class, 'update']);
+Route::delete('/events/{id}', [EventController::class, 'destroy']);
+Route::post('/events/import-excel', [EventController::class, 'importExcel']);
 Route::get('/settings', [SettingsController::class, 'get']);
 Route::get('/verification/{id}', [VerificationController::class, 'show']);
 
@@ -75,9 +79,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::put('/achievements/{id}/verify', [AchievementController::class, 'verify']);
         Route::post('/certificates', [CertificateController::class, 'store']);
         Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
-        Route::post('/events', [EventController::class, 'store']);
-        Route::put('/events/{id}', [EventController::class, 'update']);
-        Route::delete('/events/{id}', [EventController::class, 'destroy']);
         Route::post('/ekskul', [EkskulController::class, 'store']);
         Route::put('/ekskul/{id}', [EkskulController::class, 'update']);
         Route::delete('/ekskul/{id}', [EkskulController::class, 'destroy']);

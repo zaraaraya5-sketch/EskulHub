@@ -23,11 +23,15 @@ export const api = axios.create({
   timeout: 5000,
 });
 
-// Attach Authorization Bearer token to all requests if present in localStorage
+// Attach Authorization Bearer token and User ID to all requests if present in localStorage
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('ekskul_auth_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  const userId = localStorage.getItem('ekskul_auth_user_id');
+  if (userId) {
+    config.headers['X-User-Id'] = userId;
   }
   return config;
 });
@@ -351,23 +355,67 @@ export const createEventAPI = async (data: Partial<SchoolEvent>) => {
   }
 };
 
-export const updateEventAPI = async (id: string, data: Partial<SchoolEvent>) => {
+export const updateEventAPI = async (id: string, data: Partial<SchoolEvent>, userId?: string) => {
   try {
-    const res = await api.put(`/events/${id}`, data);
+    const activeUserId = userId || localStorage.getItem('ekskul_auth_user_id');
+    const res = await api.put(`/events/${id}`, {
+      ...data,
+      user_id: activeUserId,
+    });
     return res.data;
-  } catch (err) {
+  } catch (err: any) {
     console.error(`Error updating event ${id} via API:`, err);
-    return { success: false };
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Gagal memperbarui agenda kegiatan.',
+    };
   }
 };
 
-export const deleteEventAPI = async (id: string) => {
+export const deleteEventAPI = async (id: string, userId?: string) => {
   try {
-    const res = await api.delete(`/events/${id}`);
+    const activeUserId = userId || localStorage.getItem('ekskul_auth_user_id');
+    const res = await api.delete(`/events/${id}`, {
+      params: { user_id: activeUserId },
+    });
     return res.data;
-  } catch (err) {
+  } catch (err: any) {
     console.error(`Error deleting event ${id} via API:`, err);
-    return { success: false };
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Gagal menghapus agenda kegiatan.',
+    };
+  }
+};
+
+export const importEventsExcelAPI = async (payload: {
+  events?: any[];
+  file?: File;
+  extracurricular_id?: string;
+  user_id?: string;
+}) => {
+  try {
+    let res;
+    if (payload.file) {
+      const formData = new FormData();
+      formData.append('file', payload.file);
+      if (payload.events) formData.append('events', JSON.stringify(payload.events));
+      if (payload.extracurricular_id) formData.append('extracurricular_id', payload.extracurricular_id);
+      if (payload.user_id) formData.append('user_id', payload.user_id);
+      res = await api.post('/events/import-excel', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } else {
+      res = await api.post('/events/import-excel', payload);
+    }
+    return res.data;
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.response?.data?.message || 'Gagal mengimpor file jadwal ke server.',
+      error_row: err.response?.data?.error_row,
+      error_field: err.response?.data?.error_field,
+    };
   }
 };
 

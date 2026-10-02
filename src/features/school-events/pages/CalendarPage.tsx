@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/database';
-import { getEventsAPI } from '@/lib/api';
+import { getEventsAPI, deleteEventAPI } from '@/lib/api';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { Textarea } from '@/components/ui/Textarea';
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
@@ -17,34 +13,79 @@ import {
   Plus,
   Lock,
   LogIn,
-  AlertTriangle,
-  CheckCircle,
-  ShieldAlert,
   Building,
   Users,
   Trophy,
   Flag,
   Sparkles,
-  Info
+  Info,
+  X,
+  FileSpreadsheet,
+  Pencil,
+  Trash2,
+  ShieldAlert,
+  AlertTriangle
 } from 'lucide-react';
 import { EventCategory, EventType, SchoolEvent } from '@/types';
+import { ImportExcelModal } from '../components/ImportExcelModal';
 
 interface CalendarPageProps {
   onNavigate?: (path: string) => void;
 }
 
-// Fixed dimensions for the Google Calendar-style time grid
-const HOUR_HEIGHT = 64; // height in pixels per hour row
-const START_HOUR = 7;   // 07:00 WIB
-const END_HOUR = 18;    // 18:00 WIB
-const TOTAL_HOURS = END_HOUR - START_HOUR + 1; // 12 rows (07:00 to 18:00)
+// Helper: Formats YYYY-MM-DD string safely
+const formatYYYYMMDD = (d: Date): string => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
+// Helper: Check if two dates represent the exact same calendar day
+const isSameDay = (d1: Date, d2: Date): boolean => {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+};
+
+// Helper for formatting event dates and times in clean Indonesian
+const formatEventDateTime = (rawStart: string, rawEnd: string) => {
+  if (!rawStart) return { dateStr: '', timeStr: '' };
+  const dStart = new Date(rawStart.replace(' ', 'T'));
+  const dEnd = rawEnd ? new Date(rawEnd.replace(' ', 'T')) : null;
+
+  const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const monthNames = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+  ];
+
+  const dayName = dayNames[dStart.getDay()];
+  const dateNum = dStart.getDate();
+  const monthName = monthNames[dStart.getMonth()];
+  const year = dStart.getFullYear();
+
+  const startH = String(dStart.getHours()).padStart(2, '0');
+  const startM = String(dStart.getMinutes()).padStart(2, '0');
+
+  let timeStr = `${startH}:${startM} WIB`;
+  if (dEnd) {
+    const endH = String(dEnd.getHours()).padStart(2, '0');
+    const endM = String(dEnd.getMinutes()).padStart(2, '0');
+    timeStr = `${startH}:${startM} – ${endH}:${endM} WIB`;
+  }
+
+  const dateStr = `${dayName}, ${dateNum} ${monthName} ${year}`;
+  return { dateStr, timeStr };
+};
 
 export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
   const { currentUser, role } = useAuth();
 
   // Active viewing date: default to 2026-10-02 (matching application timeline)
   const [currentDate, setCurrentDate] = useState<Date>(() => {
-    // If today is in 2026, use today; otherwise lock to 2026-10-02 so demo seed data appears immediately
     const now = new Date();
     return now.getFullYear() === 2026 ? now : new Date('2026-10-02T10:00:00');
   });
@@ -54,80 +95,128 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<SchoolEvent | null>(null);
 
-  // Modal create event state
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<EventCategory>('extracurricular_training');
-  const [location, setLocation] = useState('Lapangan Olahraga Utama');
-  const [startDate, setStartDate] = useState('2026-10-02T15:30');
-  const [endDate, setEndDate] = useState('2026-10-02T17:30');
-  const [description, setDescription] = useState('');
-  const [organizer, setOrganizer] = useState('Futsal Garuda Nusantara');
-  const [extracurricularId, setExtracurricularId] = useState<string>('eks-1');
-  const [conflictWarning, setConflictWarning] = useState<string | null>(null);
-  const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState('');
+  // Import Excel modal state
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
-  // 1. Calculate active week days (Monday - Sunday)
-  const weekDays = useMemo(() => {
-    const d = new Date(currentDate);
-    const day = d.getDay(); // 0 is Sunday, 1 is Monday
-    // Calculate difference to Monday
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    const monday = new Date(d);
-    monday.setDate(d.getDate() + diffToMonday);
-    monday.setHours(0, 0, 0, 0);
+  // Delete event state
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleDeleteEvent = async (id: string) => {
+    setIsDeleting(true);
+    setDeleteError('');
+    try {
+      const res = await deleteEventAPI(id, currentUser?.id);
+      if (!res.success) {
+        setDeleteError(res.message || 'Gagal menghapus agenda kegiatan.');
+        setIsDeleting(false);
+        return;
+      }
+      db.deleteSchoolEvent(id, currentUser?.id);
+      setSelectedEventForDetail(null);
+      setShowDeleteConfirm(false);
+      fetchEvents();
+    } catch (err: any) {
+      setDeleteError(err.message || 'Terjadi kesalahan sistem.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Close detail popover on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedEventForDetail) {
+        setSelectedEventForDetail(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedEventForDetail]);
+
+  // 1. Calculate Monthly Calendar Grid (Monday - Sunday standard)
+  const monthGrid = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    // Day of week: 0 is Sun, 1 is Mon, ..., 6 is Sat
+    // Convert to Monday-start index: Monday=0, Tuesday=1, ..., Sunday=6
+    const firstDayWeekday = firstDayOfMonth.getDay();
+    const prevMonthPadding = firstDayWeekday === 0 ? 6 : firstDayWeekday - 1;
 
     const days = [];
-    const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
-    for (let i = 0; i < 7; i++) {
-      const dayDate = new Date(monday);
-      dayDate.setDate(monday.getDate() + i);
-
-      const year = dayDate.getFullYear();
-      const month = String(dayDate.getMonth() + 1).padStart(2, '0');
-      const dateStr = String(dayDate.getDate()).padStart(2, '0');
-      const dateString = `${year}-${month}-${dateStr}`;
-
-      const today = new Date();
-      const isToday =
-        today.getFullYear() === year &&
-        today.getMonth() === dayDate.getMonth() &&
-        today.getDate() === dayDate.getDate();
-
+    // Previous month trailing days
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    for (let i = prevMonthPadding - 1; i >= 0; i--) {
+      const d = new Date(year, month - 1, prevMonthLastDay - i);
       days.push({
-        date: dayDate,
-        dateString,
-        dayName: dayNames[i],
-        dayNumber: dayDate.getDate(),
-        isToday,
+        date: d,
+        dateString: formatYYYYMMDD(d),
+        dayNumber: d.getDate(),
+        isCurrentMonth: false,
+        isToday: isSameDay(d, new Date()),
+      });
+    }
+
+    // Current month days
+    for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
+      const dateObj = new Date(year, month, d);
+      days.push({
+        date: dateObj,
+        dateString: formatYYYYMMDD(dateObj),
+        dayNumber: d,
+        isCurrentMonth: true,
+        isToday: isSameDay(dateObj, new Date()),
+      });
+    }
+
+    // Next month leading days to complete full grid row (35 or 42 cells)
+    const remainingCells = (7 - (days.length % 7)) % 7;
+    for (let d = 1; d <= remainingCells; d++) {
+      const dateObj = new Date(year, month + 1, d);
+      days.push({
+        date: dateObj,
+        dateString: formatYYYYMMDD(dateObj),
+        dayNumber: d,
+        isCurrentMonth: false,
+        isToday: isSameDay(dateObj, new Date()),
       });
     }
 
     return days;
   }, [currentDate]);
 
-  // Start and end timestamp of the active week for backend SQLite query
-  const weekStartStr = `${weekDays[0].dateString} 00:00:00`;
-  const weekEndStr = `${weekDays[6].dateString} 23:59:59`;
+  // Active month range string for backend SQLite query
+  const gridStartStr = `${monthGrid[0].dateString} 00:00:00`;
+  const gridEndStr = `${monthGrid[monthGrid.length - 1].dateString} 23:59:59`;
 
-  // 2. Fetch events from SQLite Backend based on Authentication status
+  // 2. Fetch events from SQLite Backend (Semua role dapat melihat seluruh kegiatan yang sudah tersimpan)
   const fetchEvents = async () => {
     setLoading(true);
     try {
       const data = await getEventsAPI({
-        start_time: weekStartStr,
-        end_time: weekEndStr,
-        user_id: currentUser?.id,
+        start_time: gridStartStr,
+        end_time: gridEndStr,
       });
 
-      if (data && data.length > 0) {
+      const localEvents = db.getSchoolEvents();
+
+      if (Array.isArray(data) && data.length > 0) {
+        // Merge backend data with any newly created local events
+        const backendKeys = new Set(data.map((e) => `${e.title}_${(e.start_time || e.start_datetime)?.slice(0, 10)}`));
+        const missingLocal = localEvents.filter(
+          (e) => !backendKeys.has(`${e.title}_${(e.start_time || e.start_datetime)?.slice(0, 10)}`)
+        );
+        setEvents([...data, ...missingLocal]);
+      } else if (localEvents.length > 0) {
+        setEvents(localEvents);
+      } else if (Array.isArray(data)) {
         setEvents(data);
-      } else {
-        // Fallback to local DB client if API request is offline or empty
-        const fallback = db.getSchoolEvents();
-        setEvents(fallback);
       }
     } catch (err) {
       console.error('Error loading calendar events:', err);
@@ -139,7 +228,7 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
 
   useEffect(() => {
     fetchEvents();
-  }, [weekStartStr, weekEndStr, currentUser?.id]);
+  }, [gridStartStr, gridEndStr]);
 
   // Subscribe to local DB updates
   useEffect(() => {
@@ -147,108 +236,56 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
       fetchEvents();
     });
     return () => unsub();
-  }, [weekStartStr, weekEndStr]);
+  }, [gridStartStr, gridEndStr]);
 
-  // 3. Navigation handlers
-  const handlePrevWeek = () => {
+  // 3. Month Navigation Handlers
+  const handlePrevMonth = () => {
     setCurrentDate((prev) => {
       const next = new Date(prev);
-      next.setDate(prev.getDate() - 7);
+      next.setMonth(prev.getMonth() - 1);
       return next;
     });
   };
 
-  const handleNextWeek = () => {
+  const handleNextMonth = () => {
     setCurrentDate((prev) => {
       const next = new Date(prev);
-      next.setDate(prev.getDate() + 7);
+      next.setMonth(prev.getMonth() + 1);
       return next;
     });
   };
 
   const handleToday = () => {
     const now = new Date();
-    // Use current date or lock to 2026-10-02 if outside 2026
     setCurrentDate(now.getFullYear() === 2026 ? now : new Date('2026-10-02T10:00:00'));
   };
 
-  // Week range label formatting: "28 September – 4 Oktober 2026"
-  const weekRangeLabel = useMemo(() => {
-    const start = weekDays[0].date;
-    const end = weekDays[6].date;
-    const months = [
+  // Month & Year header label: "Oktober 2026"
+  const monthYearLabel = useMemo(() => {
+    const monthNames = [
       'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
       'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
     ];
+    return `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+  }, [currentDate]);
 
-    if (start.getMonth() === end.getMonth()) {
-      return `${start.getDate()} – ${end.getDate()} ${months[start.getMonth()]} ${start.getFullYear()}`;
-    }
-    return `${start.getDate()} ${months[start.getMonth()]} – ${end.getDate()} ${months[end.getMonth()]} ${start.getFullYear()}`;
-  }, [weekDays]);
-
-  // 4. Conflict detection check
-  const handleTimeLocationChange = (newLoc: string, newStart: string, newEnd: string) => {
-    if (newLoc && newStart && newEnd) {
-      const check = db.checkEventConflict(newLoc, newStart, newEnd);
-      if (check.hasConflict && check.conflictingEvent) {
-        setConflictWarning(
-          `Peringatan Konflik Ruangan: "${newLoc}" telah dijadwalkan untuk "${check.conflictingEvent.title}" (${check.conflictingEvent.start_datetime.replace('T', ' ')} s/d ${check.conflictingEvent.end_datetime.replace('T', ' ')})!`
-        );
-      } else {
-        setConflictWarning(null);
-      }
-    }
-  };
-
-  const handleAddEventSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError('');
-    setSubmitSuccess('');
-
-    const res = db.addSchoolEvent({
-      title: title.trim(),
-      category: category,
-      event_type: category,
-      location: location.trim(),
-      start_datetime: startDate,
-      end_datetime: endDate,
-      start_time: startDate.replace('T', ' ') + ':00',
-      end_time: endDate.replace('T', ' ') + ':00',
-      description: description.trim(),
-      organizer: organizer.trim(),
-      extracurricular_id: extracurricularId || undefined,
-    });
-
-    if (!res.success) {
-      setSubmitError(res.message || 'Gagal menambahkan kegiatan ke kalender');
-    } else {
-      setSubmitSuccess('Agenda kegiatan berhasil disimpan ke database SQLite!');
-      fetchEvents();
-      setTimeout(() => {
-        setIsAddModalOpen(false);
-        setSubmitSuccess('');
-        setTitle('');
-        setDescription('');
-      }, 1200);
-    }
-  };
-
-  // 5. Visual styling mapping by Category
+  // 4. Visual styling mapping by Category
   const getCategoryStyles = (cat?: string) => {
     switch (cat) {
       case 'national_holiday':
         return {
-          bg: 'bg-rose-50 border-rose-300 text-rose-950 hover:bg-rose-100 hover:border-rose-400',
-          borderAccent: 'border-l-4 border-l-rose-600',
+          chip: 'bg-rose-50 text-rose-900 border-rose-200 hover:bg-rose-100',
+          dot: 'bg-rose-500',
+          accentBar: 'bg-rose-500',
           pill: 'bg-rose-100 text-rose-800 border-rose-200',
           label: 'Libur Nasional',
           icon: Flag,
         };
       case 'school_event':
         return {
-          bg: 'bg-blue-50 border-blue-300 text-blue-950 hover:bg-blue-100 hover:border-blue-400',
-          borderAccent: 'border-l-4 border-l-blue-600',
+          chip: 'bg-blue-50 text-blue-900 border-blue-200 hover:bg-blue-100',
+          dot: 'bg-blue-500',
+          accentBar: 'bg-blue-500',
           pill: 'bg-blue-100 text-blue-800 border-blue-200',
           label: 'Acara Sekolah',
           icon: Building,
@@ -256,24 +293,27 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
       case 'extracurricular_training':
       case 'extracurricular_practice':
         return {
-          bg: 'bg-emerald-50 border-emerald-300 text-emerald-950 hover:bg-emerald-100 hover:border-emerald-400',
-          borderAccent: 'border-l-4 border-l-emerald-600',
+          chip: 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100',
+          dot: 'bg-emerald-500',
+          accentBar: 'bg-emerald-500',
           pill: 'bg-emerald-100 text-emerald-800 border-emerald-200',
           label: 'Latihan Ekskul',
           icon: Users,
         };
       case 'competition':
         return {
-          bg: 'bg-amber-50 border-amber-300 text-amber-950 hover:bg-amber-100 hover:border-amber-400',
-          borderAccent: 'border-l-4 border-l-amber-600',
+          chip: 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100',
+          dot: 'bg-amber-500',
+          accentBar: 'bg-amber-500',
           pill: 'bg-amber-100 text-amber-800 border-amber-200',
           label: 'Kompetisi',
           icon: Trophy,
         };
       default:
         return {
-          bg: 'bg-stone-50 border-stone-300 text-stone-900 hover:bg-stone-100',
-          borderAccent: 'border-l-4 border-l-stone-600',
+          chip: 'bg-stone-50 text-stone-900 border-stone-200 hover:bg-stone-100',
+          dot: 'bg-stone-500',
+          accentBar: 'bg-[#D15B40]',
           pill: 'bg-stone-100 text-stone-800 border-stone-200',
           label: 'Agenda Resmi',
           icon: CalendarIcon,
@@ -293,6 +333,8 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
     });
   }, [events, selectedCategory]);
 
+  const dayNamesHeader = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
@@ -305,13 +347,10 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm sm:text-base text-[#171717]">Mode Kalender Publik (Tamu)</span>
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] rounded-full border border-[#F2C9C0]">
-                  Akses Terbatas
-                </span>
+                <span className="font-bold text-sm sm:text-base text-[#171717]">Kalender Kegiatan Terpadu</span>
               </div>
               <p className="text-xs sm:text-sm text-[#68655F] mt-1 leading-relaxed max-w-3xl">
-                Saat ini kalender hanya menampilkan <strong>Acara Resmi Sekolah</strong> dan <strong>Hari Libur Nasional</strong>. Masuk dengan akun Siswa atau Pengurus untuk melihat jadwal latihan, gladi, dan kompetisi ekskul yang Anda ikuti secara otomatis.
+                Menampilkan seluruh agenda resmi sekolah, hari libur nasional, jadwal latihan rutin, dan kompetisi ekstrakurikuler. Gunakan filter kategori di bawah untuk memilah jenis kegiatan.
               </p>
             </div>
           </div>
@@ -330,13 +369,13 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
       <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           
-          {/* Left: Title & Week Range */}
+          {/* Left: Title & Month */}
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D15B40]">
-              <CalendarIcon className="w-4 h-4" /> Kalender Mingguan Interaktif
+              <CalendarIcon className="w-4 h-4" /> Kalender Bulanan Interaktif
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mt-0.5">
-              {weekRangeLabel}
+              {monthYearLabel}
             </h1>
           </div>
 
@@ -350,30 +389,43 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
               Hari Ini
             </button>
 
-            {/* Prev / Next Week Controls */}
+            {/* Prev / Next Month Controls */}
             <div className="inline-flex rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] p-0.5">
               <button
-                onClick={handlePrevWeek}
-                title="Minggu Sebelumnya"
+                onClick={handlePrevMonth}
+                title="Bulan Sebelumnya"
                 className="p-1.5 text-[#171717] hover:bg-white rounded-lg transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                onClick={handleNextWeek}
-                title="Minggu Berikutnya"
+                onClick={handleNextMonth}
+                title="Bulan Berikutnya"
                 className="p-1.5 text-[#171717] hover:bg-white rounded-lg transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Add Event Button for privileged roles */}
+            {/* Import Excel Button for Guru & Pembina */}
+            {['admin', 'pembina', 'teacher', 'guru'].includes(role || '') && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsImportModalOpen(true)}
+                icon={<FileSpreadsheet className="w-4 h-4 text-emerald-700" />}
+                className="border-emerald-300 text-emerald-800 bg-emerald-50/60 hover:bg-emerald-100/80 font-medium shadow-2xs"
+              >
+                Import Excel
+              </Button>
+            )}
+
+            {/* Add Event Button for privileged roles (Navigates to dedicated page, no popup) */}
             {['admin', 'pembina', 'teacher', 'guru', 'pengurus'].includes(role || '') && (
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => setIsAddModalOpen(true)}
+                onClick={() => (onNavigate ? onNavigate('/calendar/create') : (window.location.href = '/calendar/create'))}
                 icon={<Plus className="w-4 h-4" />}
                 className="bg-[#D15B40] hover:bg-[#b84a32]"
               >
@@ -416,406 +468,381 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
             {loading ? (
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#D15B40] animate-ping" />
-                Memuat jadwal SQLite...
+                Memuat data dari SQLite...
               </span>
             ) : (
-              <span>Menampilkan {filteredEvents.length} kegiatan aktif minggu ini</span>
+              <span>Menampilkan {filteredEvents.length} agenda di bulan ini</span>
             )}
           </div>
         </div>
       </div>
 
-      {/* 3. Google Calendar Weekly Time Grid */}
+      {/* 3. Monthly Calendar Grid */}
       <div className="bg-white border border-[#EAE6DC] rounded-2xl shadow-sm overflow-hidden">
-        {/* Scrollable Container */}
-        <div className="overflow-x-auto">
-          <div className="min-w-[860px]">
-            
-            {/* Header: Days of the week row */}
-            <div className="grid grid-cols-[64px_repeat(7,1fr)] border-b border-[#EAE6DC] bg-[#F9F8F6] sticky top-0 z-20">
-              {/* Time Column corner */}
-              <div className="p-3 text-[11px] font-bold text-[#68655F] flex items-center justify-center border-r border-[#EAE6DC]">
-                WIB
-              </div>
-
-              {/* 7 Days Columns */}
-              {weekDays.map((d, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={`py-3 px-2 text-center border-r last:border-r-0 border-[#EAE6DC] ${
-                      d.isToday ? 'bg-[#FDEDE9]/40' : ''
-                    }`}
-                  >
-                    <div className="text-[11px] font-semibold text-[#68655F] uppercase tracking-wider">
-                      {d.dayName}
-                    </div>
-                    <div className="mt-1 flex items-center justify-center">
-                      <span
-                        className={`inline-flex items-center justify-center w-7 h-7 text-sm font-bold rounded-full transition-transform ${
-                          d.isToday
-                            ? 'bg-[#D15B40] text-white shadow-sm scale-110'
-                            : 'text-[#171717] hover:bg-[#EAE6DC]'
-                        }`}
-                      >
-                        {d.dayNumber}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+        
+        {/* Days of Week Header (Senin - Minggu) */}
+        <div className="grid grid-cols-7 border-b border-[#EAE6DC] bg-[#F9F8F6]">
+          {dayNamesHeader.map((name, i) => (
+            <div
+              key={i}
+              className="py-3 text-center text-xs font-bold uppercase tracking-wider text-[#68655F] border-r last:border-r-0 border-[#EAE6DC]"
+            >
+              {name}
             </div>
-
-            {/* Grid Body: Hours & Events */}
-            <div className="relative grid grid-cols-[64px_repeat(7,1fr)] bg-white">
-              
-              {/* Time Labels Column (07:00 to 18:00) */}
-              <div className="border-r border-[#EAE6DC] bg-[#F9F8F6]/60 select-none">
-                {Array.from({ length: TOTAL_HOURS }).map((_, idx) => {
-                  const hour = START_HOUR + idx;
-                  const timeLabel = `${String(hour).padStart(2, '0')}.00`;
-                  return (
-                    <div
-                      key={hour}
-                      style={{ height: `${HOUR_HEIGHT}px` }}
-                      className="text-[11px] font-medium text-[#8F8B82] pr-2 pt-1 text-right border-b border-[#EAE6DC]/60"
-                    >
-                      {timeLabel}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* 7 Columns for Days */}
-              {weekDays.map((dayObj, dayIdx) => {
-                // Find all events that take place on this date
-                const dayEvents = filteredEvents.filter((ev) => {
-                  const rawStart = ev.start_time || ev.start_datetime || '';
-                  return rawStart.startsWith(dayObj.dateString);
-                });
-
-                return (
-                  <div
-                    key={dayObj.dateString}
-                    className={`relative border-r last:border-r-0 border-[#EAE6DC] ${
-                      dayObj.isToday ? 'bg-[#FDEDE9]/10' : ''
-                    }`}
-                    style={{ height: `${TOTAL_HOURS * HOUR_HEIGHT}px` }}
-                  >
-                    {/* Hour dividing background lines */}
-                    {Array.from({ length: TOTAL_HOURS }).map((_, idx) => (
-                      <div
-                        key={idx}
-                        style={{ height: `${HOUR_HEIGHT}px` }}
-                        className="border-b border-[#EAE6DC]/50 hover:bg-stone-50/50 transition-colors pointer-events-none"
-                      />
-                    ))}
-
-                    {/* Render Event Blocks in this day column */}
-                    {dayEvents.map((ev) => {
-                      const rawStart = ev.start_time || ev.start_datetime || '';
-                      const rawEnd = ev.end_time || ev.end_datetime || '';
-
-                      const startDate = new Date(rawStart.replace(' ', 'T'));
-                      const endDate = new Date(rawEnd.replace(' ', 'T'));
-
-                      const startH = startDate.getHours();
-                      const startM = startDate.getMinutes();
-                      const endH = endDate.getHours();
-                      const endM = endDate.getMinutes();
-
-                      // Calculate Top offset (minutes from 07:00)
-                      const startMinutesFrom7 = (startH - START_HOUR) * 60 + startM;
-                      const durationMinutes = Math.max(35, (endH * 60 + endM) - (startH * 60 + startM));
-
-                      const pixelsPerMinute = HOUR_HEIGHT / 60;
-                      const topPx = Math.max(2, startMinutesFrom7 * pixelsPerMinute);
-                      const heightPx = Math.max(34, durationMinutes * pixelsPerMinute - 3);
-
-                      const styles = getCategoryStyles(ev.category || ev.event_type);
-                      const IconComp = styles.icon;
-
-                      const formattedTimeRange = `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')} - ${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
-
-                      return (
-                        <div
-                          key={ev.id}
-                          onClick={() => setSelectedEventForDetail(ev)}
-                          style={{
-                            top: `${topPx}px`,
-                            height: `${heightPx}px`,
-                          }}
-                          className={`absolute left-1 right-1 rounded-xl p-2 border shadow-xs transition-all duration-150 cursor-pointer overflow-hidden z-10 ${styles.bg} ${styles.borderAccent}`}
-                        >
-                          {/* Event Category Mini Badge */}
-                          <div className="flex items-center justify-between gap-1 mb-0.5">
-                            <span className="text-[10px] font-bold tracking-tight uppercase line-clamp-1 opacity-90">
-                              {styles.label}
-                            </span>
-                            <span className="text-[10px] font-semibold opacity-75 shrink-0">
-                              {formattedTimeRange}
-                            </span>
-                          </div>
-
-                          {/* Event Title */}
-                          <h4 className="text-xs font-bold leading-tight line-clamp-2">
-                            {ev.title}
-                          </h4>
-
-                          {/* Location & Details if height allows */}
-                          {heightPx >= 65 && (
-                            <div className="mt-1 flex items-center gap-1 text-[11px] opacity-80 line-clamp-1">
-                              <MapPin className="w-3 h-3 shrink-0" />
-                              <span className="truncate">{ev.location}</span>
-                            </div>
-                          )}
-
-                          {heightPx >= 90 && ev.extracurricular_name && (
-                            <div className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold text-[#D15B40] truncate">
-                              <Users className="w-3 h-3 shrink-0" />
-                              <span className="truncate">{ev.extracurricular_name}</span>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
 
-      {/* 4. Event Detail Modal (When user clicks an event block) */}
-      <Modal
-        isOpen={Boolean(selectedEventForDetail)}
-        onClose={() => setSelectedEventForDetail(null)}
-        title="Detail Agenda Kegiatan"
-      >
-        {selectedEventForDetail && (() => {
-          const styles = getCategoryStyles(
-            selectedEventForDetail.category || selectedEventForDetail.event_type
-          );
-          const IconComp = styles.icon;
-          const rawStart = selectedEventForDetail.start_time || selectedEventForDetail.start_datetime || '';
-          const rawEnd = selectedEventForDetail.end_time || selectedEventForDetail.end_datetime || '';
+        {/* Days Cells Matrix */}
+        <div className="grid grid-cols-7 border-b border-[#EAE6DC] bg-white">
+          {monthGrid.map((dayObj, idx) => {
+            // Find events for this specific date
+            const dayEvents = filteredEvents.filter((ev) => {
+              const rawStart = ev.start_time || ev.start_datetime || '';
+              return rawStart.startsWith(dayObj.dateString);
+            });
 
-          return (
-            <div className="space-y-5 text-sm">
-              {/* Category & Title Header */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${styles.pill}`}>
-                    <IconComp className="w-3.5 h-3.5" />
-                    {styles.label}
+            const maxVisible = 3;
+            const visibleEvents = dayEvents.slice(0, maxVisible);
+            const remainingCount = dayEvents.length - maxVisible;
+
+            return (
+              <div
+                key={dayObj.dateString + idx}
+                className={`min-h-[110px] sm:min-h-[125px] p-1.5 sm:p-2 border-r border-b border-[#EAE6DC] last:border-r-0 transition-colors flex flex-col justify-between ${
+                  !dayObj.isCurrentMonth
+                    ? 'bg-[#FAF8F5]/60 text-[#A8A49C]'
+                    : dayObj.isToday
+                    ? 'bg-[#FDEDE9]/15'
+                    : 'bg-white hover:bg-[#F9F8F6]/50'
+                }`}
+              >
+                {/* Cell Top: Day Number */}
+                <div className="flex items-center justify-between mb-1">
+                  <span
+                    className={`inline-flex items-center justify-center w-6 h-6 text-xs font-bold rounded-full transition-transform ${
+                      dayObj.isToday
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : dayObj.isCurrentMonth
+                        ? 'text-[#171717]'
+                        : 'text-[#A8A49C]'
+                    }`}
+                  >
+                    {dayObj.dayNumber}
                   </span>
-                  {selectedEventForDetail.extracurricular_name && (
-                    <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
-                      {selectedEventForDetail.extracurricular_name}
-                    </span>
+
+                  {dayEvents.length > 0 && dayObj.isCurrentMonth && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D15B40] sm:hidden" />
                   )}
                 </div>
 
-                <h3 className="text-xl font-extrabold text-[#171717] leading-snug">
-                  {selectedEventForDetail.title}
-                </h3>
-              </div>
+                {/* Cell Body: Event Chips */}
+                <div className="space-y-1 flex-1 overflow-hidden">
+                  {visibleEvents.map((ev) => {
+                    const styles = getCategoryStyles(ev.category || ev.event_type);
+                    const rawStart = ev.start_time || ev.start_datetime || '';
+                    const timeMatch = rawStart.match(/\s(\d{2}:\d{2})/);
+                    const timePrefix = timeMatch ? timeMatch[1] : '';
 
-              {/* Time & Location Meta Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#F9F8F6] p-4 rounded-xl border border-[#EAE6DC]">
-                <div className="flex items-start gap-2.5">
-                  <Clock className="w-4 h-4 text-[#D15B40] mt-0.5 shrink-0" />
-                  <div>
-                    <span className="text-[11px] font-bold text-[#68655F] uppercase tracking-wider block">Waktu Pelaksanaan</span>
-                    <span className="text-xs font-bold text-[#171717] block mt-0.5">
-                      {rawStart.replace('T', ' ')} s/d
+                    return (
+                      <button
+                        key={ev.id}
+                        onClick={() => setSelectedEventForDetail(ev)}
+                        className={`w-full text-left px-1.5 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] leading-tight border transition-all truncate block cursor-pointer shadow-2xs ${styles.chip}`}
+                        title={`${ev.title} (${timePrefix})`}
+                      >
+                        <span className="flex items-center gap-1 truncate">
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${styles.dot}`} />
+                          {timePrefix && (
+                            <span className="font-bold opacity-75 shrink-0">
+                              {timePrefix}
+                            </span>
+                          )}
+                          <span className="font-semibold truncate">{ev.title}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+
+                  {/* Remaining events badge */}
+                  {remainingCount > 0 && (
+                    <button
+                      onClick={() => setSelectedEventForDetail(dayEvents[maxVisible])}
+                      className="text-[10px] font-bold text-[#D15B40] hover:underline px-1 block mt-0.5 cursor-pointer"
+                    >
+                      +{remainingCount} agenda lagi
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 4. Event Detail Popover (Floating Card Quick Peek) */}
+      {selectedEventForDetail && (() => {
+        const styles = getCategoryStyles(
+          selectedEventForDetail.category || selectedEventForDetail.event_type
+        );
+        const IconComp = styles.icon;
+        const rawStart = selectedEventForDetail.start_time || selectedEventForDetail.start_datetime || '';
+        const rawEnd = selectedEventForDetail.end_time || selectedEventForDetail.end_datetime || '';
+        const { dateStr, timeStr } = formatEventDateTime(rawStart, rawEnd);
+
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-[2px] transition-all"
+            onClick={() => setSelectedEventForDetail(null)}
+          >
+            <div
+              className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-[#EAE6DC] overflow-hidden my-auto animate-scale-in"
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+            >
+              {/* Top Accent Strip matching event category color */}
+              <div className={`h-2 w-full ${styles.accentBar || 'bg-[#D15B40]'}`} />
+
+              <div className="p-5 sm:p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+                {/* Header: Category Badge & Close Button */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-bold border ${styles.pill}`}>
+                      <IconComp className="w-3 h-3" />
+                      {styles.label}
                     </span>
-                    <span className="text-xs text-[#68655F]">
-                      {rawEnd.replace('T', ' ')} WIB
-                    </span>
+                    {selectedEventForDetail.extracurricular_name && (
+                      <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
+                        {selectedEventForDetail.extracurricular_name}
+                      </span>
+                    )}
                   </div>
+
+                  <button
+                    onClick={() => setSelectedEventForDetail(null)}
+                    className="p-1 text-[#8F8B82] hover:text-[#171717] hover:bg-[#F0EDE6] rounded-lg transition-colors cursor-pointer"
+                    title="Tutup (Esc)"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
 
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-[#D15B40] mt-0.5 shrink-0" />
-                  <div>
-                    <span className="text-[11px] font-bold text-[#68655F] uppercase tracking-wider block">Lokasi / Fasilitas</span>
-                    <span className="text-xs font-bold text-[#171717] block mt-0.5">
-                      {selectedEventForDetail.location}
-                    </span>
-                    <span className="text-[11px] text-[#68655F]">
-                      Penyelenggara: {selectedEventForDetail.organizer}
-                    </span>
+                {/* Event Title */}
+                <div>
+                  <h3 className="text-lg font-bold text-[#171717] leading-snug">
+                    {selectedEventForDetail.title}
+                  </h3>
+                </div>
+
+                {/* Quick Info Block */}
+                <div className="space-y-3 pt-1 text-xs sm:text-sm">
+                  {/* Date & Time */}
+                  <div className="flex items-start gap-2.5">
+                    <Clock className="w-4 h-4 text-[#D15B40] mt-0.5 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#171717]">{dateStr}</div>
+                      <div className="text-xs text-[#68655F] mt-0.5">{timeStr}</div>
+                    </div>
                   </div>
+
+                  {/* Location & Organizer */}
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-[#D15B40] mt-0.5 shrink-0" />
+                    <div>
+                      <div className="font-semibold text-[#171717]">{selectedEventForDetail.location}</div>
+                      {selectedEventForDetail.organizer && (
+                        <div className="text-xs text-[#68655F] mt-0.5">
+                          Penyelenggara: {selectedEventForDetail.organizer}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Description (if available) */}
+                  {selectedEventForDetail.description && (
+                    <div className="pt-2 border-t border-[#EAE6DC]/80">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-[#8F8B82] mb-1">
+                        Keterangan
+                      </div>
+                      <p className="text-xs text-[#525049] leading-relaxed bg-[#F9F8F6] p-2.5 rounded-xl border border-[#EAE6DC]">
+                        {selectedEventForDetail.description}
+                      </p>
+                    </div>
+                  )}
                 </div>
+
+                {/* Creator information & Permission Status */}
+                {(() => {
+                  const evCreatorRole = (selectedEventForDetail.created_by_role || '').toLowerCase();
+                  const normUser = role === 'teacher' ? 'pembina' : (role || '').toLowerCase();
+                  const normCreator = evCreatorRole === 'teacher' ? 'pembina' : evCreatorRole;
+
+                  const canManage = (() => {
+                    if (!currentUser || !role) return false;
+                    if (role === 'admin') return true;
+
+                    if (selectedEventForDetail.created_by_id && selectedEventForDetail.created_by_id === currentUser.id) {
+                      return true;
+                    }
+
+                    if (normCreator && normCreator === normUser) {
+                      return true;
+                    }
+
+                    if (!normCreator) {
+                      const cat = selectedEventForDetail.category || selectedEventForDetail.event_type;
+                      if (['extracurricular_training', 'competition'].includes(cat as string)) {
+                        return normUser === 'pembina';
+                      }
+                      if (['school_event', 'national_holiday'].includes(cat as string)) {
+                        return normUser === 'guru';
+                      }
+                    }
+
+                    return false;
+                  })();
+
+                  const roleLabels: Record<string, string> = {
+                    pembina: 'Pembina Ekskul',
+                    guru: 'Guru',
+                    pengurus: 'Pengurus Ekskul',
+                    student: 'Siswa',
+                    admin: 'Administrator',
+                  };
+
+                  const creatorLabel = roleLabels[normCreator] || (normCreator ? ucfirst(normCreator) : 'Pembina / Guru');
+                  const userLabel = roleLabels[normUser] || ucfirst(normUser);
+
+                  function ucfirst(str: string) {
+                    return str.charAt(0).toUpperCase() + str.slice(1);
+                  }
+
+                  return (
+                    <div className="space-y-3 pt-2 border-t border-[#EAE6DC]/80">
+                      {/* Creator attribution pill */}
+                      <div className="flex items-center justify-between text-2xs text-[#68655F]">
+                        <span className="flex items-center gap-1.5">
+                          <Users className="w-3.5 h-3.5 text-stone-400" />
+                          <span>Dibuat oleh: <strong className="text-[#171717]">{creatorLabel}</strong></span>
+                        </span>
+                        {canManage ? (
+                          <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                            Izin Kelola Aktif
+                          </span>
+                        ) : currentUser ? (
+                          <span className="text-stone-500 font-medium bg-stone-100 px-2 py-0.5 rounded-md">
+                            Hanya Baca
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {/* Explicit unauthorized explanation (e.g. Pengurus trying to edit Pembina) */}
+                      {!canManage && currentUser && (
+                        <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl flex items-start gap-2 text-2xs leading-relaxed">
+                          <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                          <span>
+                            Jadwal ini dibuat oleh <strong>{creatorLabel}</strong>. Akun Anda (<strong>{userLabel}</strong>) tidak memiliki izin untuk mengedit atau menghapus jadwal tersebut.
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Error feedback if deletion was rejected */}
+                      {deleteError && (
+                        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-2xs flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600" />
+                          <span>{deleteError}</span>
+                        </div>
+                      )}
+
+                      {/* Inline Delete Confirmation */}
+                      {showDeleteConfirm ? (
+                        <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl space-y-2.5">
+                          <div className="text-xs font-bold text-rose-900 flex items-center gap-1.5">
+                            <AlertTriangle className="w-4 h-4 text-rose-600" /> Konfirmasi Hapus Jadwal
+                          </div>
+                          <p className="text-2xs text-rose-800 leading-relaxed">
+                            Apakah Anda yakin ingin menghapus agenda <strong>"{selectedEventForDetail.title}"</strong>? Jadwal akan dihapus secara permanen dari kalender dan database.
+                          </p>
+                          <div className="flex items-center justify-end gap-2 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => setShowDeleteConfirm(false)}
+                              className="px-3 py-1.5 text-xs font-semibold text-stone-700 bg-white border border-stone-300 rounded-lg hover:bg-stone-50 cursor-pointer"
+                              disabled={isDeleting}
+                            >
+                              Batal
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteEvent(selectedEventForDetail.id)}
+                              className="px-3 py-1.5 text-xs font-semibold text-white bg-rose-600 rounded-lg hover:bg-rose-700 flex items-center gap-1.5 cursor-pointer"
+                              disabled={isDeleting}
+                            >
+                              {isDeleting ? 'Menghapus...' : 'Ya, Hapus'}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Action Footer */
+                        <div className="pt-2 flex items-center justify-between border-t border-[#EAE6DC]/60">
+                          <div>
+                            {canManage && (
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const id = selectedEventForDetail.id;
+                                    setSelectedEventForDetail(null);
+                                    if (onNavigate) {
+                                      onNavigate(`/calendar/edit/${id}`);
+                                    } else {
+                                      window.location.href = `/calendar/edit/${id}`;
+                                    }
+                                  }}
+                                  className="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                                >
+                                  <Pencil className="w-3.5 h-3.5" /> Edit
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setShowDeleteConfirm(true)}
+                                  className="px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" /> Hapus
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => {
+                              setSelectedEventForDetail(null);
+                              setShowDeleteConfirm(false);
+                              setDeleteError('');
+                            }}
+                            className="px-4 py-1.5 text-xs font-semibold text-[#171717] bg-[#F9F8F6] hover:bg-[#EAE6DC] border border-[#EAE6DC] rounded-xl transition-colors cursor-pointer"
+                          >
+                            Tutup
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
-
-              {/* Description */}
-              {selectedEventForDetail.description && (
-                <div className="space-y-1.5">
-                  <h4 className="text-xs font-bold text-[#171717] uppercase tracking-wider">
-                    Deskripsi & Keterangan
-                  </h4>
-                  <p className="text-xs sm:text-sm text-[#525049] leading-relaxed p-3 bg-white border border-[#EAE6DC] rounded-xl">
-                    {selectedEventForDetail.description}
-                  </p>
-                </div>
-              )}
-
-              {/* Footer action buttons */}
-              <div className="pt-2 flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSelectedEventForDetail(null)}
-                >
-                  Tutup
-                </Button>
-              </div>
             </div>
-          );
-        })()}
-      </Modal>
-
-      {/* 5. Add Event Modal with Conflict Warning */}
-      <Modal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title="Jadwalkan Agenda Kegiatan Baru"
-      >
-        <form onSubmit={handleAddEventSubmit} className="space-y-4 text-xs">
-          {conflictWarning && (
-            <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] text-[#A33D35] rounded-xl flex items-start gap-2">
-              <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
-              <span className="leading-relaxed">{conflictWarning}</span>
-            </div>
-          )}
-
-          {submitError && (
-            <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] rounded-xl flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{submitError}</span>
-            </div>
-          )}
-
-          {submitSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 shrink-0" />
-              <span>{submitSuccess}</span>
-            </div>
-          )}
-
-          <Input
-            label="Judul Agenda / Latihan"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Contoh: Latihan Taktik Futsal Garuda Menjelang DBL"
-            required
-          />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Select
-              label="Kategori Agenda"
-              value={category}
-              onChange={(e) => setCategory(e.target.value as any)}
-            >
-              <option value="extracurricular_training">Latihan Rutin Ekskul</option>
-              <option value="competition">Kompetisi & Pertandingan</option>
-              <option value="school_event">Acara Sekolah / PORSENI</option>
-              <option value="national_holiday">Hari Libur Nasional</option>
-            </Select>
-
-            <Select
-              label="Lokasi / Fasilitas"
-              value={location}
-              onChange={(e) => {
-                const newLoc = e.target.value;
-                setLocation(newLoc);
-                handleTimeLocationChange(newLoc, startDate, endDate);
-              }}
-            >
-              <option value="Lapangan Olahraga Utama">Lapangan Olahraga Utama</option>
-              <option value="Lapangan Basket Outdoor">Lapangan Basket Outdoor</option>
-              <option value="Laboratorium Komputer RPL 1">Laboratorium Komputer RPL 1</option>
-              <option value="Studio Multimedia & Alam Terbuka">Studio Multimedia & Alam Terbuka</option>
-              <option value="Aula Serbaguna Lantai 3">Aula Serbaguna Lantai 3</option>
-              <option value="Ruang Redaksi Jurnalistik">Ruang Redaksi Jurnalistik</option>
-              <option value="Ruang Kedap Suara Musik">Ruang Kedap Suara Musik</option>
-              <option value="Seluruh Area Sekolah">Seluruh Area Sekolah</option>
-            </Select>
           </div>
+        );
+      })()}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
-              type="datetime-local"
-              label="Waktu Mulai"
-              value={startDate}
-              onChange={(e) => {
-                const s = e.target.value;
-                setStartDate(s);
-                handleTimeLocationChange(location, s, endDate);
-              }}
-              required
-            />
-            <Input
-              type="datetime-local"
-              label="Waktu Selesai"
-              value={endDate}
-              onChange={(e) => {
-                const end = e.target.value;
-                setEndDate(end);
-                handleTimeLocationChange(location, startDate, end);
-              }}
-              required
-            />
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
-              label="Penyelenggara / Divisi"
-              value={organizer}
-              onChange={(e) => setOrganizer(e.target.value)}
-              placeholder="Contoh: Ekskul Futsal / OSIS"
-              required
-            />
-
-            <Select
-              label="Kaitkan ke Ekstrakurikuler"
-              value={extracurricularId}
-              onChange={(e) => setExtracurricularId(e.target.value)}
-            >
-              <option value="">-- Umum / Tanpa Ekskul --</option>
-              <option value="eks-1">Futsal Garuda Nusantara</option>
-              <option value="eks-2">Programming & Cyber Club</option>
-              <option value="eks-3">Fotografi & Sinematografi</option>
-              <option value="eks-4">Teater Citra Nusa</option>
-              <option value="eks-5">Basket Nusantara Club</option>
-            </Select>
-          </div>
-
-          <Textarea
-            label="Deskripsi / Catatan Agenda"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Jelaskan instruksi latihan, agenda yang dibahas, atau perlengkapan yang wajib dibawa..."
-            rows={3}
-          />
-
-          <div className="flex justify-end gap-2 pt-2 border-t border-[#EAE6DC]">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsAddModalOpen(false)}
-            >
-              Batal
-            </Button>
-            <Button type="submit" variant="primary" className="bg-[#D15B40] hover:bg-[#b84a32]">
-              Simpan Jadwal ke Database
-            </Button>
-          </div>
-        </form>
-      </Modal>
+      {/* 6. Import Excel Modal */}
+      <ImportExcelModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={fetchEvents}
+        currentUser={currentUser}
+        role={role || ''}
+      />
     </div>
   );
 };

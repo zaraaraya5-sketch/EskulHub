@@ -9,6 +9,7 @@ export interface User {
   phone?: string;
   avatar_url?: string;
   is_active: boolean;
+  extracurricular_id?: string;
 }
 
 export interface StudentProfile {
@@ -138,6 +139,8 @@ export interface SchoolEvent {
   end_time?: string;
   description?: string;
   organizer: string;
+  created_by_id?: string;
+  created_by_role?: string;
 }
 
 export interface Activity {
