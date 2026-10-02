@@ -321,10 +321,20 @@ export const saveAttendanceRecordAPI = async (data: Partial<AttendanceRecord>) =
 // ==========================================
 // 6. School Events & Calendar
 // ==========================================
-export const getEventsAPI = async (): Promise<SchoolEvent[]> => {
+export const getEventsAPI = async (params?: {
+  start_time?: string;
+  end_time?: string;
+  user_id?: string;
+}): Promise<SchoolEvent[]> => {
   try {
-    const res = await api.get('/events');
-    return res.data;
+    const res = await api.get('/events', { params });
+    if (Array.isArray(res.data)) {
+      return res.data;
+    }
+    if (res.data?.data && Array.isArray(res.data.data)) {
+      return res.data.data;
+    }
+    return [];
   } catch (err) {
     console.error('Error fetching events from API:', err);
     return [];

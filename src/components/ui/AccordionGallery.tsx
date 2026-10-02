@@ -36,10 +36,39 @@ interface AccordionGalleryProps {
   onNavigate?: (path: string) => void;
 }
 
+const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800';
+
 const DEFAULT_ITEMS: AccordionGalleryItem[] = [
-  { image: 'https://picsum.photos/id/1015/900/1200', label: 'Canyon', bio: 'Beautiful canyon view.' },
-  { image: 'https://picsum.photos/id/1018/900/1200', label: 'Ridgeline', bio: 'Majestic ridgeline.' },
-  { image: 'https://picsum.photos/id/1039/900/1200', label: 'Falls', bio: 'Stunning waterfalls.' },
+  {
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800',
+    label: 'Futsal Garuda Nusantara',
+    bio: 'Wadah pembinaan fisik, sportivitas, dan strategi kompetisi futsal antar-sekolah.',
+    link: '/ekskul/futsal',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
+    label: 'Programming & Cyber Club',
+    bio: 'Eksplorasi pembuatan aplikasi web, kecerdasan buatan, algoritma kompetisi, dan keamanan siber.',
+    link: '/ekskul/programming-club',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800',
+    label: 'Fotografi & Sinematografi Citra',
+    bio: 'Mempelajari teknik komposisi visual, tata cahaya, editing digital, dan produksi video sekolah.',
+    link: '/ekskul/fotografi',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800',
+    label: 'Teater Citra Nusa',
+    bio: 'Pengasahan olah vokal, gestur tubuh, penulisan naskah drama, dan seni pertunjukan panggung.',
+    link: '/ekskul/teater',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800',
+    label: 'Basket Nusantara Club',
+    bio: 'Latihan intensif bola basket, pembentukan fisik atletis, dan persiapan kompetisi DBL.',
+    link: '/ekskul/basket',
+  },
 ];
 
 const AccordionGallery: React.FC<AccordionGalleryProps> = ({
@@ -75,9 +104,16 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
   const firstRunRef = useRef(true);
   const mediaSizeRef = useRef(320);
 
+  const effectiveItems = items && items.length > 0 ? items : DEFAULT_ITEMS;
   const vertical = orientation === 'vertical';
-  const count = items.length;
-  const [active, setActive] = useState(Math.min(Math.max(defaultIndex, 0), count - 1));
+  const count = effectiveItems.length;
+  const [active, setActive] = useState(() => Math.min(Math.max(defaultIndex, 0), Math.max(0, count - 1)));
+
+  useEffect(() => {
+    if (active < 0 || active >= count) {
+      setActive(Math.min(Math.max(defaultIndex, 0), Math.max(0, count - 1)));
+    }
+  }, [count, defaultIndex, active]);
 
   const prefersReduced =
     typeof window !== 'undefined' && window.matchMedia
@@ -206,7 +242,7 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
       setActive(i);
     } else {
       // If active and click the card, navigate if link provided
-      const link = items[i].link;
+      const link = effectiveItems[i]?.link;
       if (link && onNavigate) {
          e.preventDefault();
          onNavigate(link);
@@ -239,7 +275,7 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
       role="list"
       aria-label="Image accordion gallery"
     >
-      {items.map((item, i) => {
+      {effectiveItems.map((item, i) => {
         const isActive = i === active;
         const Tag = item.link && !onNavigate ? 'a' : 'div';
         return (
@@ -260,7 +296,18 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
           >
             <span className="ag-panel__frame">
               <span className="ag-panel__media" ref={(el) => { mediaRefs.current[i] = el; }}>
-                <img src={item.image} alt={item.alt || item.label || ''} draggable="false" />
+                <img
+                  src={item.image || FALLBACK_IMAGE}
+                  alt={item.alt || item.label || ''}
+                  draggable="false"
+                  loading="eager"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (target.src !== FALLBACK_IMAGE) {
+                      target.src = FALLBACK_IMAGE;
+                    }
+                  }}
+                />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>

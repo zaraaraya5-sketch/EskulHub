@@ -1,5 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { db } from '@/lib/database';
+import { getEkskulsAPI } from '@/lib/api';
+import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import AccordionGallery, { AccordionGalleryItem } from '@/components/ui/AccordionGallery';
@@ -14,9 +16,31 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
-  const settings = db.getSettings();
-  const ekskuls = db.getExtracurriculars();
+  const [settings, setSettings] = useState(() => db.getSettings());
+  const [ekskuls, setEkskuls] = useState<Extracurricular[]>(() => db.getExtracurriculars());
   const [searchVerifyId, setSearchVerifyId] = useState('');
+
+  useEffect(() => {
+    // 1. Subscribe to updates from db (whenever syncWithBackend completes or updates occur)
+    const unsubscribe = db.subscribe(() => {
+      const liveEkskuls = db.getExtracurriculars();
+      if (liveEkskuls && liveEkskuls.length > 0) {
+        setEkskuls(liveEkskuls);
+      }
+      setSettings(db.getSettings());
+    });
+
+    // 2. Fetch directly from backend API to ensure immediate hydration
+    getEkskulsAPI().then((data) => {
+      if (data && data.length > 0) {
+        setEkskuls(data);
+      }
+    }).catch(() => {
+      // fallback already handled by initial state
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleVerifySubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +53,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
   // Select a few featured extracurriculars for the gallery
   const galleryItems: AccordionGalleryItem[] = useMemo(() => {
-    return ekskuls.slice(0, 5).map(ekskul => ({
+    const list = ekskuls.length > 0 ? ekskuls : db.getExtracurriculars();
+    return list.slice(0, 5).map(ekskul => ({
       id: ekskul.id,
       image: ekskul.profile_image,
       label: ekskul.name,

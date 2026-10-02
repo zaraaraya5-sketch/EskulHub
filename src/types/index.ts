@@ -109,25 +109,33 @@ export interface AttendanceRecord {
   verified_by_name?: string;
 }
 
-export type EventType =
+export type EventCategory =
+  | 'school_event'
+  | 'national_holiday'
+  | 'extracurricular_training'
   | 'extracurricular_practice'
   | 'competition'
-  | 'school_event'
   | 'osis_event'
   | 'committee_event'
   | 'meeting'
   | 'holiday'
   | 'official_school_activity';
 
+export type EventType = EventCategory;
+
 export interface SchoolEvent {
   id: string;
   title: string;
   event_type?: EventType;
-  category?: string;
+  category?: EventCategory | string;
+  extracurricular_id?: string | null;
+  extracurricular_name?: string | null;
   status?: string;
   location: string;
   start_datetime: string;
   end_datetime: string;
+  start_time?: string;
+  end_time?: string;
   description?: string;
   organizer: string;
 }
