@@ -45,7 +45,23 @@ const AppContent: React.FC = () => {
     currentPath.startsWith('/teacher') ||
     currentPath.startsWith('/admin');
 
+  // Verify client-side route authorization
+  const isUnauthorizedForDashboard =
+    isAuthenticatedDashboardRoute &&
+    (!currentUser ||
+      (currentPath.startsWith('/admin') && role !== 'admin') ||
+      (currentPath.startsWith('/guru') && !['guru', 'admin'].includes(role)) ||
+      ((currentPath.startsWith('/pembina') || currentPath.startsWith('/teacher')) &&
+        !['pembina', 'teacher', 'guru', 'admin'].includes(role)) ||
+      (currentPath.startsWith('/pengurus') &&
+        !['pengurus', 'pembina', 'teacher', 'admin'].includes(role)));
+
   const renderContent = () => {
+    // If attempting to access protected dashboard without permission, show login
+    if (isUnauthorizedForDashboard) {
+      return <LoginPage currentPath="/login" onNavigate={navigate} />;
+    }
+
     // 1. Detail route: /ekskul/:slug
     if (currentPath.startsWith('/ekskul/')) {
       const slug = currentPath.replace('/ekskul/', '');
@@ -149,6 +165,17 @@ const AppContent: React.FC = () => {
     }
   };
 
+  // Dedicated Login / Register Screen or Unauthorized Dashboard Access
+  if (currentPath === '/login' || currentPath === '/register' || isUnauthorizedForDashboard) {
+    return (
+      <div className="min-h-screen bg-[#F9F8F6] text-[#171717] flex items-center justify-center p-4 sm:p-6">
+        <div key={currentPath} className="w-full flex justify-center animate-scale-in">
+          {renderContent()}
+        </div>
+      </div>
+    );
+  }
+
   // If in dashboard: Render ONLY Sidebar and full-height content (NO NAVBAR!)
   if (isAuthenticatedDashboardRoute) {
     return (
@@ -159,17 +186,6 @@ const AppContent: React.FC = () => {
             {renderContent()}
           </div>
         </main>
-      </div>
-    );
-  }
-
-  // Dedicated Login / Register Screen: NO NAVBAR and NO FOOTER, centered vertically and horizontally
-  if (currentPath === '/login' || currentPath === '/register') {
-    return (
-      <div className="min-h-screen bg-[#F9F8F6] text-[#171717] flex items-center justify-center p-4 sm:p-6">
-        <div key={currentPath} className="w-full flex justify-center animate-scale-in">
-          {renderContent()}
-        </div>
       </div>
     );
   }
