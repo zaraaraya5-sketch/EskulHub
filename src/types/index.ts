@@ -186,6 +186,8 @@ export interface PortfolioVerification {
   status: 'verified' | 'pending' | 'revoked' | 'valid';
   qr_code_url: string;
   verified_by_name: string;
+  security_seal?: string;
+  is_tamper_proof?: boolean;
   summary_data: {
     total_ekskul: number;
     total_attendance_rate: string;

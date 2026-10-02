@@ -22,28 +22,60 @@ class EkskulController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        if (empty($data['id'])) {
-            $data['id'] = 'eks-' . time() . '-' . Str::random(4);
-        }
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
-        $ekskul = Ekskul::create($data);
+        $validated = $request->validate([
+            'name' => 'required|string|max:120',
+            'category' => 'required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi',
+            'short_description' => 'required|string|max:300',
+            'full_description' => 'required|string|max:3000',
+            'profile_image' => 'nullable|string|max:500',
+            'supervisor_name' => 'required|string|max:120',
+            'supervisor_id' => 'nullable|string|max:100',
+            'chairperson_name' => 'required|string|max:120',
+            'practice_schedule' => 'required|string|max:150',
+            'location' => 'required|string|max:150',
+            'member_capacity' => 'required|integer|min:5|max:500',
+            'registration_status' => 'required|in:open,closed',
+        ]);
+
+        $validated['id'] = 'eks-' . time() . '-' . Str::random(4);
+        $validated['slug'] = Str::slug($validated['name']);
+        $validated['current_member_count'] = 0;
+
+        $ekskul = Ekskul::create($validated);
         return response()->json(['success' => true, 'ekskul' => $ekskul], 201);
     }
 
     public function update(Request $request, string $id)
     {
         $ekskul = Ekskul::findOrFail($id);
-        $ekskul->update($request->all());
+
+        $validated = $request->validate([
+            'name' => 'sometimes|required|string|max:120',
+            'category' => 'sometimes|required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi',
+            'short_description' => 'sometimes|required|string|max:300',
+            'full_description' => 'sometimes|required|string|max:3000',
+            'profile_image' => 'nullable|string|max:500',
+            'supervisor_name' => 'sometimes|required|string|max:120',
+            'supervisor_id' => 'nullable|string|max:100',
+            'chairperson_name' => 'sometimes|required|string|max:120',
+            'practice_schedule' => 'sometimes|required|string|max:150',
+            'location' => 'sometimes|required|string|max:150',
+            'member_capacity' => 'sometimes|required|integer|min:5|max:500',
+            'registration_status' => 'sometimes|required|in:open,closed',
+        ]);
+
+        if (isset($validated['name']) && $validated['name'] !== $ekskul->name) {
+            $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        $ekskul->update($validated);
         return response()->json(['success' => true, 'ekskul' => $ekskul->fresh()]);
     }
 
     public function destroy(string $id)
     {
         Ekskul::destroy($id);
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Ekstrakurikuler berhasil dihapus.']);
     }
 
     // Members
@@ -60,10 +92,22 @@ class EkskulController extends Controller
 
     public function addMember(Request $request, string $id)
     {
-        $data = $request->all();
-        $data['id'] = 'mem-' . time() . '-' . Str::random(4);
-        $data['extracurricular_id'] = $id;
-        $member = EkskulMember::create($data);
+        $validated = $request->validate([
+            'student_id' => 'required|string',
+            'student_name' => 'required|string|max:120',
+            'student_nisn' => 'required|string|max:20',
+            'student_class' => 'required|string|max:50',
+            'role' => 'required|in:Ketua,Wakil Ketua,Sekretaris,Bendahara,Anggota',
+            'joined_at' => 'nullable|date',
+            'status' => 'nullable|in:active,inactive',
+        ]);
+
+        $validated['id'] = 'mem-' . time() . '-' . Str::random(4);
+        $validated['extracurricular_id'] = $id;
+        $validated['joined_at'] = $validated['joined_at'] ?? now()->toDateString();
+        $validated['status'] = $validated['status'] ?? 'active';
+
+        $member = EkskulMember::create($validated);
 
         // Increment count
         $ekskul = Ekskul::find($id);
@@ -84,6 +128,6 @@ class EkskulController extends Controller
             }
             $member->delete();
         }
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Anggota berhasil dikeluarkan.']);
     }
 }

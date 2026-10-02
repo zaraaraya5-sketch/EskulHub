@@ -19,18 +19,25 @@ class CertificateController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        if (empty($data['id'])) {
-            $data['id'] = 'cert-' . time() . '-' . Str::random(4);
-        }
-        $data['is_verified'] = $request->boolean('is_verified', true);
-        $cert = Certificate::create($data);
+        $validated = $request->validate([
+            'student_id' => 'required|string',
+            'title' => 'required|string|max:200',
+            'issuer' => 'required|string|max:200',
+            'issue_date' => 'required|date',
+            'file_url' => 'nullable|string|max:500',
+            'certificate_number' => 'nullable|string|max:100',
+        ]);
+
+        $validated['id'] = 'cert-' . time() . '-' . Str::random(4);
+        $validated['is_verified'] = $request->boolean('is_verified', true);
+
+        $cert = Certificate::create($validated);
         return response()->json(['success' => true, 'certificate' => $cert], 201);
     }
 
     public function destroy(string $id)
     {
         Certificate::destroy($id);
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Sertifikat berhasil dihapus.']);
     }
 }

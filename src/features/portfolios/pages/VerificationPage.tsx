@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/database';
+import { getVerificationAPI } from '@/lib/api';
+import { PortfolioVerification } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import {
@@ -33,6 +35,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
   onNavigate
 }) => {
   const [searchInput, setSearchInput] = useState(verificationId);
+  const [apiVerification, setApiVerification] = useState<PortfolioVerification | null>(null);
   const cleanId = (verificationId || '').trim();
   const hasQuery = cleanId.length > 0;
   
@@ -41,7 +44,24 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
     setSearchInput(verificationId || '');
   }, [verificationId]);
 
-  const verification = hasQuery ? db.getVerificationById(cleanId) : undefined;
+  // Query live API to retrieve cryptographically sealed verification data if available
+  useEffect(() => {
+    let isMounted = true;
+    if (cleanId) {
+      getVerificationAPI(cleanId).then((res) => {
+        if (isMounted && res) {
+          setApiVerification(res);
+        }
+      });
+    } else {
+      setApiVerification(null);
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [cleanId]);
+
+  const verification = apiVerification || (hasQuery ? db.getVerificationById(cleanId) : undefined);
   
   // Retrieve available verified document as a living reference if available
   const existingVerifications = db.getVerifications();
@@ -49,7 +69,7 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const query = searchInput.trim();
+    const query = searchInput.trim().replace(/[<>]/g, '');
     if (query) {
       onNavigate(`/verify/${encodeURIComponent(query)}`);
     } else {
@@ -150,6 +170,12 @@ export const VerificationPage: React.FC<VerificationPageProps> = ({
               <div>
                 <span className="text-[11px] text-white/80 block uppercase">Nomor Registrasi Arsip:</span>
                 <span className="font-mono text-sm sm:text-base font-bold text-white tracking-wide">{verification.verification_id}</span>
+                {verification.security_seal && (
+                  <div className="mt-1 flex items-center sm:justify-end gap-1 px-2 py-0.5 rounded bg-black/20 border border-white/20 text-[10px] font-mono text-white">
+                    <ShieldCheck className="w-3 h-3 text-[#A7F3D0]" />
+                    <span>HMAC-SHA256: {verification.security_seal}</span>
+                  </div>
+                )}
               </div>
               <Button
                 variant="outline"
