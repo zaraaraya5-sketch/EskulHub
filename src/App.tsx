@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { HomePage } from '@/features/extracurriculars/pages/HomePage';
-import { CatalogPage } from '@/features/extracurriculars/pages/CatalogPage';
-import { DetailPage } from '@/features/extracurriculars/pages/DetailPage';
-import { CalendarPage } from '@/features/school-events/pages/CalendarPage';
-import { CreateEventPage } from '@/features/school-events/pages/CreateEventPage';
-import { VerificationPage } from '@/features/portfolios/pages/VerificationPage';
-import { LoginPage } from '@/features/authentication/pages/LoginPage';
-import { StudentDashboardPage } from '@/features/portfolios/pages/StudentDashboardPage';
-import { StudentAttendancePage } from '@/features/attendance/pages/StudentAttendancePage';
-import { StudentPortfolioPage } from '@/features/portfolios/pages/StudentPortfolioPage';
-import { PengurusDashboardPage } from '@/features/extracurriculars/pages/PengurusDashboardPage';
-import { PengurusAttendancePage } from '@/features/attendance/pages/PengurusAttendancePage';
-import { TeacherDashboardPage } from '@/features/portfolios/pages/TeacherDashboardPage';
-import { GuruDashboardPage } from '@/features/portfolios/pages/GuruDashboardPage';
-import { PortfolioSamplePage } from '@/features/portfolios/pages/PortfolioSamplePage';
-import { AdminDashboardPage } from '@/features/portfolios/pages/AdminDashboardPage';
+import { PageLoader } from '@/components/ui/PageLoader';
+
+const HomePage = React.lazy(() => import('@/features/extracurriculars/pages/HomePage').then((m) => ({ default: m.HomePage })));
+const CatalogPage = React.lazy(() => import('@/features/extracurriculars/pages/CatalogPage').then((m) => ({ default: m.CatalogPage })));
+const DetailPage = React.lazy(() => import('@/features/extracurriculars/pages/DetailPage').then((m) => ({ default: m.DetailPage })));
+const CalendarPage = React.lazy(() => import('@/features/school-events/pages/CalendarPage').then((m) => ({ default: m.CalendarPage })));
+const CreateEventPage = React.lazy(() => import('@/features/school-events/pages/CreateEventPage').then((m) => ({ default: m.CreateEventPage })));
+const VerificationPage = React.lazy(() => import('@/features/portfolios/pages/VerificationPage').then((m) => ({ default: m.VerificationPage })));
+const LoginPage = React.lazy(() => import('@/features/authentication/pages/LoginPage').then((m) => ({ default: m.LoginPage })));
+const StudentDashboardPage = React.lazy(() => import('@/features/portfolios/pages/StudentDashboardPage').then((m) => ({ default: m.StudentDashboardPage })));
+const StudentAttendancePage = React.lazy(() => import('@/features/attendance/pages/StudentAttendancePage').then((m) => ({ default: m.StudentAttendancePage })));
+const StudentPortfolioPage = React.lazy(() => import('@/features/portfolios/pages/StudentPortfolioPage').then((m) => ({ default: m.StudentPortfolioPage })));
+const PengurusDashboardPage = React.lazy(() => import('@/features/extracurriculars/pages/PengurusDashboardPage').then((m) => ({ default: m.PengurusDashboardPage })));
+const PengurusAttendancePage = React.lazy(() => import('@/features/attendance/pages/PengurusAttendancePage').then((m) => ({ default: m.PengurusAttendancePage })));
+const TeacherDashboardPage = React.lazy(() => import('@/features/portfolios/pages/TeacherDashboardPage').then((m) => ({ default: m.TeacherDashboardPage })));
+const GuruDashboardPage = React.lazy(() => import('@/features/portfolios/pages/GuruDashboardPage').then((m) => ({ default: m.GuruDashboardPage })));
+const PortfolioSamplePage = React.lazy(() => import('@/features/portfolios/pages/PortfolioSamplePage').then((m) => ({ default: m.PortfolioSamplePage })));
+const AdminDashboardPage = React.lazy(() => import('@/features/portfolios/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
 
 const AppContent: React.FC = () => {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
@@ -180,7 +182,9 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen bg-[#F9F8F6] text-[#171717] flex items-center justify-center p-4 sm:p-6">
         <div key={currentPath} className="w-full flex justify-center animate-scale-in">
-          {renderContent()}
+          <React.Suspense fallback={<PageLoader />}>
+            {renderContent()}
+          </React.Suspense>
         </div>
       </div>
     );
@@ -193,7 +197,9 @@ const AppContent: React.FC = () => {
         <Sidebar currentPath={currentPath} onNavigate={navigate} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto min-h-screen">
           <div key={currentPath} className="max-w-7xl mx-auto animate-fade-in-up">
-            {renderContent()}
+            <React.Suspense fallback={<PageLoader />}>
+              {renderContent()}
+            </React.Suspense>
           </div>
         </main>
       </div>
@@ -206,7 +212,9 @@ const AppContent: React.FC = () => {
       <Navbar currentPath={currentPath} onNavigate={navigate} />
       <main className="flex-1">
         <div key={currentPath} className="animate-fade-in-up">
-          {renderContent()}
+          <React.Suspense fallback={<PageLoader />}>
+            {renderContent()}
+          </React.Suspense>
         </div>
       </main>
 

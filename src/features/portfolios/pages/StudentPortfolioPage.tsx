@@ -3,7 +3,6 @@ import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { generatePortfolioPdf } from '@/lib/pdf/generatePortfolioPdf';
 import {
   FileText,
   Download,
@@ -32,6 +31,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
   const handleDownloadPdf = async () => {
     setIsGenerating(true);
     try {
+      const { generatePortfolioPdf } = await import('@/lib/pdf/generatePortfolioPdf');
       await generatePortfolioPdf(verification, settings);
     } catch (error) {
       console.error('Error generating PDF:', error);

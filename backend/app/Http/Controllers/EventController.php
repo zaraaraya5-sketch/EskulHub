@@ -31,26 +31,18 @@ class EventController extends Controller
         $startTime = $request->query('start_time', $request->query('start_date', '2026-01-01 00:00:00'));
         $endTime = $request->query('end_time', $request->query('end_date', '2026-12-31 23:59:59'));
 
-        // Normalize simple YYYY-MM-DD to full timestamp
+        // Normalize timestamps
         if (strlen($startTime) === 10) $startTime .= ' 00:00:00';
         if (strlen($endTime) === 10) $endTime .= ' 23:59:59';
+        $startTime = str_replace('T', ' ', $startTime);
+        $endTime = str_replace('T', ' ', $endTime);
 
-        // 2. Identify authenticated user via Sanctum or Token
-        $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        $userId = $user ? $user->id : null;
-
-        // Fallback: check query parameter or header for user_id (if passed directly)
-        if (!$userId && $request->has('user_id')) {
-            $userId = $request->query('user_id');
-        }
-
-        // 3. Ambil semua agenda kegiatan untuk rentang waktu ini agar semua role bisa melihatnya
         $events = DB::select(
             "SELECT DISTINCT e.*, ek.name as extracurricular_name
              FROM events e
              LEFT JOIN ekskuls ek ON e.extracurricular_id = ek.id
-             WHERE replace(e.start_time, 'T', ' ') BETWEEN ? AND ?
-             ORDER BY replace(e.start_time, 'T', ' ') ASC",
+             WHERE e.start_time BETWEEN ? AND ?
+             ORDER BY e.start_time ASC",
             [$startTime, $endTime]);
 
         // Also normalize keys for frontend consistency (support both start_time & start_datetime)

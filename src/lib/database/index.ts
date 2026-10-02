@@ -49,8 +49,15 @@ class SQLiteDatabaseClient {
     return () => this.listeners.delete(listener);
   }
 
+  private isSyncing = false;
+
   public async syncWithBackend(): Promise<void> {
+    if (this.isSyncing) return;
+    this.isSyncing = true;
+
     try {
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('ekskul_auth_token');
+
       const [
         settings,
         users,
@@ -68,7 +75,7 @@ class SQLiteDatabaseClient {
         apiService.getUsersAPI(),
         apiService.getEkskulsAPI(),
         apiService.getAllMembersAPI(),
-        apiService.getRegistrationsAPI(),
+        hasToken ? apiService.getRegistrationsAPI() : Promise.resolve([]),
         apiService.getAttendanceSessionsAPI(),
         apiService.getAttendanceRecordsAPI(),
         apiService.getEventsAPI(),
@@ -92,6 +99,8 @@ class SQLiteDatabaseClient {
       this.notify();
     } catch (err) {
       console.error('Gagal mengambil data dari database lokal SQLite:', err);
+    } finally {
+      this.isSyncing = false;
     }
   }
 

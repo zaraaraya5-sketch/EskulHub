@@ -7,7 +7,9 @@ import { CalendarHeader } from '../components/CalendarHeader';
 import { CalendarFilterBar } from '../components/CalendarFilterBar';
 import { CalendarGrid } from '../components/CalendarGrid';
 import { EventDetailModal } from '../components/EventDetailModal';
-import { ImportExcelModal } from '../components/ImportExcelModal';
+const ImportExcelModal = React.lazy(() =>
+  import('../components/ImportExcelModal').then((m) => ({ default: m.ImportExcelModal }))
+);
 
 interface CalendarPageProps {
   onNavigate?: (path: string) => void;
@@ -74,13 +76,17 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
         onNavigate={onNavigate}
       />
 
-      <ImportExcelModal
-        isOpen={isImportModalOpen}
-        onClose={() => setIsImportModalOpen(false)}
-        onSuccess={fetchEvents}
-        currentUser={currentUser}
-        role={role || ''}
-      />
+      {isImportModalOpen && (
+        <React.Suspense fallback={null}>
+          <ImportExcelModal
+            isOpen={isImportModalOpen}
+            onClose={() => setIsImportModalOpen(false)}
+            onSuccess={fetchEvents}
+            currentUser={currentUser}
+            role={role || ''}
+          />
+        </React.Suspense>
+      )}
     </div>
   );
 };

@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { Textarea } from '@/components/ui/Textarea';
-import { generatePortfolioPdf } from '@/lib/pdf/generatePortfolioPdf';
 import { Plus, CheckCircle2, AlertCircle, UploadCloud } from 'lucide-react';
 import { Extracurricular } from '@/types';
 import { StudentProfileHeader } from '../views/StudentProfileHeader';
@@ -119,10 +118,14 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
-    setTimeout(() => {
-      generatePortfolioPdf(verification, settings);
+    try {
+      const { generatePortfolioPdf } = await import('@/lib/pdf/generatePortfolioPdf');
+      await generatePortfolioPdf(verification, settings);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+    } finally {
       setIsGeneratingPdf(false);
-    }, 1500);
+    }
   };
 
   const handleOpenRegisterModal = (ekskulId?: string) => {
