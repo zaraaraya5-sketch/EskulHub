@@ -106,18 +106,62 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
   const handleDeleteEvent = async (id: string) => {
     setIsDeleting(true);
     setDeleteError('');
+
+    // Keep snapshot for rollback if API fails
+    const previousEvents = [...events];
+    const targetEvent = events.find((e) => e.id === id) || selectedEventForDetail;
+    const targetTitle = targetEvent?.title;
+    const targetDate = (targetEvent?.start_time || targetEvent?.start_datetime)?.slice(0, 10);
+
+    // 1. Immediate optimistic UI update: delete instantly from view
+    setEvents((prev) =>
+      prev.filter((e) => {
+        if (e.id === id) return false;
+        if (
+          targetTitle &&
+          e.title === targetTitle &&
+          targetDate &&
+          (e.start_time?.slice(0, 10) === targetDate || e.start_datetime?.slice(0, 10) === targetDate)
+        ) {
+          return false;
+        }
+        return true;
+      })
+    );
+    setSelectedEventForDetail(null);
+    setShowDeleteConfirm(false);
+
     try {
       const res = await deleteEventAPI(id, currentUser?.id);
       if (!res.success) {
+        // Rollback optimistic state on failure
+        setEvents(previousEvents);
         setDeleteError(res.message || 'Gagal menghapus agenda kegiatan.');
         setIsDeleting(false);
         return;
       }
+
+      // 2. Synchronize local DB cache
       db.deleteSchoolEvent(id, currentUser?.id);
-      setSelectedEventForDetail(null);
-      setShowDeleteConfirm(false);
-      fetchEvents();
+      if (targetTitle && targetDate) {
+        db.events.setEvents(
+          db.getSchoolEvents().filter((e) => {
+            if (e.id === id) return false;
+            if (
+              e.title === targetTitle &&
+              (e.start_time?.slice(0, 10) === targetDate || e.start_datetime?.slice(0, 10) === targetDate)
+            ) {
+              return false;
+            }
+            return true;
+          })
+        );
+      }
+
+      // 3. Silently refresh from SQLite database
+      await fetchEvents();
     } catch (err: any) {
+      setEvents(previousEvents);
       setDeleteError(err.message || 'Terjadi kesalahan sistem.');
     } finally {
       setIsDeleting(false);
@@ -204,19 +248,12 @@ export const CalendarPage: React.FC<CalendarPageProps> = ({ onNavigate }) => {
         end_time: gridEndStr,
       });
 
-      const localEvents = db.getSchoolEvents();
-
-      if (Array.isArray(data) && data.length > 0) {
-        // Merge backend data with any newly created local events
-        const backendKeys = new Set(data.map((e) => `${e.title}_${(e.start_time || e.start_datetime)?.slice(0, 10)}`));
-        const missingLocal = localEvents.filter(
-          (e) => !backendKeys.has(`${e.title}_${(e.start_time || e.start_datetime)?.slice(0, 10)}`)
-        );
-        setEvents([...data, ...missingLocal]);
-      } else if (localEvents.length > 0) {
-        setEvents(localEvents);
-      } else if (Array.isArray(data)) {
+      if (Array.isArray(data)) {
+        // Sync local database store with authoritative SQLite backend records
+        db.events.setEvents(data);
         setEvents(data);
+      } else {
+        setEvents(db.getSchoolEvents());
       }
     } catch (err) {
       console.error('Error loading calendar events:', err);

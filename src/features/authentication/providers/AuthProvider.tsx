@@ -17,26 +17,61 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const users = db.getUsers();
-
-  // Initialize from storage or null
+  // Initialize from storage synchronously so state is never lost on refresh
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const savedId = localStorage.getItem('ekskul_auth_user_id');
-    const found = users.find(u => u.id === savedId);
-    return found || null;
+    try {
+      const savedUserJson = localStorage.getItem('ekskul_auth_user');
+      if (savedUserJson) {
+        const parsed = JSON.parse(savedUserJson);
+        if (parsed && parsed.id && parsed.role) {
+          return parsed;
+        }
+      }
+      const savedId = localStorage.getItem('ekskul_auth_user_id');
+      if (savedId) {
+        const found = db.getUsers().find((u) => u.id === savedId);
+        if (found) return found;
+      }
+    } catch (e) {
+      console.warn('Gagal membaca sesi awal dari localStorage:', e);
+    }
+    return null;
   });
 
+  // Synchronize localStorage whenever currentUser changes
   useEffect(() => {
     try {
       if (currentUser) {
+        localStorage.setItem('ekskul_auth_user', JSON.stringify(currentUser));
         localStorage.setItem('ekskul_auth_user_id', currentUser.id);
-      } else {
-        localStorage.removeItem('ekskul_auth_user_id');
-        localStorage.removeItem('ekskul_auth_token');
       }
     } catch (error) {
       console.warn('Gagal menyimpan sesi ke localStorage:', error);
     }
+  }, [currentUser]);
+
+  // Sync with DB after backend async load finishes
+  useEffect(() => {
+    const unsub = db.subscribe(() => {
+      const allUsers = db.getUsers();
+      if (allUsers.length === 0) return;
+
+      const savedId = localStorage.getItem('ekskul_auth_user_id');
+      if (savedId) {
+        const found = allUsers.find((u) => u.id === savedId || (currentUser && u.email === currentUser.email));
+        if (found) {
+          setCurrentUser((prev) => {
+            if (!prev) return found;
+            // Only update if properties changed
+            if (prev.id !== found.id || prev.role !== found.role || prev.name !== found.name) {
+              return { ...prev, ...found };
+            }
+            return prev;
+          });
+        }
+      }
+    });
+    return () => unsub();
   }, [currentUser]);
 
   const login = async (
@@ -57,6 +92,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const apiRes = await loginAPI(clean, password);
       if (apiRes && apiRes.success && apiRes.user) {
+        localStorage.setItem('ekskul_auth_user', JSON.stringify(apiRes.user));
+        localStorage.setItem('ekskul_auth_user_id', apiRes.user.id);
         setCurrentUser(apiRes.user);
         return { success: true, user: apiRes.user, message: apiRes.message };
       }
@@ -84,6 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, message: 'Kata sandi (password) salah. Silakan coba lagi.' };
     }
 
+    localStorage.setItem('ekskul_auth_user', JSON.stringify(found));
+    localStorage.setItem('ekskul_auth_user_id', found.id);
     setCurrentUser(found);
     return { success: true, user: found };
   };
@@ -95,6 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     logoutAPI().catch(() => {});
+    localStorage.removeItem('ekskul_auth_user');
     localStorage.removeItem('ekskul_auth_user_id');
     localStorage.removeItem('ekskul_auth_token');
     setCurrentUser(null);

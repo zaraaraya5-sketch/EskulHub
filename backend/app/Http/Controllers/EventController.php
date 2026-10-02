@@ -144,11 +144,12 @@ class EventController extends Controller
 
         // 1. Resolve user performing the update
         $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && $request->has('user_id')) {
-            $user = \App\Models\User::find($request->input('user_id'));
-        }
-        if (!$user && $request->hasHeader('X-User-Id')) {
-            $user = \App\Models\User::find($request->header('X-User-Id'));
+        if (!$user && ($request->has('user_id') || $request->hasHeader('X-User-Id'))) {
+            $identifier = $request->input('user_id') ?? $request->header('X-User-Id');
+            $user = \App\Models\User::where('id', $identifier)
+                ->orWhere('email', $identifier)
+                ->orWhere('name', $identifier)
+                ->first();
         }
 
         if (!$user) {
@@ -240,11 +241,12 @@ class EventController extends Controller
 
         // 1. Resolve user performing the delete
         $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && $request->has('user_id')) {
-            $user = \App\Models\User::find($request->input('user_id'));
-        }
-        if (!$user && $request->hasHeader('X-User-Id')) {
-            $user = \App\Models\User::find($request->header('X-User-Id'));
+        if (!$user && ($request->has('user_id') || $request->hasHeader('X-User-Id'))) {
+            $identifier = $request->input('user_id') ?? $request->header('X-User-Id');
+            $user = \App\Models\User::where('id', $identifier)
+                ->orWhere('email', $identifier)
+                ->orWhere('name', $identifier)
+                ->first();
         }
 
         if (!$user) {
