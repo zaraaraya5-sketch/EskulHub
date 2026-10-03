@@ -1,85 +1,74 @@
-# EKSKUL-HUB — Platform Manajemen Ekstrakurikuler & Portofolio Siswa
+# EskulHub SMKN 1 Ciomas
 
-Ekskul-Hub adalah platform manajemen terpadu kegiatan ekstrakurikuler, presensi digital, pencatatan prestasi, dan penerbitan portofolio non-akademik siswa bertanda tangan digital dan kode verifikasi QR untuk satuan pendidikan di Indonesia (**SMKN 1 Ciomas**).
+EskulHub adalah sistem pengelolaan kegiatan ekstrakurikuler, presensi kehadiran latihan, pencatatan prestasi, dan penerbitan portofolio non-akademik untuk siswa SMKN 1 Ciomas. Sistem ini menghubungkan siswa, guru pembina, dan pengurus sekolah dalam satu alur kerja yang terstruktur dan tercatat rapi.
 
-Aplikasi dibangun murni menggunakan **React (Vite + TypeScript)**, **Tailwind CSS**, **Node.js**, dan terintegrasi dengan **Laravel 11 Backend**, mematuhi seluruh arahan desain institusional (*Strict Anti-AI-Slop*, tanpa gradien berlebih, warna solid hangat `#F5F2EA`, aksen terakota `#D15B40`, dan teal `#3B7A82`).
+## Peran Pengguna dan Batas Akses
 
----
+Sistem menggunakan pembagian peran berdasarkan tanggung jawab masing-masing pihak di sekolah.
 
-## 1. Fitur Utama & Alur Kerja (Workflow)
+### 1. Siswa
+Siswa menggunakan sistem untuk mencari informasi ekstrakurikuler yang aktif di SMKN 1 Ciomas, mendaftarkan diri pada kegiatan yang diminati, memantau rekap kehadiran latihan mingguan, mengunggah bukti keikutsertaan lomba atau kegiatan, dan mencetak dokumen portofolio resmi saat diperlukan untuk keperluan kelulusan, seleksi perguruan tinggi, maupun lamaran kerja.
 
-```
-DISCOVER → REGISTER → APPROVE → PARTICIPATE → ATTEND → RECORD & VERIFY → BUILD PORTFOLIO → GENERATE PDF → VERIFY
-```
+### 2. Pembina Ekskul
+Guru pembina bertanggung jawab mengelola satu atau beberapa ekstrakurikuler yang dibina. Pembina memeriksa berkas pendaftaran calon anggota baru, menyetujui atau menolak pendaftaran sesuai kuota, membuka sesi latihan rutin, mengisi catatan kehadiran anggota, menyusun agenda latihan atau persiapan kompetisi, serta memvalidasi sertifikat penghargaan yang diajukan oleh siswa binaannya.
 
-1. **Katalog Publik Ekstrakurikuler (`/ekskul`)**:
-   - Menampilkan 8 ekstrakurikuler SMKN 1 Ciomas: Basket, Voli, Futsal, Paskibra, English Club, Rohis, Pramuka, PMR.
-   - Pencarian real-time nama ekskul, pembina, dan kata kunci.
-   - Filter kategori (*Olahraga, Keagamaan, Kemanusiaan, Kepemimpinan, Bahasa & Literasi*).
-   - Filter status pendaftaran (*Buka / Kuota Penuh*).
-   - Pengurutan nama, kapasitas, dan popularitas.
+### 3. Pengurus Sekolah
+Pengurus memegang wewenang pengawasan menyeluruh terhadap seluruh aktivitas ekstrakurikuler di SMKN 1 Ciomas. Tugas pengurus mencakup pemantauan keaktifan siswa dan pembina, peninjauan kapasitas anggota per cabang, pemantauan agenda resmi sekolah dan hari libur nasional pada kalender, impor massal jadwal kegiatan dari berkas Excel, serta penerbitan tanda tangan elektronik dan kode verifikasi portofolio kesiswaan.
 
-2. **Halaman Detail & Pendaftaran Daring (`/ekskul/:slug`)**:
-   - Profil lengkap, silabus, guru pembina, ketua ekskul, jadwal rutin, lokasi latihan, dan kuota anggota.
-   - Daftar prestasi resmi dan galeri dokumentasi kegiatan.
-   - **Formulir Pendaftaran Online Interaktif** khusus peran Siswa dengan validasi pencegahan duplikasi dan pengecekan kapasitas maksimal.
+## Alur Kerja Sistem
 
-3. **Buku Presensi Digital & Kalkulator Kehadiran (`/student/attendance` & `/pengurus/attendance`)**:
-   - Status presensi standar: `Hadir (Present)`, `Terlambat (Late)`, `Izin/Sakit (Excused)`, `Alpa (Absent)`.
-   - Perhitungan otomatis persentase kehadiran real-time.
-   - Pengurus dapat membuka sesi latihan baru dan menandai presensi anggota secara langsung.
+### 1. Alur Pendaftaran Anggota Baru
+Siswa membuka katalog ekstrakurikuler dan memilih salah satu cabang yang pendaftarannya masih terbuka. Siswa mengisi formulir pendaftaran yang memuat alasan memilih cabang tersebut, pengalaman sebelumnya jika ada, nomor kontak aktif, dan persetujuan tata tertib latihan. Sistem memastikan siswa tidak mendaftar dua kali pada cabang yang sama dan memeriksa sisa kuota yang tersedia.
 
-4. **Kalender Agenda & Deteksi Konflik Fasilitas (`/calendar`)**:
-   - Jadwal terpusat latihan, turnamen, acara sekolah (PORSENI), dan agenda kesiswaan.
-   - **Live Conflict Detection**: Memperingatkan secara otomatis jika ada 2 kegiatan yang mencoba menggunakan ruangan/lapangan yang sama pada waktu bersamaan.
+Data pendaftaran masuk ke dasbor guru pembina terkait dengan status menunggu persetujuan. Pembina meninjau data pemohon, lalu memilih opsi terima atau tolak disertai catatan singkat. Saat pendaftaran disetujui, identitas siswa langsung tercatat ke dalam daftar anggota resmi cabang tersebut.
 
-5. **Portofolio Resmi & Ekspor PDF (`/student/portfolio`)**:
-   - Rangkuman kronologis keanggotaan organisasi, persentase presensi, prestasi terverifikasi, dan peran kepanitiaan.
-   - **Ekspor Dokumen PDF Resmi**: Menghasilkan transkrip bertanda tangan elektronik Wakasek Kesiswaan lengkap dengan **QR Code dinamis** menggunakan `jspdf` dan `qrcode`.
+### 2. Alur Presensi Latihan Rutin
+Pada hari pelaksanaan kegiatan, pembina membuka sesi latihan baru dengan memilih tanggal, waktu mulai, materi atau fokus latihan, dan lokasi fasilitas yang digunakan. Daftar seluruh anggota resmi cabang tersebut ditampilkan pada layar presensi.
 
-6. **Laman Verifikasi Publik (`/verify/:verificationId`)**:
-   - Pengecekan keabsahan dokumen oleh pihak luar (kampus, penyedia beasiswa, atau dunia industri).
-   - Menampilkan status sah, nomor verifikasi (contoh: `EKH-2026-000184`), nama siswa, NISN, serta daftar prestasi yang diakui sekolah.
+Pembina menandai status kehadiran setiap anggota: hadir, terlambat, izin atau sakit, atau alpa. Sistem menghitung persentase kehadiran setiap siswa secara otomatis. Rekapitulasi kehadiran ini dapat dilihat langsung oleh siswa pada dasbor pribadi dan tercatat sebagai komponen evaluasi keaktifan dalam portofolio akhir.
 
----
+### 3. Alur Penjadwalan dan Pemeriksaan Bentrok Lokasi
+Pembina dan pengurus dapat menambahkan agenda kegiatan baru melalui kalender sekolah. Setiap agenda memuat judul kegiatan, kategori acara, tanggal dan jam pelaksanaan, nama penanggung jawab, serta lokasi ruangan atau lapangan yang dipakai.
 
-## 2. Hak Akses & Akun Uji Coba
+Sebelum data tersimpan, sistem melakukan pengecekan otomatis terhadap penggunaan lokasi. Jika pada rentang waktu yang sama terdapat kegiatan lain yang telah memesan fasilitas tersebut, sistem menolak penyimpanan dan menampilkan peringatan bentrok ruangan beserta rincian kegiatan yang mendahuluinya. Pengguna harus memilih waktu atau lokasi alternatif agar jadwal tidak saling tumpang tindih.
 
-Di bagian bilah atas (*top ribbon*) situs, terdapat **tombol pengalih peran instan (1-click role switcher)**:
+### 4. Alur Pengesahan Prestasi Siswa
+Siswa yang meraih penghargaan atau sertifikat keikutsertaan kompetisi dapat mengunggah rincian capaian melalui menu dokumen portofolio. Siswa mencantumkan nama kejuaraan, cabang lomba, tingkatan wilayah (tingkat sekolah, kecamatan, kota/kabupaten, provinsi, atau nasional), tahun perolehan, peringkat juara, serta berkas foto piagam atau sertifikat pendukung.
 
-| Peran | Nama Akun Demo | Email / Keterangan |
-|---|---|---|
-| **Siswa** | Budi Pratama | `budi@smkn1ciomas.sch.id` (XII RPL 1 - NISN: 0067823910) |
-| **Pengurus Ekskul** | Rizky Ramadhan | `rizky@smkn1ciomas.sch.id` (Ketua Ekskul Futsal Ciomas) |
-| **Guru Pembina** | Hendra Wijaya, S.Pd. | `hendra@smkn1ciomas.sch.id` (Pembina Futsal & Basket) |
-| **Admin Kesiswaan** | Drs. Bambang Suryono | `admin@smkn1ciomas.sch.id` (Wakasek Kesiswaan) |
+Data prestasi yang dikirim berstatus belum diverifikasi. Pembina memeriksa keaslian bukti piagam tersebut melalui menu pembina. Jika dokumen sesuai, pembina menyetujui capaian tersebut sehingga statusnya berubah menjadi terverifikasi resmi dan berhak dimasukkan ke dalam dokumen transkrip portofolio sekolah.
 
----
+### 5. Alur Penerbitan dan Pembuktian Portofolio Resmi
+Setelah siswa menyelesaikan masa kegiatan ekstrakurikuler atau menjelang kelulusan, siswa mengajukan permohonan penerbitan portofolio. Pengurus sekolah memeriksa kelengkapan data siswa, keabsahan keanggotaan organisasi, persentase kehadiran latihan, dan daftar prestasi yang telah disahkan oleh pembina.
 
-## 3. Rute Halaman (Routes)
+Pengurus menerbitkan dokumen portofolio non-akademik berformat PDF yang memuat identitas lengkap siswa, riwayat keikutsertaan ekskul, rekapitulasi kehadiran, daftar prestasi terverifikasi, catatan pembinaan, serta nomor registrasi unik sekolah. Dokumen dilengkapi tanda tangan elektronik pejabat kesiswaan dan kode QR khusus.
 
-### Halaman Publik
-- `/` — Beranda (Penjelasan alur kerja, sorotan ekskul, pencarian verifikasi cepat)
-- `/ekskul` — Katalog lengkap ekstrakurikuler
-- `/ekskul/:slug` — Detail ekskul (contoh: `/ekskul/futsal`, `/ekskul/programming-club`)
-- `/calendar` — Kalender kegiatan terpusat & deteksi konflik fasilitas
-- `/verify/:verificationId` — Laman publik verifikasi portofolio (contoh: `/verify/EKH-2026-000184`)
-- `/login` — Halaman masuk portal dengan pilihan akun uji coba
+Pihak luar seperti panitia seleksi beasiswa, perguruan tinggi, maupun bagian personalia perusahaan dapat memindai kode QR atau memasukkan nomor verifikasi pada halaman publik verifikasi situs. Sistem menampilkan data asli yang tersimpan di basis data sekolah untuk memastikan keabsahan dokumen fisik tanpa risiko pemalsuan.
 
-### Halaman Dasbor Terotentikasi
-- `/student/dashboard` — Dasbor utama siswa, ekskul aktif, presensi, dan ringkasan portofolio
-- `/student/attendance` — Rekapitulasi presensi digital siswa
-- `/student/portfolio` — Pratinjau portofolio resmi & unduh PDF
-- `/pengurus/dashboard` — Dasbor pengurus ekskul & verifikasi pendaftaran baru
-- `/pengurus/attendance` — Pengelolaan sesi presensi latihan
-- `/teacher/dashboard` — Dasbor monitoring pembina & validasi prestasi
-- `/admin/dashboard` — Dasbor kesiswaan sekolah & master data
+## Rincian Fitur Aplikasi
 
----
+### 1. Katalog Terpadu SMKN 1 Ciomas
+Katalog menampilkan delapan cabang ekstrakurikuler yang aktif di SMKN 1 Ciomas: Basket, Voli, Futsal, Paskibra, English Club, Rohis, Pramuka, dan PMR. Pengunjung dapat menyaring daftar berdasarkan rumpun kegiatan (olahraga, kepemimpinan, keagamaan, kemanusiaan, atau bahasa), memeriksa status ketersediaan kuota, dan mencari nama pembina atau kata kunci tertentu.
 
-## 4. Cara Menjalankan Aplikasi
+### 2. Profil Rinci Cabang Ekstrakurikuler
+Halaman profil memuat deskripsi lengkap tujuan pembinaan, jadwal latihan mingguan, lokasi fasilitas yang digunakan, nama guru pembina dan ketua ekskul yang bertugas, dokumentasi galeri foto kegiatan, serta daftar pencapaian yang pernah diraih oleh tim sekolah.
 
-Server lokal saat ini telah aktif di:
-```bash
-http://127.0.0.1:5173/
-```
+### 3. Dasbor Mandiri Siswa
+Halaman khusus siswa untuk memantau status keanggotaan ekskul yang diikuti, melihat riwayat persetujuan pendaftaran, memeriksa grafik kehadiran latihan berkala, mengunggah sertifikat lomba baru, dan melihat draf portofolio kegiatan sebelum dicetak.
+
+### 4. Dasbor Pengelolaan Pembina
+Ruang kerja digital bagi guru pembina untuk memproses pendaftaran anggota masuk, memantau daftar anggota aktif, menyelenggarakan presensi digital pada setiap sesi latihan, mengelola agenda tryout atau jadwal lomba, dan memvalidasi sertifikat prestasi siswa binaan.
+
+### 5. Dasbor Pemantauan Pengurus Sekolah
+Pusat monitoring bagi pengurus untuk melihat statistik menyeluruh sekolah, mengawasi sebaran minat siswa per jurusan, mengelola data induk ekstrakurikuler dan dewan pembina, serta mengesahkan penerbitan dokumen resmi kesiswaan.
+
+### 6. Kalender Agenda Bulanan
+Tampilan kalender interaktif yang memuat seluruh agenda latihan rutin, pertandingan resmi, acara peringatan hari besar sekolah seperti PORSENI, serta hari libur nasional. Kalender dilengkapi filter kategori warna untuk mempermudah identifikasi jenis kegiatan.
+
+### 7. Pengunggahan Jadwal Massal via Excel
+Fitur impor berkas spreadsheet yang memungkinkan pengurus mengunggah jadwal kegiatan satu semester sekaligus. Sistem membaca tanggal, waktu, kategori, lokasi, dan penyelenggara kegiatan secara otomatis dari tabel lembar kerja, memvalidasi formatnya, dan langsung memasukkannya ke dalam kalender sekolah.
+
+### 8. Generator Dokumen Portofolio Resmi
+Modul pencetakan dokumen portofolio siswa yang menghasilkan berkas PDF berstandar arsip sekolah. Format cetak memuat kop surat resmi SMKN 1 Ciomas, rincian kompetensi non-akademik siswa, tanda tangan penanggung jawab kesiswaan, dan kode verifikasi QR yang terhubung ke server sekolah.
+
+### 9. Halaman Verifikasi Publik
+Laman terbuka yang dapat diakses siapa saja untuk menguji keaslian dokumen portofolio yang diterbitkan oleh SMKN 1 Ciomas. Pihak penilai cukup memasukkan kode verifikasi atau memindai barcode pada dokumen cetak untuk melihat catatan prestasi resmi langsung dari basis data sekolah.
