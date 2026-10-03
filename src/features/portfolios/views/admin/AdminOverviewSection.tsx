@@ -15,7 +15,6 @@ import {
 
 interface AdminOverviewSectionProps {
   studentsList: User[];
-  teachersList: User[];
   pembinaList: User[];
   ekskuls: Extracurricular[];
   verifications: PortfolioVerification[];
@@ -32,7 +31,6 @@ interface AdminOverviewSectionProps {
 
 export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
   studentsList,
-  teachersList,
   pembinaList,
   ekskuls,
   verifications,
@@ -66,7 +64,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
   return (
     <div className="space-y-6">
       {/* Executive Metrics Overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div
           onClick={() => switchSection('students')}
           className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#234B36] transition-colors group"
@@ -76,19 +74,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             <GraduationCap className="w-4 h-4 text-[#234B36]" />
           </div>
           <div className="text-2xl font-bold text-[#171717] group-hover:text-[#234B36]">{studentsList.length}</div>
-          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Kelola Siswa →</div>
-        </div>
-
-        <div
-          onClick={() => switchSection('teachers')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#8C6819] transition-colors group"
-        >
-          <div className="flex items-center justify-between text-[#68655F] mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider">Guru Wali Kelas</span>
-            <Users className="w-4 h-4 text-[#8C6819]" />
-          </div>
-          <div className="text-2xl font-bold text-[#171717] group-hover:text-[#8C6819]">{teachersList.length}</div>
-          <div className="text-[11px] text-[#8C6819] font-semibold mt-0.5">Kelola Guru →</div>
+          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Monitoring Siswa →</div>
         </div>
 
         <div
@@ -100,7 +86,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             <UserCheck className="w-4 h-4 text-[#B84A3A]" />
           </div>
           <div className="text-2xl font-bold text-[#171717] group-hover:text-[#B84A3A]">{pembinaList.length}</div>
-          <div className="text-[11px] text-[#B84A3A] font-semibold mt-0.5">Kelola Pembina →</div>
+          <div className="text-[11px] text-[#B84A3A] font-semibold mt-0.5">Monitoring Pembina →</div>
         </div>
 
         <div
@@ -112,18 +98,18 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             <BookOpen className="w-4 h-4 text-[#234B36]" />
           </div>
           <div className="text-2xl font-bold text-[#171717] group-hover:text-[#234B36]">{ekskuls.length}</div>
-          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Kelola Ekskul →</div>
+          <div className="text-[11px] text-[#234B36] font-semibold mt-0.5">Monitoring Ekskul →</div>
         </div>
 
         <div
           onClick={() => switchSection('verification')}
-          className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#262522] transition-colors group col-span-2 lg:col-span-1"
+          className="bg-white border border-[#EAE6DC] rounded-lg p-4 cursor-pointer hover:border-[#262522] transition-colors group"
         >
           <div className="flex items-center justify-between text-[#525049] mb-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider">Portofolio QR</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Portofolio Sah</span>
             <ShieldCheck className="w-4 h-4 text-[#262522]" />
           </div>
-          <div className="text-2xl font-bold text-[#171717]">{verifications.length} Sah</div>
+          <div className="text-2xl font-bold text-[#171717]">{verifications.length} Dokumen</div>
           <div className="text-[11px] text-[#262522] font-semibold mt-0.5">Cek Dokumen →</div>
         </div>
       </div>
@@ -136,9 +122,6 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
         <div className="flex flex-wrap gap-2.5">
           <Button variant="outline" size="sm" onClick={() => openAddUserModal('student')} icon={<GraduationCap className="w-3.5 h-3.5" />}>
             + Siswa Baru
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => openAddUserModal('guru')} icon={<Users className="w-3.5 h-3.5" />}>
-            + Guru Baru
           </Button>
           <Button variant="outline" size="sm" onClick={() => openAddUserModal('pembina')} icon={<UserCheck className="w-3.5 h-3.5" />}>
             + Pembina Baru

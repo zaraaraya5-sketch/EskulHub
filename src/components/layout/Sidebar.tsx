@@ -53,75 +53,60 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
     }
   ];
 
-  const pembinaPengurusMenu = [
+  const pembinaMenu = [
     {
-      group: 'Utama',
+      group: 'Ekskul Binaan Saya',
       items: [
-        { label: 'Dasbor', path: '/pembina/dashboard', icon: LayoutDashboard },
-        { label: 'Daftar Isi Ekskul', path: '/pembina/extracurriculars', icon: BookOpen },
-        { label: 'Verifikasi Portofolio Resmi', path: '/pembina/achievements', icon: ShieldCheck },
+        { label: 'Dasbor Binaan', path: '/pembina/dashboard', icon: LayoutDashboard },
+        { label: 'Ekskul Binaan', path: '/pembina/extracurriculars', icon: BookOpen },
       ]
     },
     {
-      group: 'Operasional',
+      group: 'Pengelolaan Anggota',
       items: [
-        { label: 'Manajemen Anggota', path: '/pembina/members', icon: Users },
-        { label: 'Jadwal & Agenda', path: '/pembina/schedule', icon: Calendar },
-        { label: 'Presensi Kehadiran', path: '/pembina/attendance', icon: CheckSquare },
+        { label: 'Pendaftaran & Anggota', path: '/pembina/members', icon: Users },
+        { label: 'Presensi Latihan', path: '/pembina/attendance', icon: CheckSquare },
+      ]
+    },
+    {
+      group: 'Agenda & Prestasi',
+      items: [
+        { label: 'Agenda Acara & Lomba', path: '/pembina/schedule', icon: Calendar },
+        { label: 'Verifikasi Prestasi Lomba', path: '/pembina/achievements', icon: Trophy },
       ]
     }
   ];
 
-  const adminMenu = [
+  const pengurusMenu = [
     {
-      group: 'Utama',
+      group: 'Monitoring Utama',
       items: [
-        { label: 'Dasbor Ringkasan', path: '/admin/dashboard', icon: LayoutDashboard },
-        { label: 'Kelola Profil Admin', path: '/admin/profile', icon: UserCog },
+        { label: 'Dasbor Monitoring', path: '/pengurus/dashboard', icon: LayoutDashboard },
+        { label: 'Profil Pengurus', path: '/pengurus/profile', icon: UserCog },
       ]
     },
     {
-      group: 'Manajemen Pengguna',
+      group: 'Pemantauan Pengguna',
       items: [
-        { label: 'Data Siswa', path: '/admin/students', icon: GraduationCap },
-        { label: 'Data Guru', path: '/admin/teachers', icon: Users },
-        { label: 'Pembina Ekskul', path: '/admin/pembina', icon: UserCheck },
+        { label: 'Monitoring Siswa', path: '/pengurus/students', icon: GraduationCap },
+        { label: 'Monitoring Pembina', path: '/pengurus/pembina', icon: UserCheck },
       ]
     },
     {
-      group: 'Manajemen Ekskul',
+      group: 'Pemantauan Ekstrakurikuler',
       items: [
-        { label: 'Katalog Ekstrakurikuler', path: '/admin/ekskul', icon: BookOpen },
-        { label: 'Jadwal & Kalender', path: '/admin/schedule', icon: Calendar },
-        { label: 'Verifikasi Portofolio', path: '/admin/verification', icon: ShieldCheck },
-      ]
-    }
-  ];
-
-  const guruMenu = [
-    {
-      group: 'Utama',
-      items: [
-        { label: 'Dasbor Wali Kelas', path: '/guru/dashboard', icon: LayoutDashboard },
-        { label: 'Daftar Siswa Binaan', path: '/guru/students', icon: Users },
-      ]
-    },
-    {
-      group: 'Penilaian',
-      items: [
-        { label: 'Leger Nilai Karakter', path: '/guru/grades', icon: CheckSquare },
-        { label: 'Verifikasi Raport', path: '/guru/verification', icon: FileText },
+        { label: 'Monitoring Seluruh Ekskul', path: '/pengurus/ekskul', icon: BookOpen },
+        { label: 'Agenda & Kalender Sekolah', path: '/pengurus/schedule', icon: Calendar },
+        { label: 'Verifikasi Portofolio', path: '/pengurus/verification', icon: ShieldCheck },
       ]
     }
   ];
 
   const currentMenu =
-    role === 'admin'
-      ? adminMenu
-      : role === 'guru'
-      ? guruMenu
-      : role === 'pembina' || role === 'teacher' || role === 'pengurus'
-      ? pembinaPengurusMenu
+    role === 'pengurus'
+      ? pengurusMenu
+      : role === 'pembina' || role === 'teacher'
+      ? pembinaMenu
       : studentMenu;
 
   const roleBadges: Record<string, { label: string; bgClass: string; textClass: string; lightBg: string; activeNavClass: string }> = {
@@ -131,13 +116,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
       textClass: 'text-[#D15B40]',
       lightBg: 'bg-[#FDEDE9]',
       activeNavClass: 'bg-[#D15B40] text-white shadow-md',
-    },
-    guru: {
-      label: 'Guru Wali Kelas',
-      bgClass: 'bg-[#8C6819]',
-      textClass: 'text-[#8C6819]',
-      lightBg: 'bg-[#F9F4E5]',
-      activeNavClass: 'bg-[#8C6819] text-white shadow-md',
     },
     pembina: {
       label: 'Guru Pembina Ekskul',
@@ -154,18 +132,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
       activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
     },
     pengurus: {
-      label: 'Pembina & Pengurus Ekskul',
-      bgClass: 'bg-[#3B7A82]',
-      textClass: 'text-[#3B7A82]',
-      lightBg: 'bg-[#E8F4F5]',
-      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
-    },
-    admin: {
-      label: 'Admin Kesiswaan',
-      bgClass: 'bg-[#262522]',
-      textClass: 'text-[#262522]',
-      lightBg: 'bg-[#ECEAE4]',
-      activeNavClass: 'bg-[#262522] text-white shadow-md',
+      label: 'Pengurus (Monitoring & Koordinasi)',
+      bgClass: 'bg-[#2A2926]',
+      textClass: 'text-[#2A2926]',
+      lightBg: 'bg-[#F5F2EB]',
+      activeNavClass: 'bg-[#D15B40] text-white shadow-md',
     },
   };
 
@@ -201,10 +172,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
       {/* User profile card */}
       <div
         onClick={() => {
-          if (role === 'admin') onNavigate('/admin/profile');
+          if (role === 'pengurus') onNavigate('/pengurus/profile');
         }}
         className={`p-5 border-b border-[#EAE6DC] bg-[#F9F8F6] ${
-          role === 'admin'
+          role === 'pengurus'
             ? 'cursor-pointer hover:bg-[#F9F8F6] transition-colors group select-none'
             : ''
         }`}
@@ -216,7 +187,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
               alt={currentUser?.name}
               className="w-12 h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#D15B40] transition-colors"
             />
-            {role === 'admin' && (
+            {role === 'pengurus' && (
               <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#D15B40] text-white border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
                 ✎
               </span>
@@ -244,7 +215,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentPath, onNavigate }) => 
             <div className="space-y-1">
               {group.items.map((item) => {
                 const Icon = item.icon;
-                const isActive = currentPath === item.path || (item.path === '/admin/dashboard' && currentPath === '/admin');
+                const isExact = currentPath === item.path;
+                const isRootAlias =
+                  (item.path === '/student/dashboard' && currentPath === '/student') ||
+                  (item.path === '/pembina/dashboard' && (currentPath === '/pembina' || currentPath === '/teacher' || currentPath === '/teacher/dashboard')) ||
+                  (item.path === '/pengurus/dashboard' && (currentPath === '/pengurus' || currentPath === '/admin' || currentPath === '/admin/dashboard'));
+                const isSubroute =
+                  (item.path === '/student/documents' && currentPath.startsWith('/student/documents')) ||
+                  (item.path === '/pengurus/ekskul' && (currentPath.startsWith('/pengurus/ekskul') || currentPath.startsWith('/admin/ekskul')));
+                const isActive = isExact || isRootAlias || isSubroute;
+
                 return (
                   <button
                     key={item.path}

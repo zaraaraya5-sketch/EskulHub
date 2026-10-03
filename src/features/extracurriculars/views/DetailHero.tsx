@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Extracurricular } from '@/types';
 
 interface DetailHeroProps {
@@ -13,6 +14,9 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
   isCapacityFull,
   onOpenRegister,
 }) => {
+  const { currentUser, role } = useAuth();
+  const isStudent = !currentUser || role === 'student';
+
   return (
     <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
       <div className="h-64 sm:h-80 relative bg-[#EAE6DC]">
@@ -29,7 +33,7 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
                 {ekskul.category}
               </span>
               <span className={`px-2.5 py-0.5 rounded text-xs font-semibold ${
-                ekskul.registration_status === 'open' ? 'bg-[#234B36] text-white' : 'bg-[#A33D35] text-white'
+                ekskul.registration_status === 'open' ? 'bg-[#D15B40] text-white' : 'bg-[#A33D35] text-white'
               }`}>
                 {ekskul.registration_status === 'open' ? 'Pendaftaran Dibuka' : 'Kuota Penuh'}
               </span>
@@ -43,15 +47,21 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
           </div>
 
           <div className="shrink-0">
-            <Button
-              variant="primary"
-              size="lg"
-              disabled={isCapacityFull || ekskul.registration_status === 'closed'}
-              onClick={onOpenRegister}
-              className="shadow-sm"
-            >
-              {isCapacityFull ? 'Kapasitas Penuh' : 'Daftar Sekarang'}
-            </Button>
+            {isStudent ? (
+              <Button
+                variant="primary"
+                size="lg"
+                disabled={isCapacityFull || ekskul.registration_status === 'closed'}
+                onClick={onOpenRegister}
+                className="shadow-sm"
+              >
+                {isCapacityFull ? 'Kapasitas Penuh' : 'Daftar Sekarang'}
+              </Button>
+            ) : (
+              <div className="px-4 py-2 bg-white/20 backdrop-blur-xs rounded-xl text-white text-xs border border-white/30 font-semibold shadow-xs">
+                Mode Pemantauan ({role === 'pembina' || role === 'teacher' ? 'Pembina' : role === 'pengurus' ? 'Pengurus' : 'Guru Wali'})
+              </div>
+            )}
           </div>
         </div>
       </div>

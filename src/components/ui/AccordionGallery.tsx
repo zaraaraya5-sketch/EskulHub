@@ -41,33 +41,33 @@ const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1517694712202-14dd9538
 const DEFAULT_ITEMS: AccordionGalleryItem[] = [
   {
     image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800',
-    label: 'Futsal Garuda Nusantara',
-    bio: 'Wadah pembinaan fisik, sportivitas, dan strategi kompetisi futsal antar-sekolah.',
+    label: 'Futsal',
+    bio: 'Wadah pembinaan fisik, sportivitas, dan strategi kompetisi futsal pelajar antarsekolah.',
     link: '/ekskul/futsal',
   },
   {
-    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800',
-    label: 'Programming & Cyber Club',
-    bio: 'Eksplorasi pembuatan aplikasi web, kecerdasan buatan, algoritma kompetisi, dan keamanan siber.',
-    link: '/ekskul/programming-club',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800',
-    label: 'Fotografi & Sinematografi Citra',
-    bio: 'Mempelajari teknik komposisi visual, tata cahaya, editing digital, dan produksi video sekolah.',
-    link: '/ekskul/fotografi',
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800',
-    label: 'Teater Citra Nusa',
-    bio: 'Pengasahan olah vokal, gestur tubuh, penulisan naskah drama, dan seni pertunjukan panggung.',
-    link: '/ekskul/teater',
-  },
-  {
     image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800',
-    label: 'Basket Nusantara Club',
-    bio: 'Latihan intensif bola basket, pembentukan fisik atletis, dan persiapan kompetisi DBL.',
+    label: 'Basket',
+    bio: 'Pelatihan intensif fundamental basket, ketahanan fisik, dan persiapan kompetisi DBL.',
     link: '/ekskul/basket',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
+    label: 'Voli',
+    bio: 'Pengembangan teknik passing, servis presisi, smash tajam, dan kekompakan tim voli.',
+    link: '/ekskul/voli',
+  },
+  {
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5tBV8kDQOfViGAslYLp1_hJ4v-QxTURbwOSeOu9MR2HDzTgdZpWHVmyMM&s=10',
+    label: 'Paskibra',
+    bio: 'Penempaan kedisiplinan mental, baris-berbaris (PBB) presisi, dan kepemimpinan bela negara.',
+    link: '/ekskul/paskibra',
+  },
+  {
+    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800',
+    label: 'Pramuka',
+    bio: 'Kepanduan, penjelajahan alam, tali-temali pioneering, dan kemandirian karakter pemuda.',
+    link: '/ekskul/pramuka',
   },
 ];
 

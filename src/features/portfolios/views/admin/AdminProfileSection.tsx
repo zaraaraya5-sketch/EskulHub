@@ -20,7 +20,7 @@ export const AdminProfileSection: React.FC<AdminProfileSectionProps> = ({
   const { currentUser, updateProfile } = useAuth();
   
   const [profileName, setProfileName] = useState(currentUser?.name || 'Drs. Bambang Suryono');
-  const [profileEmail, setProfileEmail] = useState(currentUser?.email || 'admin@smknusantara.sch.id');
+  const [profileEmail, setProfileEmail] = useState(currentUser?.email || 'admin@smkn1ciomas.sch.id');
   const [profilePhone, setProfilePhone] = useState(currentUser?.phone || '081298765432');
   const [profileAvatar, setProfileAvatar] = useState(currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300');
   const [newPassword, setNewPassword] = useState('');
@@ -147,7 +147,7 @@ export const AdminProfileSection: React.FC<AdminProfileSectionProps> = ({
             type="email"
             value={profileEmail}
             onChange={(e) => setProfileEmail(e.target.value)}
-            placeholder="admin@smknusantara.sch.id"
+            placeholder="admin@smkn1ciomas.sch.id"
             required
           />
 

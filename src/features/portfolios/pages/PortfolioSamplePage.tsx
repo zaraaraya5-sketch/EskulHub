@@ -65,7 +65,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
               NPSN: {settings.npsn} • Status: Terakreditasi A (Unggul) • {settings.address}
             </p>
             <div className="text-[10px] text-[#68655F]">
-              Laman Resmi: https://smknusantara.sch.id • Surel: kesiswaan@smknusantara.sch.id
+              Laman Resmi: https://smkn1ciomas.sch.id • Surel: kesiswaan@smkn1ciomas.sch.id
             </div>
           </div>
           <div className="w-16 h-16 shrink-0 hidden sm:flex items-center justify-center border border-[#EAE6DC] rounded p-1 bg-[#F9F8F6]">
@@ -79,7 +79,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
             PORTOFOLIO KEGIATAN NON-AKADEMIK & EKSTRAKURIKULER SISWA
           </h2>
           <div className="text-xs text-[#68655F] font-mono">
-            Nomor Registrasi Kearsipan: EKH-2026-000184 / PORT-ND / IX / 2026
+            Nomor Registrasi Kearsipan: EKH-2026-000184 / PORT-SMKN1CMS / IX / 2026
           </div>
         </div>
 
@@ -138,15 +138,15 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
             <tbody className="divide-y divide-[#D8D4CC]">
               <tr>
                 <td className="p-2.5 text-[#68655F]">1</td>
-                <td className="p-2.5 font-bold text-[#171717]">Programming & Cyber Club</td>
-                <td className="p-2.5">Ketua Divisi Web</td>
-                <td className="p-2.5 text-[#68655F]">Dewi Lestari, M.Kom.</td>
+                <td className="p-2.5 font-bold text-[#171717]">Basket</td>
+                <td className="p-2.5">Ketua Tim Putri</td>
+                <td className="p-2.5 text-[#68655F]">Hendra Wijaya, S.Pd.</td>
                 <td className="p-2.5 text-center font-bold text-[#D15B40]">96% (24/25 Sesi)</td>
                 <td className="p-2.5 text-center font-bold text-[#D15B40]">Sangat Baik (A)</td>
               </tr>
               <tr>
                 <td className="p-2.5 text-[#68655F]">2</td>
-                <td className="p-2.5 font-bold text-[#171717]">Futsal Garuda Nusantara</td>
+                <td className="p-2.5 font-bold text-[#171717]">Futsal</td>
                 <td className="p-2.5">Anggota Reguler</td>
                 <td className="p-2.5 text-[#68655F]">Hendra Wijaya, S.Pd.</td>
                 <td className="p-2.5 text-center font-bold text-[#D15B40]">92% (22/24 Sesi)</td>
@@ -173,13 +173,13 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
                 <Award className="w-5 h-5 text-[#8C6819] shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-[#171717] text-sm">
-                    Juara 1 Lomba Kompetensi Siswa (LKS) Web Technologies
+                    Juara 1 Turnamen 3x3 Basket Pelajar Bogor
                   </div>
                   <div className="text-[#68655F] mt-0.5">
-                    Tingkat Kota Bandung • Diselenggarakan oleh Dinas Pendidikan Provinsi Jawa Barat
+                    Tingkat Kabupaten Bogor • Diselenggarakan oleh Perbasi Kabupaten Bogor
                   </div>
                   <div className="text-[11px] text-[#68655F] font-mono mt-1">
-                    No. Sertifikat: 421.5/0982-Disdik/LKS/2026 • Tanggal: 15 Juni 2026
+                    No. Sertifikat: 421.5/0982-Perbasi/Bgr/2026 • Tanggal: 15 Juni 2026
                   </div>
                 </div>
               </div>
@@ -193,13 +193,13 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
                 <Award className="w-5 h-5 text-[#8C6819] shrink-0 mt-0.5" />
                 <div>
                   <div className="font-bold text-[#171717] text-sm">
-                    Apresiasi Pemateri Workshop Literasi Digital Pelajar
+                    Apresiasi Relawan Siaga Bencana Pelajar (PMR)
                   </div>
                   <div className="text-[#68655F] mt-0.5">
-                    Kolaborasi SMK Nusantara Digital x SMPN 12 Bandung
+                    Kolaborasi SMKN 1 Ciomas x PMI Kabupaten Bogor
                   </div>
                   <div className="text-[11px] text-[#68655F] font-mono mt-1">
-                    No. Piagam: SMK-ND/SERT/2026/088 • Tanggal: 30 Juli 2026
+                    No. Piagam: SMKN1-CMS/SERT/2026/088 • Tanggal: 30 Juli 2026
                   </div>
                 </div>
               </div>
@@ -262,7 +262,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
           </div>
 
           <div>
-            <div className="text-[#68655F]">Bandung, 20 September 2026</div>
+            <div className="text-[#68655F]">Bogor, 20 September 2026</div>
             <div className="font-bold text-[#171717]">Wakasek Bidang Kesiswaan</div>
             <div className="h-16 flex items-center justify-center text-[#68655F] font-serif italic text-xs">
               [Tanda Tangan Digital & Stempel Kesiswaan]

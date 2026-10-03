@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, Info } from 'lucide-react';
 import { Extracurricular } from '@/types';
 
 interface DetailSidebarProps {
@@ -15,6 +16,9 @@ export const DetailSidebar: React.FC<DetailSidebarProps> = ({
   isCapacityFull,
   onOpenRegister,
 }) => {
+  const { currentUser, role } = useAuth();
+  const isStudent = !currentUser || role === 'student';
+
   return (
     <div className="lg:col-span-4 space-y-6">
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-5">
@@ -36,14 +40,14 @@ export const DetailSidebar: React.FC<DetailSidebarProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <span className="text-[#68655F]">Jumlah Anggota Aktif:</span>
-            <strong className="text-[#234B36]">{ekskul.current_member_count} Siswa</strong>
+            <strong className="text-[#D15B40]">{ekskul.current_member_count} Siswa</strong>
           </div>
         </div>
       </div>
 
       {/* Registration Requirement Box */}
       <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-lg p-5">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#234B36] mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-2">
           <ShieldCheck className="w-4 h-4" />
           <span>Ketentuan Anggota</span>
         </div>
@@ -55,15 +59,22 @@ export const DetailSidebar: React.FC<DetailSidebarProps> = ({
         </ul>
 
         <div className="mt-4 pt-3 border-t border-[#EAE6DC]">
-          <Button
-            variant="primary"
-            size="md"
-            className="w-full justify-center"
-            disabled={isCapacityFull || ekskul.registration_status === 'closed'}
-            onClick={onOpenRegister}
-          >
-            {isCapacityFull ? 'Pendaftaran Ditutup' : 'Formulir Pendaftaran'}
-          </Button>
+          {isStudent ? (
+            <Button
+              variant="primary"
+              size="md"
+              className="w-full justify-center"
+              disabled={isCapacityFull || ekskul.registration_status === 'closed'}
+              onClick={onOpenRegister}
+            >
+              {isCapacityFull ? 'Pendaftaran Ditutup' : 'Formulir Pendaftaran'}
+            </Button>
+          ) : (
+            <div className="p-3 bg-[#F5F2EB] border border-[#EAE6DC] rounded-lg text-xs text-[#525049] flex items-start gap-2">
+              <Info className="w-4 h-4 text-[#3B7A82] shrink-0 mt-0.5" />
+              <span>Pendaftaran ekskul ini hanya dibuka untuk akun siswa.</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

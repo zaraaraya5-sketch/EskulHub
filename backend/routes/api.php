@@ -17,6 +17,10 @@ use App\Http\Controllers\SettingsController;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/login', function () {
+    return response()->json(['message' => 'Unauthenticated.'], 401);
+})->name('login');
+
 // ==========================================
 // 1. Public Routes (Throttled & Read-only)
 // ==========================================
@@ -31,10 +35,6 @@ Route::get('/ekskul/{slug}', [EkskulController::class, 'show']);
 Route::get('/ekskul/{id}/members', [EkskulController::class, 'getMembers']);
 Route::get('/members', [EkskulController::class, 'allMembers']);
 Route::get('/events', [EventController::class, 'index']);
-Route::post('/events', [EventController::class, 'store']);
-Route::put('/events/{id}', [EventController::class, 'update']);
-Route::delete('/events/{id}', [EventController::class, 'destroy']);
-Route::post('/events/import-excel', [EventController::class, 'importExcel']);
 Route::get('/settings', [SettingsController::class, 'get']);
 Route::get('/verification/{id}', [VerificationController::class, 'show']);
 
@@ -47,9 +47,9 @@ Route::get('/attendance/sessions', [AttendanceController::class, 'getSessions'])
 Route::get('/attendance/records', [AttendanceController::class, 'getRecords']);
 
 // ==========================================
-// 2. Authenticated Routes (Requires Bearer Token)
+// 2. Authenticated Routes (Requires Bearer Token or Verified Session Header)
 // ==========================================
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['hybrid.auth'])->group(function () {
     // Auth & Profile
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
@@ -59,7 +59,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/registrations', [RegistrationController::class, 'index']);
     Route::post('/registrations', [RegistrationController::class, 'store']);
     Route::post('/achievements', [AchievementController::class, 'store']);
-    Route::post('/verification', [VerificationController::class, 'store']);
 
     // ==========================================
     // 3. Operational Staff (Pengurus, Pembina, Guru, Teacher, Admin)
@@ -70,6 +69,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/attendance/records', [AttendanceController::class, 'saveRecord']);
         Route::post('/ekskul/{id}/members', [EkskulController::class, 'addMember']);
         Route::delete('/ekskul/members/{memberId}', [EkskulController::class, 'removeMember']);
+        Route::post('/events', [EventController::class, 'store']);
+        Route::put('/events/{id}', [EventController::class, 'update']);
+        Route::delete('/events/{id}', [EventController::class, 'destroy']);
+        Route::post('/events/import-excel', [EventController::class, 'importExcel']);
+    });
+
+    // ==========================================
+    // 4. Verification Authority (Pengurus, Admin)
+    // ==========================================
+    Route::middleware(['role:pengurus,admin'])->group(function () {
+        Route::post('/verification', [VerificationController::class, 'store']);
     });
 
     // ==========================================

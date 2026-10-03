@@ -48,20 +48,20 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
     ) || ekskuls[0];
   }, [currentUser, ekskuls]);
 
-  const isGuru = role === 'guru';
+  const isPengurus = role === 'pengurus';
   const isPembina = role === 'pembina' || role === 'teacher';
 
   // Form State
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<EventCategory>(
-    isGuru ? 'school_event' : 'extracurricular_training'
+    isPengurus ? 'school_event' : 'extracurricular_training'
   );
   const [location, setLocation] = useState('Lapangan Olahraga Utama');
   const [startDate, setStartDate] = useState('2026-10-15T15:30');
   const [endDate, setEndDate] = useState('2026-10-15T17:30');
   const [description, setDescription] = useState('');
   const [organizer, setOrganizer] = useState(
-    currentUser?.name || (isGuru ? 'Kesiswaan & Guru' : 'Pembina Ekskul')
+    currentUser?.name || (isPengurus ? 'Pengurus / Kesiswaan' : 'Pembina Ekskul')
   );
   const [extracurricularId, setExtracurricularId] = useState<string>(
     isPembina && pembinaEkskul ? pembinaEkskul.id : ''
@@ -95,7 +95,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
       // Validate permission: Only creator role (or admin, or same user) can edit
       const userRole = (role || '').toLowerCase();
       const creatorRole = (ev.created_by_role || '').toLowerCase() ||
-        (['extracurricular_training', 'competition'].includes(ev.category as string) ? 'pembina' : 'guru');
+        (['extracurricular_training', 'competition'].includes(ev.category as string) ? 'pembina' : 'pengurus');
 
       const normUser = userRole === 'teacher' ? 'pembina' : userRole;
       const normCreator = creatorRole === 'teacher' ? 'pembina' : creatorRole;
@@ -106,8 +106,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
       if (!isRoleMatch) {
         const labels: Record<string, string> = {
           pembina: 'Pembina Ekskul',
-          guru: 'Guru Sekolah',
-          pengurus: 'Pengurus Ekskul',
+          pengurus: 'Pengurus Sekolah',
           student: 'Siswa',
         };
         const creatorLabel = labels[normCreator] || creatorRole;
@@ -140,12 +139,12 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
   // Auto-set category options based on role if restricted in create mode
   useEffect(() => {
     if (isEditMode) return;
-    if (isGuru && !['school_event', 'national_holiday'].includes(category)) {
+    if (isPengurus && !['school_event', 'national_holiday'].includes(category)) {
       setCategory('school_event');
     } else if (isPembina && !['extracurricular_training', 'competition'].includes(category)) {
       setCategory('extracurricular_training');
     }
-  }, [role, isEditMode]);
+  }, [role, isEditMode, isPengurus, isPembina, category]);
 
   // Real-time conflict detection check
   const checkConflict = (loc: string, start: string, end: string) => {
@@ -242,7 +241,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
       end_datetime: eTime,
       description: description.trim(),
       organizer: organizer.trim(),
-      extracurricular_id: isGuru ? undefined : extracurricularId || undefined,
+      extracurricular_id: isPengurus ? undefined : extracurricularId || undefined,
     };
 
     try {
@@ -376,13 +375,13 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
           <div className="flex items-center gap-2 self-start md:self-auto px-3.5 py-2 rounded-xl bg-white border border-[#EAE6DC] shadow-2xs">
             <span className="text-2xs text-[#68655F]">Akses Akun:</span>
             <span className={`px-2 py-0.5 rounded-md font-bold text-2xs uppercase tracking-wider ${
-              isGuru
+              isPengurus
                 ? 'bg-blue-100 text-blue-800 border border-blue-200'
                 : isPembina
                 ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                 : 'bg-amber-100 text-amber-800 border border-amber-200'
             }`}>
-              {isGuru ? 'Guru Sekolah' : isPembina ? 'Pembina Ekskul' : role === 'pengurus' ? 'Pengurus' : 'Administrator'}
+              {isPengurus ? 'Pengurus' : isPembina ? 'Pembina Ekskul' : 'Administrator'}
             </span>
           </div>
         </div>
@@ -454,7 +453,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     value={category}
                     onChange={(e) => setCategory(e.target.value as EventCategory)}
                   >
-                    {isGuru ? (
+                    {isPengurus ? (
                       <>
                         <option value="school_event">Acara Sekolah / PORSENI</option>
                         <option value="national_holiday">Hari Libur Nasional</option>
@@ -474,10 +473,10 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     )}
                   </Select>
                   <span className="text-2xs text-[#68655F] mt-1 block">
-                    {isGuru
-                      ? 'Role Guru hanya dapat memilih Acara Sekolah atau Libur Nasional.'
+                    {isPengurus
+                      ? 'Role Pengurus mengelola Acara Sekolah dan Libur Nasional.'
                       : isPembina
-                      ? 'Role Pembina hanya dapat memilih Latihan Rutin atau Kompetisi.'
+                      ? 'Role Pembina mengelola Latihan Rutin dan Kompetisi.'
                       : 'Administrator memiliki akses ke semua kategori.'}
                   </span>
                 </div>
@@ -496,8 +495,8 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                 </div>
               </div>
 
-              {/* Extracurricular binding dropdown (Hidden if Guru / Libur Nasional) */}
-              {category !== 'national_holiday' && !isGuru && (
+              {/* Extracurricular binding dropdown (Hidden if Pengurus / Libur Nasional) */}
+              {category !== 'national_holiday' && !isPengurus && (
                 <div>
                   <label className="block text-xs font-semibold text-[#171717] mb-1.5">
                     Kaitkan ke Ekstrakurikuler

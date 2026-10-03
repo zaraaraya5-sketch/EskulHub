@@ -100,7 +100,7 @@ export class VerificationsModule {
           year: a.achievement_date.substring(0, 4),
         })),
         committee_roles: [
-          { title: 'Panitia PORSENI SMK Nusantara Digital', role: 'Koordinator Dokumentasi', year: '2026' },
+          { title: 'Panitia PORSENI SMKN 1 Ciomas', role: 'Koordinator Dokumentasi', year: '2026' },
         ],
       },
     };

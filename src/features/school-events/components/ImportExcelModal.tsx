@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { importEventsExcelAPI } from '@/lib/api';
 import { db } from '@/lib/database';
+import { parseExcelDateTime, normalizeEventCategory } from '../utils/calendarUtils';
 
 interface ImportExcelModalProps {
   isOpen: boolean;
@@ -43,60 +44,14 @@ interface ParsedEventRow {
   validationError?: string;
 }
 
-// Convert Excel numeric serial date to standard 'YYYY-MM-DD HH:MM:SS' string
-const formatExcelSerialDate = (val: any): string => {
-  if (!val) return '';
-  if (typeof val === 'number') {
-    const utc_days = Math.floor(val - 25569);
-    const utc_value = utc_days * 86400;
-    const date_info = new Date(utc_value * 1000);
-
-    const fractional_day = val - Math.floor(val) + 0.0000001;
-    let total_seconds = Math.floor(86400 * fractional_day);
-
-    const seconds = total_seconds % 60;
-    total_seconds -= seconds;
-    const hours = Math.floor(total_seconds / (60 * 60));
-    const minutes = Math.floor(total_seconds / 60) % 60;
-
-    const y = date_info.getFullYear();
-    const m = String(date_info.getMonth() + 1).padStart(2, '0');
-    const d = String(date_info.getDate()).padStart(2, '0');
-    const hh = String(hours).padStart(2, '0');
-    const mm = String(minutes).padStart(2, '0');
-    const ss = String(seconds).padStart(2, '0');
-
-    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
-  }
-  return String(val).trim().replace('T', ' ');
+// Convert Excel date value to standard 'YYYY-MM-DD HH:mm:ss' string
+const formatExcelSerialDate = (val: any, defaultTime = '08:00:00'): string => {
+  return parseExcelDateTime(val, defaultTime) || '';
 };
 
 // Normalize Indonesian and English category synonyms
 const normalizeCategory = (rawCat: string): string => {
-  const cat = (rawCat || '').toLowerCase().trim();
-  const map: Record<string, string> = {
-    school_event: 'school_event',
-    'acara sekolah': 'school_event',
-    acara_sekolah: 'school_event',
-    national_holiday: 'national_holiday',
-    'hari libur': 'national_holiday',
-    'libur nasional': 'national_holiday',
-    'hari besar nasional': 'national_holiday',
-    hari_libur: 'national_holiday',
-    libur_nasional: 'national_holiday',
-    extracurricular_training: 'extracurricular_training',
-    latihan: 'extracurricular_training',
-    'latihan ekskul': 'extracurricular_training',
-    'pertemuan ekskul': 'extracurricular_training',
-    latihan_ekskul: 'extracurricular_training',
-    extracurricular_practice: 'extracurricular_training',
-    competition: 'competition',
-    lomba: 'competition',
-    kompetisi: 'competition',
-    pertandingan: 'competition',
-    'informasi lomba': 'competition',
-  };
-  return map[cat] || cat;
+  return normalizeEventCategory(rawCat);
 };
 
 export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
@@ -117,14 +72,14 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
 
   if (!isOpen) return null;
 
-  const isGuru = role === 'guru';
+  const isPengurus = role === 'pengurus';
   const isPembina = role === 'pembina' || role === 'teacher';
   const isAdmin = role === 'admin';
 
   // Allowed categories based on role
   const isCategoryAllowedForRole = (cat: string) => {
     if (isAdmin) return true;
-    if (isGuru) return ['school_event', 'national_holiday'].includes(cat);
+    if (isPengurus) return ['school_event', 'national_holiday'].includes(cat);
     if (isPembina) return ['extracurricular_training', 'competition'].includes(cat);
     return false;
   };
@@ -133,7 +88,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
   const handleDownloadTemplate = () => {
     let sampleData: Record<string, any>[] = [];
 
-    if (isGuru) {
+    if (isPengurus) {
       sampleData = [
         {
           title: 'Upacara Hari Sumpah Pemuda',
@@ -141,7 +96,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
           start_time: '2026-10-28 07:00:00',
           end_time: '2026-10-28 09:00:00',
           location: 'Lapangan Utama Sekolah',
-          organizer: currentUser?.name || 'Kesiswaan & Guru',
+          organizer: currentUser?.name || 'Pengurus & Kesiswaan',
           description: 'Upacara bendera wajib diikuti oleh seluruh dewan guru dan siswa.',
         },
         {
@@ -211,7 +166,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
       { wch: 45 }, // description
     ];
 
-    const roleName = isGuru ? 'Guru' : isPembina ? 'Pembina' : 'Admin';
+    const roleName = isPengurus ? 'Pengurus' : isPembina ? 'Pembina' : 'Admin';
     XLSX.writeFile(workbook, `Template_Import_Jadwal_${roleName}.xlsx`);
   };
 
@@ -246,20 +201,72 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
           return;
         }
 
+        const extract = (rowObj: Record<string, any>, candidates: string[]) => {
+          for (const key of Object.keys(rowObj)) {
+            const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+            for (const cand of candidates) {
+              const cleanCand = cand.toLowerCase().replace(/[^a-z0-9]/g, '');
+              if (cleanKey === cleanCand || cleanKey.startsWith(cleanCand)) {
+                return rowObj[key];
+              }
+            }
+          }
+          return '';
+        };
+
         const validatedList: ParsedEventRow[] = rawJson.map((row, idx) => {
           const rowNumber = idx + 2; // Row 1 is header in Excel
-          const title = String(row.title || row.judul || '').trim();
-          const rawCat = String(row.category || row.kategori || '').trim();
+          const title = String(
+            extract(row, ['judul agenda', 'judul', 'nama kegiatan', 'nama agenda', 'title', 'agenda']) || ''
+          ).trim();
+          const rawCat = String(
+            extract(row, ['kategori', 'jenis kegiatan', 'jenis', 'category', 'tipe']) || 'Latihan Rutin'
+          ).trim();
           const normalizedCat = normalizeCategory(rawCat);
-          const startTime = formatExcelSerialDate(
-            row.start_time || row.waktu_mulai || row.start_datetime || ''
-          );
-          const endTime = formatExcelSerialDate(
-            row.end_time || row.waktu_selesai || row.end_datetime || ''
-          );
-          const location = String(row.location || row.lokasi || '').trim();
-          const organizer = String(row.organizer || row.penyelenggara || '').trim() || (currentUser?.name ?? 'Admin');
-          const description = String(row.description || row.deskripsi || row.keterangan || '').trim();
+
+          const rawStartTime = extract(row, [
+            'tanggal mulai',
+            'waktu mulai',
+            'mulai',
+            'tanggal',
+            'start_time',
+            'start_datetime',
+            'start',
+          ]);
+          const rawEndTime = extract(row, [
+            'tanggal selesai',
+            'waktu selesai',
+            'selesai',
+            'sampai',
+            'end_time',
+            'end_datetime',
+            'end',
+          ]);
+
+          const startTime = formatExcelSerialDate(rawStartTime, '08:00:00');
+          let endTime = formatExcelSerialDate(rawEndTime, '10:00:00');
+          if (startTime && !endTime) {
+            const sDate = new Date(startTime.replace(' ', 'T'));
+            const eDate = new Date(sDate.getTime() + 2 * 60 * 60 * 1000);
+            const y = eDate.getFullYear();
+            const m = String(eDate.getMonth() + 1).padStart(2, '0');
+            const d = String(eDate.getDate()).padStart(2, '0');
+            const hh = String(eDate.getHours()).padStart(2, '0');
+            const mm = String(eDate.getMinutes()).padStart(2, '0');
+            const ss = String(eDate.getSeconds()).padStart(2, '0');
+            endTime = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+          }
+
+          const location =
+            String(extract(row, ['lokasi', 'tempat', 'ruangan', 'location']) || '').trim() ||
+            'Lingkungan SMKN 1 Ciomas';
+          const organizer =
+            String(
+              extract(row, ['penyelenggara', 'ekskul', 'ekstrakurikuler', 'organizer', 'pic']) || ''
+            ).trim() || (currentUser?.name ?? 'Pengurus');
+          const description = String(
+            extract(row, ['deskripsi', 'keterangan', 'catatan', 'description']) || ''
+          ).trim();
 
           // Client-side quick validation check
           let error: string | undefined = undefined;
@@ -269,17 +276,15 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
           } else if (!normalizedCat) {
             error = 'Kategori agenda tidak boleh kosong';
           } else if (!isCategoryAllowedForRole(normalizedCat)) {
-            if (isGuru) {
-              error = `Kategori '${rawCat}' tidak diizinkan untuk Guru (Hanya: Acara Sekolah / Hari Libur Nasional)`;
+            if (isPengurus) {
+              error = `Kategori '${rawCat}' tidak diizinkan untuk Pengurus (Hanya: Acara Sekolah / Hari Libur Nasional)`;
             } else if (isPembina) {
               error = `Kategori '${rawCat}' tidak diizinkan untuk Pembina (Hanya: Latihan Ekskul / Lomba)`;
             } else {
               error = `Kategori '${rawCat}' tidak valid`;
             }
           } else if (!startTime) {
-            error = 'Waktu mulai (start_time) harus diisi';
-          } else if (!endTime) {
-            error = 'Waktu selesai (end_time) harus diisi';
+            error = 'Waktu mulai harus diisi dengan format YYYY-MM-DD HH:mm';
           }
 
           return {
@@ -496,19 +501,19 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm text-[#171717]">Hak Akses Role:</span>
                 <span className={`px-2 py-0.5 rounded-md font-bold uppercase tracking-wider text-2xs ${
-                  isGuru
+                  isPengurus
                     ? 'bg-blue-100 text-blue-800 border border-blue-200'
                     : isPembina
                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                     : 'bg-amber-100 text-amber-800 border border-amber-200'
                 }`}>
-                  {isGuru ? 'Guru Sekolah' : isPembina ? 'Pembina Ekskul' : 'Administrator'}
+                  {isPengurus ? 'Pengurus' : isPembina ? 'Pembina Ekskul' : 'Administrator'}
                 </span>
               </div>
               <p className="text-[#68655F] leading-relaxed">
-                {isGuru ? (
+                {isPengurus ? (
                   <>
-                    Sebagai <strong>Guru</strong>, Anda berwenang mengimpor jadwal untuk kategori{' '}
+                    Sebagai <strong>Pengurus</strong>, Anda berwenang mengimpor jadwal untuk kategori{' '}
                     <span className="text-blue-800 font-semibold underline decoration-blue-300">Acara Sekolah (school_event)</span> dan{' '}
                     <span className="text-rose-800 font-semibold underline decoration-rose-300">Hari Besar Nasional (national_holiday)</span>. Kolom <code>extracurricular_id</code> otomatis diset ke <strong>NULL</strong>.
                   </>

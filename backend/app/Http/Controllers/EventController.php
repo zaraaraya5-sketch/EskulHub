@@ -37,11 +37,39 @@ class EventController extends Controller
         $startTime = str_replace('T', ' ', $startTime);
         $endTime = str_replace('T', ' ', $endTime);
 
+        // Auto-heal and sync any events created in school_events
+        try {
+            $missingFromEvents = DB::table('school_events')
+                ->whereNotIn('id', DB::table('events')->pluck('id'))
+                ->get();
+            foreach ($missingFromEvents as $se) {
+                $sTime = str_replace('T', ' ', $se->start_datetime ?? '');
+                $eTime = str_replace('T', ' ', $se->end_datetime ?? '');
+                if (strlen($sTime) === 10) $sTime .= ' 08:00:00';
+                if (strlen($eTime) === 10) $eTime .= ' 10:00:00';
+                DB::table('events')->insert([
+                    'id' => $se->id,
+                    'title' => $se->title,
+                    'category' => !empty($se->category) ? $se->category : (!empty($se->event_type) ? $se->event_type : 'school_event'),
+                    'extracurricular_id' => null,
+                    'start_time' => $sTime ?: now()->toDateTimeString(),
+                    'end_time' => $eTime ?: now()->addHours(2)->toDateTimeString(),
+                    'location' => $se->location ?? 'SMKN 1 Ciomas',
+                    'organizer' => $se->organizer ?? 'Pengurus Sekolah',
+                    'description' => $se->description ?? null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Ignore if already synced
+        }
+
         $events = DB::select(
             "SELECT DISTINCT e.*, ek.name as extracurricular_name
              FROM events e
              LEFT JOIN ekskuls ek ON e.extracurricular_id = ek.id
-             WHERE e.start_time BETWEEN ? AND ?
+             WHERE REPLACE(e.start_time, 'T', ' ') BETWEEN ? AND ?
              ORDER BY e.start_time ASC",
             [$startTime, $endTime]);
 
@@ -76,18 +104,25 @@ class EventController extends Controller
         $id = 'evt-' . time() . '-' . Str::random(4);
         $startTime = $validated['start_time'] ?? $validated['start_datetime'] ?? now()->toDateTimeString();
         $endTime = $validated['end_time'] ?? $validated['end_datetime'] ?? now()->addHours(2)->toDateTimeString();
+        $startTime = str_replace('T', ' ', trim($startTime));
+        $endTime = str_replace('T', ' ', trim($endTime));
+        if (strlen($startTime) === 10) $startTime .= ' 08:00:00';
+        elseif (strlen($startTime) === 16) $startTime .= ':00';
+        if (strlen($endTime) === 10) $endTime .= ' 10:00:00';
+        elseif (strlen($endTime) === 16) $endTime .= ':00';
+
         $category = $validated['category'] ?? $validated['event_type'] ?? 'school_event';
 
-        // Identify creator role
-        $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && $request->has('user_id')) {
-            $user = \App\Models\User::find($request->input('user_id'));
+        // Identify creator role strictly from authenticated session
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.'
+            ], 401);
         }
-        $creatorId = $user ? $user->id : ($request->input('created_by_id') ?? null);
-        $creatorRole = $user ? strtolower($user->role) : ($request->input('created_by_role') ?? null);
-        if (!$creatorRole) {
-            $creatorRole = in_array($category, ['school_event', 'national_holiday']) ? 'guru' : 'pembina';
-        }
+        $creatorId = $user->id;
+        $creatorRole = strtolower($user->role);
 
         $eventData = [
             'id' => $id,
@@ -134,16 +169,8 @@ class EventController extends Controller
             return response()->json(['success' => false, 'message' => 'Agenda kegiatan tidak ditemukan.'], 404);
         }
 
-        // 1. Resolve user performing the update
-        $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && ($request->has('user_id') || $request->hasHeader('X-User-Id'))) {
-            $identifier = $request->input('user_id') ?? $request->header('X-User-Id');
-            $user = \App\Models\User::where('id', $identifier)
-                ->orWhere('email', $identifier)
-                ->orWhere('name', $identifier)
-                ->first();
-        }
-
+        // 1. Resolve user performing the update strictly from authenticated session
+        $user = $request->user();
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -155,21 +182,20 @@ class EventController extends Controller
         $userRole = strtolower($user->role);
         $creatorRole = strtolower($event->created_by_role ?? '');
         if (empty($creatorRole)) {
-            $creatorRole = in_array($event->category, ['school_event', 'national_holiday']) ? 'guru' : 'pembina';
+            $creatorRole = in_array($event->category, ['school_event', 'national_holiday']) ? 'pengurus' : 'pembina';
         }
 
         $normUser = ($userRole === 'teacher') ? 'pembina' : $userRole;
         $normCreator = ($creatorRole === 'teacher') ? 'pembina' : $creatorRole;
 
-        $canEdit = ($userRole === 'admin')
+        $canEdit = in_array($userRole, ['admin', 'pengurus'])
             || ($normUser === $normCreator)
             || (!empty($event->created_by_id) && $event->created_by_id === $user->id);
 
         if (!$canEdit) {
             $labels = [
                 'pembina' => 'Pembina Ekskul',
-                'guru' => 'Guru',
-                'pengurus' => 'Pengurus Ekskul',
+                'pengurus' => 'Pengurus Sekolah',
                 'student' => 'Siswa',
             ];
             $creatorLabel = $labels[$normCreator] ?? ucfirst($creatorRole);
@@ -231,16 +257,8 @@ class EventController extends Controller
             return response()->json(['success' => false, 'message' => 'Agenda kegiatan tidak ditemukan.'], 404);
         }
 
-        // 1. Resolve user performing the delete
-        $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && ($request->has('user_id') || $request->hasHeader('X-User-Id'))) {
-            $identifier = $request->input('user_id') ?? $request->header('X-User-Id');
-            $user = \App\Models\User::where('id', $identifier)
-                ->orWhere('email', $identifier)
-                ->orWhere('name', $identifier)
-                ->first();
-        }
-
+        // 1. Resolve user performing the delete strictly from authenticated session
+        $user = $request->user();
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -252,21 +270,20 @@ class EventController extends Controller
         $userRole = strtolower($user->role);
         $creatorRole = strtolower($event->created_by_role ?? '');
         if (empty($creatorRole)) {
-            $creatorRole = in_array($event->category, ['school_event', 'national_holiday']) ? 'guru' : 'pembina';
+            $creatorRole = in_array($event->category, ['school_event', 'national_holiday']) ? 'pengurus' : 'pembina';
         }
 
         $normUser = ($userRole === 'teacher') ? 'pembina' : $userRole;
         $normCreator = ($creatorRole === 'teacher') ? 'pembina' : $creatorRole;
 
-        $canDelete = ($userRole === 'admin')
+        $canDelete = in_array($userRole, ['admin', 'pengurus'])
             || ($normUser === $normCreator)
             || (!empty($event->created_by_id) && $event->created_by_id === $user->id);
 
         if (!$canDelete) {
             $labels = [
                 'pembina' => 'Pembina Ekskul',
-                'guru' => 'Guru',
-                'pengurus' => 'Pengurus Ekskul',
+                'pengurus' => 'Pengurus Sekolah',
                 'student' => 'Siswa',
             ];
             $creatorLabel = $labels[$normCreator] ?? ucfirst($creatorRole);
@@ -291,12 +308,8 @@ class EventController extends Controller
      */
     public function importExcel(Request $request)
     {
-        // 1. Resolve user and role
-        $user = $request->user('sanctum') ?? auth('sanctum')->user();
-        if (!$user && $request->has('user_id')) {
-            $user = \App\Models\User::find($request->input('user_id'));
-        }
-
+        // 1. Resolve user strictly from authenticated session
+        $user = $request->user();
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -305,10 +318,10 @@ class EventController extends Controller
         }
 
         $role = strtolower($user->role);
-        if (!in_array($role, ['guru', 'pembina', 'teacher', 'admin'])) {
+        if (!in_array($role, ['pembina', 'teacher', 'admin', 'pengurus'])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Akses ditolak. Fitur import jadwal hanya diperuntukkan bagi Guru dan Pembina Ekskul.',
+                'message' => 'Akses ditolak. Fitur import jadwal hanya diperuntukkan bagi Pengurus dan Pembina Ekskul.',
             ], 403);
         }
 
@@ -456,33 +469,15 @@ class EventController extends Controller
                 }
 
                 // Check Role Permissions
-                if ($role === 'guru') {
-                    if (!in_array($cat, ['school_event', 'national_holiday'])) {
-                        DB::rollBack();
-                        return response()->json([
-                            'success' => false,
-                            'message' => "Gagal mengimpor: Kesalahan pada baris {$rowNum}. Akun Guru hanya diizinkan mengimpor agenda kategori 'school_event' (Acara Sekolah) atau 'national_holiday' (Hari Libur Nasional). Kategori '{$rawCategory}' tidak diizinkan.",
-                            'error_row' => $rowNum,
-                            'error_field' => 'category',
-                        ], 403);
-                    }
-                    $rowEkskulId = null;
+                if (in_array($role, ['admin', 'pengurus'])) {
+                    // Pengurus holds monitoring and management authority across all categories
+                    $rowEkskulId = in_array($cat, ['extracurricular_training', 'competition'])
+                        ? ($row['extracurricular_id'] ?? null)
+                        : null;
                 } elseif (in_array($role, ['pembina', 'teacher'])) {
-                    if (!in_array($cat, ['extracurricular_training', 'competition'])) {
-                        DB::rollBack();
-                        return response()->json([
-                            'success' => false,
-                            'message' => "Gagal mengimpor: Kesalahan pada baris {$rowNum}. Akun Pembina Ekskul hanya diizinkan mengimpor agenda kategori 'extracurricular_training' (Latihan) atau 'competition' (Kompetisi). Kategori '{$rawCategory}' tidak diizinkan.",
-                            'error_row' => $rowNum,
-                            'error_field' => 'category',
-                        ], 403);
-                    }
                     $rowEkskulId = $assignedEkskulId;
                 } else {
-                    // Admin can import any category
-                    $rowEkskulId = in_array($cat, ['extracurricular_training', 'competition'])
-                        ? ($row['extracurricular_id'] ?? $assignedEkskulId)
-                        : null;
+                    $rowEkskulId = null;
                 }
 
                 // Validate Date Times

@@ -25,20 +25,43 @@ interface RegisterEkskulPageProps {
 }
 
 export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, onNavigate }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, role } = useAuth();
   const ekskul = db.getExtracurricularBySlug(slug);
 
-  const [studentName, setStudentName] = useState(() => currentUser?.name || 'Budi Pratama');
-  const [studentClass, setStudentClass] = useState('XII RPL 1');
-  const [studentNisn, setStudentNisn] = useState('0067823910');
-  const [studentPhone, setStudentPhone] = useState(currentUser?.phone || '');
-  const [reason, setReason] = useState('');
-  const [agreedToRules, setAgreedToRules] = useState(false);
-  const [imgError, setImgError] = useState(false);
+  // Role guard: Only students can register
+  if (currentUser && role !== 'student') {
+    const roleLabel =
+      role === 'pembina' || role === 'teacher'
+        ? 'Guru Pembina'
+        : role === 'pengurus'
+        ? 'Pengurus Ekskul'
+        : 'Guru Wali Kelas';
 
-  const [formError, setFormError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
+    return (
+      <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-5 font-sans">
+        <div className="w-14 h-14 rounded-full bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center mx-auto border border-[#F2C9C0]">
+          <AlertCircle className="w-7 h-7" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#171717]">Pendaftaran Khusus Siswa</h2>
+          <p className="text-xs sm:text-sm text-[#525049] leading-relaxed">
+            Akun Anda terdaftar sebagai <strong className="text-[#171717]">{roleLabel}</strong>. Formulir pendaftaran ekstrakurikuler hanya dapat diisi dan diajukan oleh akun Siswa.
+          </p>
+        </div>
+        <div className="pt-2 flex justify-center gap-3">
+          <Button variant="outline" onClick={() => onNavigate(`/ekskul/${slug}`)}>
+            Kembali ke Detail Ekskul
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => onNavigate(role === 'pembina' || role === 'teacher' ? '/pembina/dashboard' : '/pengurus/dashboard')}
+          >
+            Buka Dasbor Saya
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (!ekskul) {
     return (
@@ -54,6 +77,18 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
 
   const isCapacityFull = ekskul.current_member_count >= ekskul.member_capacity;
   const remainingQuota = Math.max(0, ekskul.member_capacity - ekskul.current_member_count);
+
+  const [studentName, setStudentName] = useState(() => currentUser?.name || 'Budi Pratama');
+  const [studentClass, setStudentClass] = useState('XII RPL 1');
+  const [studentNisn, setStudentNisn] = useState('0067823910');
+  const [studentPhone, setStudentPhone] = useState(currentUser?.phone || '');
+  const [reason, setReason] = useState('');
+  const [agreedToRules, setAgreedToRules] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  const [formError, setFormError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittedSuccessfully, setSubmittedSuccessfully] = useState(false);
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();

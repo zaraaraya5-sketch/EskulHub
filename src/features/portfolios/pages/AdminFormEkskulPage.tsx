@@ -55,7 +55,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
       setChairpersonName(existingEkskul.chairperson_name || '');
       setShortDescription(existingEkskul.short_description || '');
       setFullDescription(existingEkskul.full_description || '');
-      setImageUrl(existingEkskul.image_url || existingEkskul.profile_image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800');
+      setImageUrl(existingEkskul.profile_image || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800');
     }
   }, [existingEkskul]);
 
@@ -211,7 +211,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Contoh: Futsal Garuda Nusantara"
+              placeholder="Contoh: Futsal SMKN 1 Ciomas"
               required
             />
 
@@ -225,10 +225,12 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
                 className="w-full px-3.5 py-2 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#234B36]/20 focus:border-[#234B36]"
               >
                 <option value="Olahraga">Olahraga</option>
-                <option value="Seni & Budaya">Seni & Budaya</option>
-                <option value="Sains & Teknologi">Sains & Teknologi</option>
                 <option value="Kepemimpinan">Kepemimpinan</option>
                 <option value="Bahasa & Literasi">Bahasa & Literasi</option>
+                <option value="Keagamaan">Keagamaan</option>
+                <option value="Kemanusiaan">Kemanusiaan</option>
+                <option value="Sains & Teknologi">Sains & Teknologi</option>
+                <option value="Seni & Budaya">Seni & Budaya</option>
               </select>
             </div>
           </div>

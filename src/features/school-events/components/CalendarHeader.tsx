@@ -21,8 +21,8 @@ export const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onOpenImportModal,
   onNavigate,
 }) => {
-  const canImportExcel = ['admin', 'pembina', 'teacher', 'guru'].includes(role || '');
-  const canAddEvent = ['admin', 'pembina', 'teacher', 'guru', 'pengurus'].includes(role || '');
+  const canImportExcel = ['admin', 'pembina', 'teacher', 'pengurus'].includes(role || '');
+  const canAddEvent = ['admin', 'pembina', 'teacher', 'pengurus'].includes(role || '');
 
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -45,6 +45,37 @@ class RegistrationController extends Controller
         $studentId = $validated['student_id'];
         $ekskulId = $validated['extracurricular_id'];
 
+        // Enforce that caller must be a student and can ONLY register themselves (Anti-IDOR)
+        $caller = $request->user();
+        if (!$caller) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.'
+            ], 401);
+        }
+
+        if (strtolower($caller->role) !== 'student') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya akun siswa yang dapat mendaftar kegiatan ekstrakurikuler.'
+            ], 403);
+        }
+
+        if ($caller->id !== $studentId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akses ditolak: Anda hanya dapat mendaftarkan akun Anda sendiri.'
+            ], 403);
+        }
+
+        $studentUser = \App\Models\User::find($studentId);
+        if ($studentUser && strtolower($studentUser->role) !== 'student') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya akun siswa yang dapat mendaftar kegiatan ekstrakurikuler.'
+            ], 403);
+        }
+
         $ekskul = Ekskul::findOrFail($ekskulId);
 
         // Check if registration is open

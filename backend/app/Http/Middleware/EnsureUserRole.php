@@ -32,11 +32,24 @@ class EnsureUserRole
             ], 403);
         }
 
-        if (!empty($roles) && !in_array($user->role, $roles, true)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Akses ditolak. Anda tidak memiliki hak akses (role) untuk tindakan ini.',
-            ], 403);
+        if (!empty($roles)) {
+            $allowedRoles = [];
+            foreach ($roles as $r) {
+                foreach (explode(',', $r) as $sub) {
+                    $trimmed = strtolower(trim($sub));
+                    if ($trimmed !== '') {
+                        $allowedRoles[] = $trimmed;
+                    }
+                }
+            }
+
+            $userRole = strtolower($user->role ?? '');
+            if (!in_array($userRole, $allowedRoles, true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak. Anda tidak memiliki hak akses (role) untuk tindakan ini.',
+                ], 403);
+            }
         }
 
         return $next($request);

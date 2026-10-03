@@ -30,7 +30,15 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
       <div className="grid grid-cols-7 border-b border-[#EAE6DC] bg-white">
         {monthGrid.map((dayObj, idx) => {
           const dayEvents = events.filter((ev) => {
-            const rawStart = ev.start_time || ev.start_datetime || '';
+            const rawStart = (ev.start_time || ev.start_datetime || '').trim();
+            if (!rawStart) return false;
+            const match = rawStart.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+            if (match) {
+              const y = match[1];
+              const m = match[2].padStart(2, '0');
+              const d = match[3].padStart(2, '0');
+              return `${y}-${m}-${d}` === dayObj.dateString;
+            }
             return rawStart.startsWith(dayObj.dateString);
           });
 
@@ -70,8 +78,8 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
               <div className="space-y-1 flex-1 overflow-hidden">
                 {visibleEvents.map((ev) => {
                   const styles = getCategoryStyles(ev.category || ev.event_type);
-                  const rawStart = ev.start_time || ev.start_datetime || '';
-                  const timeMatch = rawStart.match(/\s(\d{2}:\d{2})/);
+                  const rawStart = (ev.start_time || ev.start_datetime || '').trim();
+                  const timeMatch = rawStart.match(/(?:T|\s)(\d{1,2}:\d{2})/);
                   const timePrefix = timeMatch ? timeMatch[1] : '';
 
                   return (

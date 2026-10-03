@@ -35,7 +35,7 @@ class AchievementController extends Controller
         $validated['id'] = 'ach-' . time() . '-' . Str::random(4);
 
         $currentUser = $request->user();
-        $isStaff = $currentUser && in_array($currentUser->role, ['admin', 'pembina', 'guru', 'teacher'], true);
+        $isStaff = $currentUser && in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
 
         // Only authorized staff can immediately verify on creation
         if ($isStaff && $request->boolean('is_verified', false)) {

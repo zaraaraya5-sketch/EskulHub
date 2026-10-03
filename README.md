@@ -1,8 +1,8 @@
 # EKSKUL-HUB — Platform Manajemen Ekstrakurikuler & Portofolio Siswa
 
-Ekskul-Hub adalah platform manajemen terpadu kegiatan ekstrakurikuler, presensi digital, pencatatan prestasi, dan penerbitan portofolio non-akademik siswa bertanda tangan digital dan kode verifikasi QR untuk satuan pendidikan di Indonesia (**SMK Nusantara Digital**).
+Ekskul-Hub adalah platform manajemen terpadu kegiatan ekstrakurikuler, presensi digital, pencatatan prestasi, dan penerbitan portofolio non-akademik siswa bertanda tangan digital dan kode verifikasi QR untuk satuan pendidikan di Indonesia (**SMKN 1 Ciomas**).
 
-Aplikasi dibangun murni menggunakan **React (Vite + TypeScript)**, **Tailwind CSS**, **Node.js**, dan terintegrasi dengan **Supabase**, mematuhi seluruh arahan desain institusional (*Strict Anti-AI-Slop*, tanpa gradien, warna solid hangat `#F5F2EA`, aksen hijau institusi `#234B36`, dan merah terakota `#B84A3A`).
+Aplikasi dibangun murni menggunakan **React (Vite + TypeScript)**, **Tailwind CSS**, **Node.js**, dan terintegrasi dengan **Laravel 11 Backend**, mematuhi seluruh arahan desain institusional (*Strict Anti-AI-Slop*, tanpa gradien berlebih, warna solid hangat `#F5F2EA`, aksen terakota `#D15B40`, dan teal `#3B7A82`).
 
 ---
 
@@ -13,15 +13,16 @@ DISCOVER → REGISTER → APPROVE → PARTICIPATE → ATTEND → RECORD & VERIFY
 ```
 
 1. **Katalog Publik Ekstrakurikuler (`/ekskul`)**:
+   - Menampilkan 8 ekstrakurikuler SMKN 1 Ciomas: Basket, Voli, Futsal, Paskibra, English Club, Rohis, Pramuka, PMR.
    - Pencarian real-time nama ekskul, pembina, dan kata kunci.
-   - Filter kategori (*Olahraga, Sains & Teknologi, Seni & Budaya, Kepemimpinan, Bahasa & Literasi*).
+   - Filter kategori (*Olahraga, Keagamaan, Kemanusiaan, Kepemimpinan, Bahasa & Literasi*).
    - Filter status pendaftaran (*Buka / Kuota Penuh*).
    - Pengurutan nama, kapasitas, dan popularitas.
 
 2. **Halaman Detail & Pendaftaran Daring (`/ekskul/:slug`)**:
    - Profil lengkap, silabus, guru pembina, ketua ekskul, jadwal rutin, lokasi latihan, dan kuota anggota.
    - Daftar prestasi resmi dan galeri dokumentasi kegiatan.
-   - **Formulir Pendaftaran Online Interaktif** dengan validasi pencegahan duplikasi dan pengecekan kapasitas maksimal.
+   - **Formulir Pendaftaran Online Interaktif** khusus peran Siswa dengan validasi pencegahan duplikasi dan pengecekan kapasitas maksimal.
 
 3. **Buku Presensi Digital & Kalkulator Kehadiran (`/student/attendance` & `/pengurus/attendance`)**:
    - Status presensi standar: `Hadir (Present)`, `Terlambat (Late)`, `Izin/Sakit (Excused)`, `Alpa (Absent)`.
@@ -29,7 +30,7 @@ DISCOVER → REGISTER → APPROVE → PARTICIPATE → ATTEND → RECORD & VERIFY
    - Pengurus dapat membuka sesi latihan baru dan menandai presensi anggota secara langsung.
 
 4. **Kalender Agenda & Deteksi Konflik Fasilitas (`/calendar`)**:
-   - Jadwal terpusat latihan, turnamen, acara sekolah (PORSENI), dan rapat kepanitiaan OSIS.
+   - Jadwal terpusat latihan, turnamen, acara sekolah (PORSENI), dan agenda kesiswaan.
    - **Live Conflict Detection**: Memperingatkan secara otomatis jika ada 2 kegiatan yang mencoba menggunakan ruangan/lapangan yang sama pada waktu bersamaan.
 
 5. **Portofolio Resmi & Ekspor PDF (`/student/portfolio`)**:
@@ -48,10 +49,10 @@ Di bagian bilah atas (*top ribbon*) situs, terdapat **tombol pengalih peran inst
 
 | Peran | Nama Akun Demo | Email / Keterangan |
 |---|---|---|
-| **Siswa** | Budi Pratama | `budi@smknusantara.sch.id` (XII RPL 1 - NISN: 0067823910) |
-| **Pengurus Ekskul** | Rizky Ramadhan | `rizky@smknusantara.sch.id` (Ketua Ekskul Futsal Garuda) |
-| **Guru Pembina** | Hendra Wijaya, S.Pd. | `hendra@smknusantara.sch.id` (Pembina Futsal & Teater) |
-| **Admin Kesiswaan** | Drs. Bambang Suryono | `admin@smknusantara.sch.id` (Wakasek Kesiswaan) |
+| **Siswa** | Budi Pratama | `budi@smkn1ciomas.sch.id` (XII RPL 1 - NISN: 0067823910) |
+| **Pengurus Ekskul** | Rizky Ramadhan | `rizky@smkn1ciomas.sch.id` (Ketua Ekskul Futsal Ciomas) |
+| **Guru Pembina** | Hendra Wijaya, S.Pd. | `hendra@smkn1ciomas.sch.id` (Pembina Futsal & Basket) |
+| **Admin Kesiswaan** | Drs. Bambang Suryono | `admin@smkn1ciomas.sch.id` (Wakasek Kesiswaan) |
 
 ---
 

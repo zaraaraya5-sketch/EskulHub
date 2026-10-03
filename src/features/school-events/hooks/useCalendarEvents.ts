@@ -18,7 +18,7 @@ export const useCalendarEvents = (currentUserId?: string) => {
     return now.getFullYear() === 2026 ? now : new Date('2026-10-02T10:00:00');
   });
 
-  const [events, setEvents] = useState<SchoolEvent[]>([]);
+  const [events, setEvents] = useState<SchoolEvent[]>(() => db.getSchoolEvents());
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -87,8 +87,22 @@ export const useCalendarEvents = (currentUserId?: string) => {
       });
 
       if (Array.isArray(data)) {
-        db.events.setEvents(data);
-        setEvents(data);
+        const existingLocal = db.getSchoolEvents();
+        const merged = [...data];
+        for (const localEv of existingLocal) {
+          const alreadyExists = merged.some(
+            (m) =>
+              m.id === localEv.id ||
+              (m.title === localEv.title &&
+                (m.start_time?.slice(0, 10) === localEv.start_time?.slice(0, 10) ||
+                  m.start_datetime?.slice(0, 10) === localEv.start_datetime?.slice(0, 10)))
+          );
+          if (!alreadyExists) {
+            merged.push(localEv);
+          }
+        }
+        db.events.setEvents(merged);
+        setEvents(merged);
       } else {
         setEvents(db.getSchoolEvents());
       }

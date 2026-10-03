@@ -17,7 +17,6 @@ const StudentPortfolioPage = React.lazy(() => import('@/features/portfolios/page
 const PengurusDashboardPage = React.lazy(() => import('@/features/extracurriculars/pages/PengurusDashboardPage').then((m) => ({ default: m.PengurusDashboardPage })));
 const PengurusAttendancePage = React.lazy(() => import('@/features/attendance/pages/PengurusAttendancePage').then((m) => ({ default: m.PengurusAttendancePage })));
 const TeacherDashboardPage = React.lazy(() => import('@/features/portfolios/pages/TeacherDashboardPage').then((m) => ({ default: m.TeacherDashboardPage })));
-const GuruDashboardPage = React.lazy(() => import('@/features/portfolios/pages/GuruDashboardPage').then((m) => ({ default: m.GuruDashboardPage })));
 const PortfolioSamplePage = React.lazy(() => import('@/features/portfolios/pages/PortfolioSamplePage').then((m) => ({ default: m.PortfolioSamplePage })));
 const AdminDashboardPage = React.lazy(() => import('@/features/portfolios/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
 const RegisterEkskulPage = React.lazy(() => import('@/features/extracurriculars/pages/RegisterEkskulPage').then((m) => ({ default: m.RegisterEkskulPage })));
@@ -47,7 +46,6 @@ const AppContent: React.FC = () => {
   const isAuthenticatedDashboardRoute =
     currentPath.startsWith('/student') ||
     currentPath.startsWith('/pengurus') ||
-    currentPath.startsWith('/guru') ||
     currentPath.startsWith('/pembina') ||
     currentPath.startsWith('/teacher') ||
     currentPath.startsWith('/admin');
@@ -56,17 +54,72 @@ const AppContent: React.FC = () => {
   const isUnauthorizedForDashboard =
     isAuthenticatedDashboardRoute &&
     (!currentUser ||
-      (currentPath.startsWith('/admin') && role !== 'admin') ||
-      (currentPath.startsWith('/guru') && !['guru', 'admin'].includes(role)) ||
+      (currentPath.startsWith('/student') && role !== 'student') ||
+      (currentPath.startsWith('/pengurus') && role !== 'pengurus') ||
       ((currentPath.startsWith('/pembina') || currentPath.startsWith('/teacher')) &&
-        !['pembina', 'teacher', 'guru', 'admin'].includes(role)) ||
-      (currentPath.startsWith('/pengurus') &&
-        !['pengurus', 'pembina', 'teacher', 'admin'].includes(role)));
+        !['pembina', 'teacher', 'pengurus'].includes(role)) ||
+      (currentPath.startsWith('/admin') && role !== 'pengurus'));
 
   const renderContent = () => {
-    // If attempting to access protected dashboard without permission, show login
-    if (isUnauthorizedForDashboard) {
+    // If not authenticated at all, redirect to login
+    if (isAuthenticatedDashboardRoute && !currentUser) {
       return <LoginPage currentPath="/login" onNavigate={navigate} />;
+    }
+
+    // If authenticated user visits a dashboard not belonging to their role
+    if (isAuthenticatedDashboardRoute && currentUser && isUnauthorizedForDashboard) {
+      const getRoleLabel = (r: string) => {
+        if (r === 'student') return 'Siswa';
+        if (r === 'pembina' || r === 'teacher') return 'Guru Pembina';
+        if (r === 'pengurus') return 'Pengurus (Monitoring)';
+        return r;
+      };
+
+      const getTargetRoleLabel = (path: string) => {
+        if (path.startsWith('/student')) return 'Siswa';
+        if (path.startsWith('/pembina') || path.startsWith('/teacher')) return 'Guru Pembina';
+        if (path.startsWith('/pengurus') || path.startsWith('/admin')) return 'Pengurus Monitoring';
+        return 'Peran Khusus';
+      };
+
+      const myDashboardPath =
+        role === 'student'
+          ? '/student/dashboard'
+          : role === 'pembina' || role === 'teacher'
+          ? '/pembina/dashboard'
+          : '/pengurus/dashboard';
+
+      return (
+        <div className="max-w-md w-full bg-white border border-[#EAE6DC] rounded-2xl p-6 sm:p-8 shadow-sm text-center space-y-5">
+          <div className="w-14 h-14 bg-[#FDEDE9] text-[#D15B40] rounded-2xl flex items-center justify-center mx-auto shadow-2xs font-bold text-2xl">
+            !
+          </div>
+          <div>
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
+              Akses Dibatasi
+            </span>
+            <h2 className="text-xl font-bold text-[#171717] mt-2">Halaman Bukan Untuk Peran Anda</h2>
+            <p className="text-xs text-[#68655F] mt-1.5 leading-relaxed">
+              Anda sedang masuk sebagai <strong>{currentUser.name}</strong> ({getRoleLabel(role)}). Halaman ini khusus untuk peran <strong>{getTargetRoleLabel(currentPath)}</strong>.
+            </p>
+          </div>
+
+          <div className="space-y-2.5 pt-2">
+            <button
+              onClick={() => navigate(myDashboardPath)}
+              className="w-full py-2.5 px-4 bg-[#D15B40] hover:bg-[#b84a32] text-white rounded-xl text-xs font-bold transition-all shadow-xs cursor-pointer"
+            >
+              Buka Dasbor Saya ({getRoleLabel(role)})
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full py-2.5 px-4 bg-white hover:bg-[#F9F8F6] text-[#171717] rounded-xl text-xs font-semibold transition-all border border-[#EAE6DC] cursor-pointer"
+            >
+              Ke Halaman Utama
+            </button>
+          </div>
+        </div>
+      );
     }
 
     // 1. Ekstrakurikuler Registration: /ekskul/:slug/daftar
@@ -93,8 +146,11 @@ const AppContent: React.FC = () => {
       return <CreateEventPage onNavigate={navigate} editEventId={editId} />;
     }
 
-    // 5. Admin Ekskul Edit route: /admin/ekskul/:id/edit
-    if (currentPath.startsWith('/admin/ekskul/') && currentPath.endsWith('/edit')) {
+    // 5. Admin & Pengurus Ekskul Edit route: /admin/ekskul/:id/edit or /pengurus/ekskul/:id/edit
+    if (
+      (currentPath.startsWith('/admin/ekskul/') || currentPath.startsWith('/pengurus/ekskul/')) &&
+      currentPath.endsWith('/edit')
+    ) {
       const parts = currentPath.split('/');
       const editId = parts[3];
       return <AdminFormEkskulPage onNavigate={navigate} editId={editId} />;
@@ -139,25 +195,31 @@ const AppContent: React.FC = () => {
       case '/student/portfolio':
         return <StudentDashboardPage onNavigate={navigate} initialTab="portfolio" />;
 
-      // Pengurus routes (Legacy fallbacks)
+      // Pengurus Monitoring routes (Admin functionality transferred to Pengurus)
       case '/pengurus/dashboard':
       case '/pengurus':
+      case '/pengurus/students':
+      case '/pengurus/teachers':
+      case '/pengurus/pembina':
+      case '/pengurus/ekskul':
+      case '/pengurus/schedule':
+      case '/pengurus/verification':
+      case '/pengurus/profile':
       case '/pengurus/members':
       case '/pengurus/registrations':
       case '/pengurus/activities':
       case '/pengurus/achievements':
-        return <PengurusDashboardPage currentPath={currentPath} onNavigate={navigate} />;
-      case '/pengurus/attendance':
-        return <PengurusAttendancePage />;
-      case '/pengurus/schedule':
-        return <CalendarPage onNavigate={navigate} />;
+        return <AdminDashboardPage currentPath={currentPath} onNavigate={navigate} />;
+      case '/pengurus/ekskul/tambah':
+        return <AdminFormEkskulPage onNavigate={navigate} />;
 
-      // Unified Teacher, Pembina & Pengurus routes
+      // Unified Pembina & Teacher routes
       case '/pembina/dashboard':
       case '/pembina':
       case '/pembina/members':
       case '/pembina/extracurriculars':
       case '/pembina/attendance':
+      case '/pembina/schedule':
       case '/pembina/achievements':
       case '/teacher/dashboard':
       case '/teacher':
@@ -166,18 +228,8 @@ const AppContent: React.FC = () => {
       case '/teacher/activities':
       case '/teacher/achievements':
         return <TeacherDashboardPage currentPath={currentPath} onNavigate={navigate} />;
-      case '/pembina/schedule':
-        return <CalendarPage onNavigate={navigate} />;
 
-      // Guru Wali Kelas routes
-      case '/guru/dashboard':
-      case '/guru':
-      case '/guru/students':
-      case '/guru/grades':
-      case '/guru/verification':
-        return <GuruDashboardPage currentPath={currentPath} onNavigate={navigate} />;
-
-      // Admin routes
+      // Admin fallback routes (mapped to Pengurus Monitoring)
       case '/admin/dashboard':
       case '/admin':
       case '/admin/students':

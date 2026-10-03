@@ -52,10 +52,12 @@ export class EventsModule {
 
     const newEvent: SchoolEvent = {
       ...event,
-      id: `ev-${Date.now()}`,
+      id: `ev-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
     };
     this.schoolEvents.unshift(newEvent);
-    apiService.createEventAPI(newEvent);
+    apiService.createEventAPI(newEvent).catch((err) => {
+      console.warn('Background sync for new event:', err);
+    });
     this.notify();
     return { success: true, event: newEvent };
   }

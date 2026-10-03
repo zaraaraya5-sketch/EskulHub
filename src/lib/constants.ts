@@ -6,10 +6,12 @@ export const CURRENT_ACADEMIC_YEAR = '2025/2026';
 export const EXTRACURRICULAR_CATEGORIES = [
   'Semua Kategori',
   'Olahraga',
-  'Sains & Teknologi',
-  'Seni & Budaya',
   'Kepemimpinan',
   'Bahasa & Literasi',
+  'Keagamaan',
+  'Kemanusiaan',
+  'Sains & Teknologi',
+  'Seni & Budaya',
 ] as const;
 
 export const ATTENDANCE_STATUS_LABELS = {

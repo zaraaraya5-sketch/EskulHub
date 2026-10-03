@@ -147,8 +147,8 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         $currentUser = $request->user();
 
-        // Enforce ownership: user can only edit their own profile, unless admin
-        if ($currentUser && $currentUser->id !== $id && $currentUser->role !== 'admin') {
+        // Enforce ownership: user can only edit their own profile, unless admin or pengurus
+        if ($currentUser && $currentUser->id !== $id && !in_array($currentUser->role, ['admin', 'pengurus'], true)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Akses ditolak: Anda hanya dapat memperbarui profil Anda sendiri.',
@@ -189,8 +189,8 @@ class AuthController extends Controller
     {
         $currentUser = $request->user();
 
-        // If authenticated staff/admin, return full details
-        if ($currentUser && in_array($currentUser->role, ['admin', 'pembina', 'guru', 'teacher'], true)) {
+        // If authenticated staff/admin/pengurus, return full details
+        if ($currentUser && in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true)) {
             return response()->json(User::all());
         }
 
@@ -207,7 +207,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:150|unique:users,email',
-            'role' => 'required|in:student,pengurus,guru,pembina,teacher,admin',
+            'role' => 'required|in:student,pengurus,pembina,teacher,admin',
             'password' => 'required|string|min:6',
             'phone' => 'nullable|string|max:25',
             'avatar_url' => 'nullable|url',
@@ -239,7 +239,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:120',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'role' => 'sometimes|required|in:student,pengurus,guru,pembina,teacher,admin',
+            'role' => 'sometimes|required|in:student,pengurus,pembina,teacher,admin',
             'password' => 'nullable|string|min:6',
             'phone' => 'nullable|string|max:25',
             'avatar_url' => 'nullable|url',

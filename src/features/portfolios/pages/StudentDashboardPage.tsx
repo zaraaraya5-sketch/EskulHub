@@ -34,7 +34,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const { currentUser } = useAuth();
   const settings = db.getSettings();
   const studentId = currentUser?.id || 'usr-student-1';
-  const studentName = currentUser?.name || 'Siswa SMK Nusantara';
+  const studentName = currentUser?.name || 'Siswa SMKN 1 Ciomas';
 
   const [activeTab, setActiveTab] = useState<StudentDashboardTab>(initialTab);
 
@@ -106,6 +106,22 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     }
   };
 
+  const handleTabChange = (tab: StudentDashboardTab) => {
+    setActiveTab(tab);
+    const routeMap: Record<StudentDashboardTab, string> = {
+      overview: '/student/dashboard',
+      browse: '/student/ekskul',
+      registrations: '/student/registrations',
+      attendance: '/student/attendance',
+      achievements: '/student/achievements',
+      documents: '/student/documents',
+      portfolio: '/student/portfolio',
+    };
+    if (routeMap[tab]) {
+      onNavigate(routeMap[tab]);
+    }
+  };
+
   const handleOpenRegister = (ekskulId?: string) => {
     if (ekskulId) {
       const found = allEkskuls.find((e) => e.id === ekskulId);
@@ -114,7 +130,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         return;
       }
     }
-    setActiveTab('browse');
+    onNavigate('/student/ekskul');
   };
 
   const handleSelectEkskul = (ekskul: Extracurricular | null) => {
@@ -161,7 +177,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           myAttendanceRecords={myAttendanceRecords}
           upcomingEvents={upcomingEvents}
           isGeneratingPdf={isGeneratingPdf}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
           setSelectedEkskulDetail={handleSelectEkskul}
           handleDownloadPdf={handleDownloadPdf}
         />
@@ -185,7 +201,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
         <StudentRegistrationsTab
           myRegistrations={myRegistrations}
           handleOpenRegisterModal={handleOpenRegister}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
         />
       )}
 

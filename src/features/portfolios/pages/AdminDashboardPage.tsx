@@ -25,7 +25,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
   const getSectionFromPath = (path?: string) => {
     if (!path) return 'dashboard';
     if (path.includes('/students')) return 'students';
-    if (path.includes('/teachers')) return 'teachers';
     if (path.includes('/pembina')) return 'pembina';
     if (path.includes('/ekskul')) return 'ekskul';
     if (path.includes('/schedule') || path.includes('/events')) return 'schedule';
@@ -38,16 +37,15 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
 
   const switchSection = (section: string) => {
     const pathMap: Record<string, string> = {
-      dashboard: '/admin/dashboard',
-      students: '/admin/students',
-      teachers: '/admin/teachers',
-      pembina: '/admin/pembina',
-      ekskul: '/admin/ekskul',
-      schedule: '/admin/schedule',
-      verification: '/admin/verification',
-      profile: '/admin/profile',
+      dashboard: '/pengurus/dashboard',
+      students: '/pengurus/students',
+      pembina: '/pengurus/pembina',
+      ekskul: '/pengurus/ekskul',
+      schedule: '/pengurus/schedule',
+      verification: '/pengurus/verification',
+      profile: '/pengurus/profile',
     };
-    onNavigate(pathMap[section]);
+    onNavigate(pathMap[section] || '/pengurus/dashboard');
   };
 
   const [users, setUsers] = useState<User[]>(() => db.getUsers());
@@ -64,11 +62,10 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
   };
 
   const studentsList = users.filter((u) => u.role === 'student');
-  const teachersList = users.filter((u) => u.role === 'guru');
   const pembinaList = users.filter((u) => u.role === 'pembina' || u.role === 'teacher');
 
   const openAddUserModal = (role: string) => {
-    switchSection(role === 'student' ? 'students' : role === 'guru' ? 'teachers' : 'pembina');
+    switchSection(role === 'student' ? 'students' : 'pembina');
   };
 
   // State lifting for modals that are needed by header shortcuts in Ekskul
@@ -79,22 +76,22 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {/* Top Breadcrumb & Page Title */}
       <div className="border-b border-[#EAE6DC] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="text-[11px] font-bold uppercase tracking-wider text-[#234B36] flex items-center gap-1.5 mb-1">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#D15B40] flex items-center gap-1.5 mb-1">
             <School className="w-3.5 h-3.5" />
-            <span>Panel Kesiswaan • {settings.school_name}</span>
+            <span>Panel Pengurus • Monitoring & Koordinasi Sekolah</span>
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-            {activeSection === 'dashboard' && 'Dasbor Kesiswaan'}
-            {activeSection === 'students' && 'Kelola Data Siswa'}
-            {activeSection === 'teachers' && 'Kelola Guru & Wali Kelas'}
-            {activeSection === 'pembina' && 'Kelola Guru Pembina Ekstrakurikuler'}
-            {activeSection === 'ekskul' && 'Daftar Ekstrakurikuler'}
-            {activeSection === 'schedule' && 'Jadwal Latihan & Kalender Kegiatan'}
-            {activeSection === 'verification' && 'Verifikasi Portofolio & Kode QR'}
-            {activeSection === 'profile' && 'Profil Admin'}
+            {activeSection === 'dashboard' && 'Dasbor Monitoring Pengurus'}
+            {activeSection === 'students' && 'Monitoring Data Siswa'}
+            {activeSection === 'teachers' && 'Monitoring Guru & Wali Kelas'}
+            {activeSection === 'pembina' && 'Monitoring Guru Pembina Ekstrakurikuler'}
+            {activeSection === 'ekskul' && 'Monitoring Seluruh Ekstrakurikuler'}
+            {activeSection === 'schedule' && 'Monitoring Kalender & Agenda Sekolah'}
+            {activeSection === 'verification' && 'Monitoring Verifikasi Portofolio'}
+            {activeSection === 'profile' && 'Profil Pengurus & Sekolah'}
           </h1>
           <p className="text-xs text-[#525049] mt-0.5">
-            Admin: <strong>{settings.vice_principal_student_affairs}</strong> • Tahun Ajaran {settings.academic_year}
+            Pengurus: <strong>{currentUser?.name || 'Rizky Ramadhan'}</strong> • {settings.school_name} (Tahun Ajaran {settings.academic_year})
           </p>
         </div>
 
@@ -121,7 +118,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
       {activeSection === 'dashboard' && (
         <AdminOverviewSection
           studentsList={studentsList}
-          teachersList={teachersList}
           pembinaList={pembinaList}
           ekskuls={ekskuls}
           verifications={verifications}
@@ -143,18 +139,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           description="Kelola akun siswa, pantau status keaktifan, dan data kontak."
           roleFilters={['student']}
           themeColor="green"
-          users={users}
-          setUsers={setUsers}
-          showNotification={showNotification}
-        />
-      )}
-
-      {activeSection === 'teachers' && (
-        <AdminUserManager
-          title="Daftar Guru & Wali Kelas"
-          description="Guru berwenang memvalidasi raport, leger capaian, dan memantau siswa binaan kelas."
-          roleFilters={['guru']}
-          themeColor="gold"
           users={users}
           setUsers={setUsers}
           showNotification={showNotification}
@@ -213,3 +197,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
     </div>
   );
 };
+
+export { AdminDashboardPage as PengurusMonitoringDashboard };
+

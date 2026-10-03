@@ -260,13 +260,13 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title={`Tambah Akun Baru`}>
         <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
           <Input label="Nama Lengkap Beserta Gelar" type="text" value={userNameInput} onChange={(e) => setUserNameInput(e.target.value)} placeholder="Contoh: Muhammad Farhan" required />
-          <Input label="Alamat Email Akun" type="email" value={userEmailInput} onChange={(e) => setUserEmailInput(e.target.value)} placeholder="nama@smknusantara.sch.id" required />
+          <Input label="Alamat Email Akun" type="email" value={userEmailInput} onChange={(e) => setUserEmailInput(e.target.value)} placeholder="nama@smkn1ciomas.sch.id" required />
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">Peran Akun</label>
             <select value={addUserTargetRole} onChange={(e) => setAddUserTargetRole(e.target.value as UserRole)} className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]">
               <option value="student">Siswa</option>
-              <option value="guru">Guru</option>
-              <option value="pembina">Pembina</option>
+              <option value="pembina">Pembina Ekskul</option>
+              <option value="pengurus">Pengurus Sekolah</option>
             </select>
           </div>
           <Input label="Nomor Telepon / WhatsApp" type="tel" value={userPhoneInput} onChange={(e) => setUserPhoneInput(e.target.value)} placeholder="081234567890" />
@@ -286,9 +286,8 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
               <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">Peran Akun</label>
               <select value={editUserRole} onChange={(e) => setEditUserRole(e.target.value as UserRole)} className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]">
                 <option value="student">Siswa</option>
-                <option value="guru">Guru</option>
-                <option value="pembina">Pembina</option>
-                <option value="admin">Admin</option>
+                <option value="pembina">Pembina Ekskul</option>
+                <option value="pengurus">Pengurus Sekolah</option>
               </select>
             </div>
             <div>

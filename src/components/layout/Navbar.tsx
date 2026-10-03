@@ -24,10 +24,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
   const getDashboardPath = (targetRole: UserRole) => {
     switch (targetRole) {
       case 'student': return '/student/dashboard';
-      case 'guru': return '/guru/dashboard';
       case 'pembina':
       case 'teacher': return '/pembina/dashboard';
-      case 'admin': return '/admin/dashboard';
       case 'pengurus': return '/pengurus/dashboard';
       default: return '/student/dashboard';
     }
@@ -35,12 +33,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
 
   // Solid institutional badge styles
   const roleBadges: Record<string, { label: string; bgClass: string; textClass: string }> = {
-    admin: { label: 'Admin', bgClass: 'bg-[#262522]', textClass: 'text-white' },
     student: { label: 'Siswa', bgClass: 'bg-[#D15B40]', textClass: 'text-white' },
-    guru: { label: 'Guru', bgClass: 'bg-[#8C6819]', textClass: 'text-white' },
-    pembina: { label: 'Pembina', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
-    teacher: { label: 'Pembina', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
-    pengurus: { label: 'Pengurus', bgClass: 'bg-[#4B5E28]', textClass: 'text-white' },
+    pembina: { label: 'Pembina Ekskul', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
+    teacher: { label: 'Pembina Ekskul', bgClass: 'bg-[#3B7A82]', textClass: 'text-white' },
+    pengurus: { label: 'Pengurus (Monitoring)', bgClass: 'bg-[#2A2926]', textClass: 'text-white' },
   };
 
   const currentBadge = roleBadges[role] || roleBadges.student;

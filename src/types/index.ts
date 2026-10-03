@@ -1,4 +1,4 @@
-export type UserRole = 'student' | 'pengurus' | 'guru' | 'pembina' | 'teacher' | 'admin';
+export type UserRole = 'student' | 'pengurus' | 'pembina' | 'teacher';
 
 export interface User {
   id: string;
@@ -32,7 +32,7 @@ export interface Extracurricular {
   id: string;
   name: string;
   slug: string;
-  category: 'Olahraga' | 'Seni & Budaya' | 'Sains & Teknologi' | 'Kepemimpinan' | 'Bahasa & Literasi';
+  category: 'Olahraga' | 'Seni & Budaya' | 'Sains & Teknologi' | 'Kepemimpinan' | 'Bahasa & Literasi' | 'Keagamaan' | 'Kemanusiaan';
   short_description: string;
   full_description: string;
   profile_image: string;

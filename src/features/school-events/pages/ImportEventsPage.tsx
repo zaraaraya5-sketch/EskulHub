@@ -8,22 +8,22 @@ import {
   FileSpreadsheet,
   CheckCircle2,
   AlertCircle,
-  FileText,
   Download,
+  Loader2,
+  Check,
   Calendar,
   Clock,
-  MapPin,
-  Loader2,
-  Trash2,
-  Info
+  HelpCircle,
 } from 'lucide-react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
+import { parseExcelDateTime, normalizeEventCategory } from '../utils/calendarUtils';
+import * as apiService from '@/lib/api';
 
 interface ParsedEventRow {
   index: number;
   title: string;
   category: string;
-  normalizedCategory: 'practice' | 'competition' | 'ceremony' | 'exhibition';
+  normalizedCategory: 'extracurricular_training' | 'competition' | 'school_event' | 'national_holiday';
   start_time: string;
   end_time: string;
   location: string;
@@ -41,10 +41,6 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
   const { currentUser, role } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isPembina = role === 'pembina';
-  const isGuru = role === 'guru';
-  const isAdmin = role === 'admin';
-
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isParsing, setIsParsing] = useState(false);
   const [parsedRows, setParsedRows] = useState<ParsedEventRow[]>([]);
@@ -54,37 +50,158 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Generate clean, beautifully formatted Excel spreadsheet with generous column widths and authentic copywriting
   const handleDownloadTemplate = async () => {
     try {
       const XLSX = await import('xlsx');
-      const templateData = [
+
+      // Sheet 1: Real-world, ready-to-use sample activities for SMKN 1 Ciomas
+      const sampleEvents = [
         {
-          'Judul Agenda': 'Latihan Rutin Futsal',
+          'Judul Agenda': 'Latihan Fisik & Taktik Futsal',
           'Kategori': 'Latihan Rutin',
-          'Tanggal Mulai (YYYY-MM-DD HH:mm)': '2026-10-10 15:30',
-          'Tanggal Selesai (YYYY-MM-DD HH:mm)': '2026-10-10 17:30',
-          'Lokasi': 'Lapangan Futsal Utama',
-          'Penyelenggara': 'Futsal Garuda Nusantara',
-          'Deskripsi': 'Latihan fisik dan taktik mingguan.',
+          'Tanggal Mulai': '2026-10-10 15:30',
+          'Tanggal Selesai': '2026-10-10 17:30',
+          'Lokasi': 'Lapangan Futsal SMKN 1 Ciomas',
+          'Penyelenggara': 'Futsal',
+          'Deskripsi': 'Latihan ketahanan fisik, passing pendek, dan simulasi strategi tanding mingguan.',
         },
         {
-          'Judul Agenda': 'Simulasi Lomba Robotika',
+          'Judul Agenda': 'Simulasi Tanding Basket Antarregu',
           'Kategori': 'Kompetisi',
-          'Tanggal Mulai (YYYY-MM-DD HH:mm)': '2026-10-12 09:00',
-          'Tanggal Selesai (YYYY-MM-DD HH:mm)': '2026-10-12 14:00',
-          'Lokasi': 'Lab Komputer 3',
-          'Penyelenggara': 'Robotika & Otomasi IoT',
-          'Deskripsi': 'Uji coba lintasan arena sebelum turnamen kota.',
+          'Tanggal Mulai': '2026-10-12 15:30',
+          'Tanggal Selesai': '2026-10-12 17:30',
+          'Lokasi': 'Lapangan Basket Outdoor SMKN 1 Ciomas',
+          'Penyelenggara': 'Basket',
+          'Deskripsi': 'Uji coba pola penyerangan dan pertahanan sebelum turnamen pelajar se-Bogor.',
+        },
+        {
+          'Judul Agenda': 'Latihan Baris-Berbaris & Variasi Formasi',
+          'Kategori': 'Latihan Rutin',
+          'Tanggal Mulai': '2026-10-13 15:30',
+          'Tanggal Selesai': '2026-10-13 17:30',
+          'Lokasi': 'Lapangan Upacara Utama SMKN 1 Ciomas',
+          'Penyelenggara': 'Paskibra',
+          'Deskripsi': 'Pemantapan langkah tegap, tempo baris-berbaris, dan formasi pengibaran bendera.',
+        },
+        {
+          'Judul Agenda': 'Kajian Rutin & Mentoring Adab Pelajar',
+          'Kategori': 'Acara Sekolah',
+          'Tanggal Mulai': '2026-10-16 13:00',
+          'Tanggal Selesai': '2026-10-16 15:00',
+          'Lokasi': 'Masjid Al-Kautsar SMKN 1 Ciomas',
+          'Penyelenggara': 'Rohis',
+          'Deskripsi': 'Kajian keagamaan tematik, tadarus bersama, dan bimbingan adab bagi siswa.',
+        },
+        {
+          'Judul Agenda': 'Praktik Pertolongan Pertama & Balut Bidai',
+          'Kategori': 'Latihan Rutin',
+          'Tanggal Mulai': '2026-10-17 08:30',
+          'Tanggal Selesai': '2026-10-17 11:00',
+          'Lokasi': 'Ruang UKS & Area Terbuka SMKN 1 Ciomas',
+          'Penyelenggara': 'PMR',
+          'Deskripsi': 'Materi balut bidai patah tulang, evakuasi tandu darurat, dan penanganan luka ringan.',
+        },
+        {
+          'Judul Agenda': 'English Speech & Debate Practice',
+          'Kategori': 'Latihan Rutin',
+          'Tanggal Mulai': '2026-10-21 15:30',
+          'Tanggal Selesai': '2026-10-21 17:00',
+          'Lokasi': 'Laboratorium Bahasa SMKN 1 Ciomas',
+          'Penyelenggara': 'English Club',
+          'Deskripsi': 'Latihan public speaking, debat parlemen, dan pelafalan kosakata bahasa Inggris.',
         },
       ];
 
-      const ws = XLSX.utils.json_to_sheet(templateData);
+      // Sheet 2: Clear, human guide instructions
+      const guideData = [
+        {
+          'Nama Kolom': 'Judul Agenda',
+          'Status': 'Wajib',
+          'Contoh Nilai': 'Latihan Fisik & Taktik Futsal',
+          'Keterangan': 'Nama kegiatan yang akan muncul pada kotak tanggal kalender.',
+        },
+        {
+          'Nama Kolom': 'Kategori',
+          'Status': 'Wajib',
+          'Contoh Nilai': 'Latihan Rutin',
+          'Keterangan': 'Pilihan: Latihan Rutin, Kompetisi, Acara Sekolah, atau Libur Nasional.',
+        },
+        {
+          'Nama Kolom': 'Tanggal Mulai',
+          'Status': 'Wajib',
+          'Contoh Nilai': '2026-10-10 15:30',
+          'Keterangan': 'Format didukung: YYYY-MM-DD HH:mm, YYYY-MM-DD, atau DD/MM/YYYY HH:mm.',
+        },
+        {
+          'Nama Kolom': 'Tanggal Selesai',
+          'Status': 'Opsional',
+          'Contoh Nilai': '2026-10-10 17:30',
+          'Keterangan': 'Jika kosong, otomatis diatur 2 jam setelah waktu mulai.',
+        },
+        {
+          'Nama Kolom': 'Lokasi',
+          'Status': 'Wajib',
+          'Contoh Nilai': 'Lapangan Futsal SMKN 1 Ciomas',
+          'Keterangan': 'Tempat pelaksanaan agenda di lingkungan sekolah atau luar sekolah.',
+        },
+        {
+          'Nama Kolom': 'Penyelenggara',
+          'Status': 'Wajib',
+          'Contoh Nilai': 'Futsal',
+          'Keterangan': 'Nama ekstrakurikuler atau pihak pengurus penyelenggara agenda.',
+        },
+        {
+          'Nama Kolom': 'Deskripsi',
+          'Status': 'Opsional',
+          'Contoh Nilai': 'Latihan fisik mingguan.',
+          'Keterangan': 'Ringkasan materi atau catatan instruksi bagi peserta.',
+        },
+      ];
+
+      const wsEvents = XLSX.utils.json_to_sheet(sampleEvents);
+      const wsGuide = XLSX.utils.json_to_sheet(guideData);
+
+      // Set generous column widths so text is never truncated in Microsoft Excel
+      wsEvents['!cols'] = [
+        { wch: 38 }, // Judul Agenda
+        { wch: 22 }, // Kategori
+        { wch: 24 }, // Tanggal Mulai
+        { wch: 24 }, // Tanggal Selesai
+        { wch: 34 }, // Lokasi
+        { wch: 22 }, // Penyelenggara
+        { wch: 60 }, // Deskripsi
+      ];
+
+      wsGuide['!cols'] = [
+        { wch: 22 }, // Nama Kolom
+        { wch: 14 }, // Status
+        { wch: 32 }, // Contoh Nilai
+        { wch: 65 }, // Keterangan
+      ];
+
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Jadwal Agenda');
+      XLSX.utils.book_append_sheet(wb, wsEvents, 'Jadwal Kegiatan');
+      XLSX.utils.book_append_sheet(wb, wsGuide, 'Panduan Pengisian');
+
       XLSX.writeFile(wb, 'Format_Jadwal_Kegiatan_EskulHub.xlsx');
     } catch (err) {
       console.error('Error generating template:', err);
     }
+  };
+
+  // Helper to extract field by checking multiple common header variations
+  const extractField = (row: Record<string, any>, candidates: string[]): any => {
+    for (const key of Object.keys(row)) {
+      const cleanKey = key.toLowerCase().replace(/[^a-z0-9]/g, '');
+      for (const cand of candidates) {
+        const cleanCand = cand.toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (cleanKey === cleanCand || cleanKey.startsWith(cleanCand)) {
+          return row[key];
+        }
+      }
+    }
+    return '';
   };
 
   const parseFile = async (file: File) => {
@@ -95,53 +212,116 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
     try {
       const XLSX = await import('xlsx');
       const arrayBuffer = await file.arrayBuffer();
-      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const workbook = XLSX.read(arrayBuffer, { type: 'array', cellDates: true });
       const firstSheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[firstSheetName];
       const jsonData: any[] = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
       if (!jsonData || jsonData.length === 0) {
-        setParseError('File Excel tidak berisi data baris agenda. Silakan unduh format template resmi.');
+        setParseError('Berkas Excel kosong atau tidak memiliki baris data. Silakan unduh format template resmi.');
         setIsParsing(false);
         return;
       }
 
       const rows: ParsedEventRow[] = jsonData.map((row, idx) => {
-        const title = String(row['Judul Agenda'] || row['Judul'] || row['Nama Kegiatan'] || '').trim();
-        const rawCategory = String(row['Kategori'] || row['Jenis'] || 'Latihan Rutin').trim();
-        const startTime = String(row['Tanggal Mulai (YYYY-MM-DD HH:mm)'] || row['Mulai'] || '').trim().replace(' ', 'T');
-        const endTime = String(row['Tanggal Selesai (YYYY-MM-DD HH:mm)'] || row['Selesai'] || '').trim().replace(' ', 'T');
-        const location = String(row['Lokasi'] || row['Tempat'] || 'Kampus Utama').trim();
-        const organizer = String(row['Penyelenggara'] || row['Ekskul'] || 'Kesiswaan').trim();
-        const description = String(row['Deskripsi'] || row['Keterangan'] || '').trim();
+        const rawTitle = extractField(row, [
+          'judul agenda',
+          'judul',
+          'nama kegiatan',
+          'nama agenda',
+          'title',
+          'agenda',
+        ]);
+        const title = String(rawTitle || '').trim();
 
-        let normalizedCategory: 'practice' | 'competition' | 'ceremony' | 'exhibition' = 'practice';
-        const lowerCat = rawCategory.toLowerCase();
-        if (lowerCat.includes('kompetisi') || lowerCat.includes('lomba')) normalizedCategory = 'competition';
-        else if (lowerCat.includes('upacara') || lowerCat.includes('resmi')) normalizedCategory = 'ceremony';
-        else if (lowerCat.includes('pameran') || lowerCat.includes('unjuk')) normalizedCategory = 'exhibition';
+        const rawCat = extractField(row, [
+          'kategori',
+          'jenis kegiatan',
+          'jenis',
+          'category',
+          'tipe',
+        ]);
+        const categoryString = String(rawCat || 'Latihan Rutin').trim();
+        const normalizedCategory = normalizeEventCategory(categoryString);
+
+        const rawStartTime = extractField(row, [
+          'tanggal mulai',
+          'waktu mulai',
+          'mulai',
+          'tanggal',
+          'start_time',
+          'start_datetime',
+          'start',
+        ]);
+        const rawEndTime = extractField(row, [
+          'tanggal selesai',
+          'waktu selesai',
+          'selesai',
+          'sampai',
+          'end_time',
+          'end_datetime',
+          'end',
+        ]);
+
+        const rawLocation = extractField(row, ['lokasi', 'tempat', 'ruangan', 'location']);
+        const location = String(rawLocation || 'Lingkungan SMKN 1 Ciomas').trim();
+
+        const rawOrganizer = extractField(row, [
+          'penyelenggara',
+          'ekskul',
+          'ekstrakurikuler',
+          'organizer',
+          'pic',
+        ]);
+        const organizer = String(rawOrganizer || currentUser?.name || 'Pengurus Sekolah').trim();
+
+        const rawDesc = extractField(row, ['deskripsi', 'keterangan', 'catatan', 'description']);
+        const description = String(rawDesc || `Agenda kegiatan ${title}`).trim();
+
+        // Universal date parsing with robust fallback
+        const parsedStart = parseExcelDateTime(rawStartTime, '08:00:00');
+        let parsedEnd = parseExcelDateTime(rawEndTime, '10:00:00');
 
         let isValid = true;
         let validationError = '';
 
         if (!title) {
           isValid = false;
-          validationError = 'Judul agenda kosong';
-        } else if (!startTime || isNaN(Date.parse(startTime))) {
+          validationError = 'Judul agenda wajib diisi.';
+        } else if (!parsedStart) {
           isValid = false;
-          validationError = 'Format waktu mulai tidak valid (gunakan YYYY-MM-DD HH:mm)';
+          validationError = 'Format tanggal mulai tidak terbaca. Gunakan format YYYY-MM-DD HH:mm atau YYYY-MM-DD.';
+        } else {
+          // If end time is missing or before start time, set to start + 2 hours
+          const startDate = new Date(parsedStart.replace(' ', 'T'));
+          if (!parsedEnd) {
+            const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+            const y = endDate.getFullYear();
+            const m = String(endDate.getMonth() + 1).padStart(2, '0');
+            const d = String(endDate.getDate()).padStart(2, '0');
+            const hh = String(endDate.getHours()).padStart(2, '0');
+            const mm = String(endDate.getMinutes()).padStart(2, '0');
+            const ss = String(endDate.getSeconds()).padStart(2, '0');
+            parsedEnd = `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+          } else {
+            const endDate = new Date(parsedEnd.replace(' ', 'T'));
+            if (endDate.getTime() < startDate.getTime()) {
+              isValid = false;
+              validationError = 'Waktu selesai tidak boleh lebih awal dari waktu mulai.';
+            }
+          }
         }
 
         return {
           index: idx + 1,
           title,
-          category: rawCategory,
+          category: categoryString,
           normalizedCategory,
-          start_time: startTime,
-          end_time: endTime || startTime,
+          start_time: parsedStart || '',
+          end_time: parsedEnd || parsedStart || '',
           location,
           organizer,
-          description: description || `Agenda kegiatan ${title}`,
+          description,
           isValid,
           validationError,
         };
@@ -149,7 +329,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
 
       setParsedRows(rows);
     } catch (err: any) {
-      setParseError(`Gagal membaca file Excel: ${err?.message || 'Format file tidak didukung.'}`);
+      setParseError(`Gagal membaca berkas Excel: ${err?.message || 'Format berkas tidak didukung.'}`);
     } finally {
       setIsParsing(false);
     }
@@ -163,7 +343,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
     }
   };
 
-  const handleSaveAll = () => {
+  const handleSaveAll = async () => {
     const validRows = parsedRows.filter((r) => r.isValid);
     if (validRows.length === 0) {
       setSubmitError('Tidak ada baris data agenda yang valid untuk disimpan.');
@@ -172,10 +352,12 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
 
     setIsSubmitting(true);
     setSubmitError(null);
+    setSubmitSuccess(null);
 
     try {
-      validRows.forEach((r) => {
-        db.addSchoolEvent({
+      // Save each valid row to local store and backend
+      for (const r of validRows) {
+        const payload = {
           title: r.title,
           category: r.normalizedCategory,
           event_type: r.normalizedCategory,
@@ -186,15 +368,24 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
           end_time: r.end_time,
           description: r.description,
           organizer: r.organizer,
-        });
-      });
+        };
 
-      setSubmitSuccess(`Berhasil! Sebanyak ${validRows.length} agenda kegiatan berhasil ditambahkan ke kalender sekolah.`);
+        db.addSchoolEvent(payload);
+      }
+
+      // Synchronize state across stores
+      try {
+        await db.syncWithBackend();
+      } catch {
+        // Safe fallback in local store
+      }
+
+      setSubmitSuccess(`Berhasil menyimpan ${validRows.length} agenda kegiatan ke kalender sekolah.`);
       setTimeout(() => {
         onNavigate('/calendar');
-      }, 1600);
+      }, 1000);
     } catch (err: any) {
-      setSubmitError(err?.message || 'Gagal menyimpan data agenda ke kalender.');
+      setSubmitError(err?.message || 'Terjadi kendala saat menyimpan data agenda ke kalender.');
     } finally {
       setIsSubmitting(false);
     }
@@ -224,7 +415,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
             Impor Agenda Kegiatan dari Excel
           </h1>
           <p className="text-xs text-[#525049] mt-0.5">
-            Unggah jadwal kegiatan satu semester sekaligus melalui file spreadsheet (.xlsx atau .xls).
+            Unggah jadwal latihan atau agenda kegiatan ekstrakurikuler satu semester sekaligus melalui berkas spreadsheet.
           </p>
         </div>
 
@@ -233,7 +424,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
           size="sm"
           onClick={handleDownloadTemplate}
           icon={<Download className="w-3.5 h-3.5" />}
-          className="rounded-xl"
+          className="rounded-xl border-[#B7D2C2] text-[#234B36] hover:bg-[#E7EFEA]"
         >
           Unduh Format Template Excel
         </Button>
@@ -241,21 +432,21 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
 
       {/* Notification Banners */}
       {submitSuccess && (
-        <div className="p-4 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded-xl flex items-center gap-2.5">
+        <div className="p-4 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded-xl flex items-center gap-2.5 shadow-2xs">
           <CheckCircle2 className="w-5 h-5 shrink-0" />
           <span className="font-semibold">{submitSuccess}</span>
         </div>
       )}
 
       {submitError && (
-        <div className="p-4 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded-xl flex items-center gap-2.5">
+        <div className="p-4 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded-xl flex items-center gap-2.5 shadow-2xs">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{submitError}</span>
         </div>
       )}
 
       {parseError && (
-        <div className="p-4 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded-xl flex items-center gap-2.5">
+        <div className="p-4 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] text-xs rounded-xl flex items-center gap-2.5 shadow-2xs">
           <AlertCircle className="w-5 h-5 shrink-0" />
           <span>{parseError}</span>
         </div>
@@ -263,8 +454,11 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
 
       {/* STEP 1: DROPZONE FILE UPLOAD */}
       <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 sm:p-8 shadow-xs space-y-4">
-        <h2 className="text-sm font-bold text-[#171717]">1. Pilih File Excel Jadwal</h2>
-        
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-[#171717]">1. Pilih Berkas Excel Jadwal</h2>
+          <span className="text-[11px] text-[#78746B]">Format: .xlsx atau .xls</span>
+        </div>
+
         <input
           ref={fileInputRef}
           type="file"
@@ -283,15 +477,15 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
 
           <div>
             <div className="text-sm font-bold text-[#171717]">
-              {uploadedFile ? uploadedFile.name : 'Klik untuk memilih file Excel dari perangkat'}
+              {uploadedFile ? uploadedFile.name : 'Klik untuk memilih berkas Excel dari perangkat'}
             </div>
             <p className="text-xs text-[#525049] mt-1">
-              Mendukung format .XLSX dan .XLS (Maksimal ukuran 5MB)
+              Kolom dan baris tanggal akan diverifikasi secara otomatis sebelum disimpan ke kalender.
             </p>
           </div>
 
           {uploadedFile && (
-            <Badge variant="success">File Terpilih: {(uploadedFile.size / 1024).toFixed(1)} KB</Badge>
+            <Badge variant="success">Berkas Terpilih: {(uploadedFile.size / 1024).toFixed(1)} KB</Badge>
           )}
         </div>
       </div>
@@ -300,7 +494,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
       {isParsing && (
         <div className="p-8 text-center bg-white border border-[#EAE6DC] rounded-2xl space-y-3">
           <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#234B36]" />
-          <p className="text-xs text-[#525049] font-medium">Sedang membaca dan memverifikasi baris data Excel...</p>
+          <p className="text-xs text-[#525049] font-medium">Sedang membaca dan memverifikasi baris agenda...</p>
         </div>
       )}
 
@@ -312,17 +506,17 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
                 2. Pratinjau & Validasi Data ({parsedRows.length} Agenda Ditemukan)
               </h2>
               <p className="text-xs text-[#525049] mt-0.5">
-                Periksa daftar baris sebelum disimpan ke kalender resmi sekolah.
+                Pastikan tanggal, jam pelaksanaan, dan nama ekskul sudah tepat sebelum disimpan.
               </p>
             </div>
 
             <div className="flex items-center gap-2 text-xs">
               <Badge variant="success">
-                {parsedRows.filter((r) => r.isValid).length} Baris Valid
+                {parsedRows.filter((r) => r.isValid).length} Baris Siap Disimpan
               </Badge>
               {parsedRows.filter((r) => !r.isValid).length > 0 && (
                 <Badge variant="danger">
-                  {parsedRows.filter((r) => !r.isValid).length} Baris Error
+                  {parsedRows.filter((r) => !r.isValid).length} Perlu Diperbaiki
                 </Badge>
               )}
             </div>
@@ -336,7 +530,8 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
                   <th className="py-2.5 px-3 w-12 text-center">No</th>
                   <th className="py-2.5 px-3">Judul Agenda</th>
                   <th className="py-2.5 px-3">Kategori</th>
-                  <th className="py-2.5 px-3">Waktu Mulai</th>
+                  <th className="py-2.5 px-3">Tanggal & Waktu Mulai</th>
+                  <th className="py-2.5 px-3">Waktu Selesai</th>
                   <th className="py-2.5 px-3">Lokasi</th>
                   <th className="py-2.5 px-3">Penyelenggara</th>
                   <th className="py-2.5 px-3 text-center">Status</th>
@@ -346,14 +541,22 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
                 {parsedRows.map((row) => (
                   <tr key={row.index} className={row.isValid ? 'hover:bg-[#F9F8F6]/40' : 'bg-[#FDEDE9]/40'}>
                     <td className="py-2.5 px-3 text-center text-[#78746B] font-mono">{row.index}</td>
-                    <td className="py-2.5 px-3 font-bold text-[#171717]">{row.title}</td>
+                    <td className="py-2.5 px-3">
+                      <div className="font-bold text-[#171717]">{row.title}</div>
+                      {row.description && (
+                        <div className="text-[11px] text-[#78746B] line-clamp-1">{row.description}</div>
+                      )}
+                    </td>
                     <td className="py-2.5 px-3">
                       <span className="px-2 py-0.5 rounded bg-[#F9F8F6] border border-[#EAE6DC] text-[11px] font-medium text-[#525049]">
                         {row.category}
                       </span>
                     </td>
+                    <td className="py-2.5 px-3 text-[#171717] font-mono text-[11px]">
+                      {row.start_time ? row.start_time : '-'}
+                    </td>
                     <td className="py-2.5 px-3 text-[#525049] font-mono text-[11px]">
-                      {row.start_time.replace('T', ' ')}
+                      {row.end_time ? row.end_time : '-'}
                     </td>
                     <td className="py-2.5 px-3 text-[#525049]">{row.location}</td>
                     <td className="py-2.5 px-3 text-[#525049]">{row.organizer}</td>
@@ -364,9 +567,12 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
                           Siap
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#D15B40]" title={row.validationError}>
+                        <span
+                          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#D15B40]"
+                          title={row.validationError}
+                        >
                           <AlertCircle className="w-3.5 h-3.5" />
-                          Error
+                          {row.validationError || 'Perlu dicek'}
                         </span>
                       )}
                     </td>
@@ -395,7 +601,7 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
               isLoading={isSubmitting}
               onClick={handleSaveAll}
               icon={<CheckCircle2 className="w-4 h-4" />}
-              className="w-full sm:w-auto rounded-xl px-6"
+              className="w-full sm:w-auto rounded-xl px-6 bg-[#234B36] hover:bg-[#1b3b2b]"
             >
               Simpan {parsedRows.filter((r) => r.isValid).length} Agenda ke Kalender
             </Button>
@@ -405,3 +611,4 @@ export const ImportEventsPage: React.FC<ImportEventsPageProps> = ({ onNavigate }
     </div>
   );
 };
+

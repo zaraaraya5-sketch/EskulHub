@@ -61,13 +61,13 @@ export const StudentUploadDocumentPage: React.FC<StudentUploadDocumentPageProps>
 
     setIsSubmitting(false);
 
-    if (res.success) {
+    if (res?.success) {
       setFormSuccess('Sertifikat / piagam berhasil disimpan ke portofoliomu!');
       setTimeout(() => {
         onNavigate('/student/documents');
       }, 1400);
     } else {
-      setFormError(res.message || 'Gagal menyimpan dokumen.');
+      setFormError('Gagal menyimpan dokumen.');
     }
   };
 
@@ -77,7 +77,7 @@ export const StudentUploadDocumentPage: React.FC<StudentUploadDocumentPageProps>
       <div>
         <button
           onClick={() => onNavigate('/student/documents')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#234B36] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#D15B40] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Kembali ke Dokumen Portofolio</span>
@@ -86,7 +86,7 @@ export const StudentUploadDocumentPage: React.FC<StudentUploadDocumentPageProps>
 
       {/* Header */}
       <div className="border-b border-[#EAE6DC] pb-4">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-[#234B36] flex items-center gap-1.5 mb-1">
+        <div className="text-[11px] font-bold uppercase tracking-wider text-[#D15B40] flex items-center gap-1.5 mb-1">
           <Award className="w-3.5 h-3.5" />
           <span>Arsip Prestasi & Portofolio Siswa</span>
         </div>
@@ -107,7 +107,7 @@ export const StudentUploadDocumentPage: React.FC<StudentUploadDocumentPageProps>
       )}
 
       {formSuccess && (
-        <div className="p-3.5 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] text-xs rounded-xl flex items-center gap-2">
+        <div className="p-3.5 bg-[#FDEDE9] border border-[#F2C9C0] text-[#D15B40] text-xs rounded-xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{formSuccess}</span>
         </div>
@@ -163,7 +163,7 @@ export const StudentUploadDocumentPage: React.FC<StudentUploadDocumentPageProps>
 
         <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs space-y-1.5 text-[#525049]">
           <div className="font-bold text-[#171717] flex items-center gap-1.5">
-            <FileCheck className="w-4 h-4 text-[#234B36]" />
+            <FileCheck className="w-4 h-4 text-[#3B7A82]" />
             <span>Pemeriksaan oleh Pembina:</span>
           </div>
           <p className="leading-relaxed">

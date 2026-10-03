@@ -24,13 +24,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (savedUserJson) {
         const parsed = JSON.parse(savedUserJson);
         if (parsed && parsed.id && parsed.role) {
+          if (parsed.role === 'admin') parsed.role = 'pengurus';
           return parsed;
         }
       }
       const savedId = localStorage.getItem('ekskul_auth_user_id');
       if (savedId) {
         const found = db.getUsers().find((u) => u.id === savedId);
-        if (found) return found;
+        if (found) {
+          if ((found.role as any) === 'admin') found.role = 'pengurus';
+          return found;
+        }
       }
     } catch (e) {
       console.warn('Gagal membaca sesi awal dari localStorage:', e);
@@ -164,7 +168,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         currentUser,
-        role: currentUser?.role || 'student',
+        role: (currentUser?.role as any) === 'admin' || (currentUser?.role as any) === 'guru'
+          ? 'pengurus'
+          : (currentUser?.role || 'student'),
         isAuthenticated: Boolean(currentUser),
         login,
         register,

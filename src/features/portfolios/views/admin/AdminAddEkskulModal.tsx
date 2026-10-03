@@ -43,7 +43,7 @@ export const AdminAddEkskulModal: React.FC<AdminAddEkskulModalProps> = ({
       practice_schedule: ekskulSchedule.trim() || 'Setiap Jumat (15:30 - 17:00 WIB)',
       location: ekskulLocation.trim() || 'Kampus Utama',
       short_description: ekskulDesc.trim() || 'Program pembinaan bakat dan minat siswa.',
-      full_description: ekskulDesc.trim() || 'Program pembinaan ekstrakurikuler resmi SMK Nusantara Digital.',
+      full_description: ekskulDesc.trim() || 'Program pembinaan ekstrakurikuler resmi SMKN 1 Ciomas.',
       profile_image: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800',
       registration_status: 'open',
     });

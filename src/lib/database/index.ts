@@ -15,6 +15,7 @@ import { VerificationsModule } from './modules/verifications';
 class SQLiteDatabaseClient {
   private listeners: Set<() => void> = new Set();
   private notify = () => {
+    this.saveToCache();
     this.listeners.forEach((fn) => {
       try {
         fn();
@@ -77,6 +78,16 @@ class SQLiteDatabaseClient {
       const raw = localStorage.getItem('ekskul_cached_snapshot');
       if (!raw) return;
       const data = JSON.parse(raw);
+      // Invalidate old study case cache, compound ekskul names, or outdated images
+      if (
+        (data.settings?.school_name && !data.settings.school_name.includes('Ciomas')) ||
+        (data.ekskuls?.[0]?.name && data.ekskuls[0].name.includes('Ciomas')) ||
+        data.ekskuls?.some((e: any) => e.slug === 'paskibra' && e.profile_image?.includes('photo-1532375810709')) ||
+        !data.events || data.events.length === 0
+      ) {
+        localStorage.removeItem('ekskul_cached_snapshot');
+        return;
+      }
       if (data.settings) this.settings.setSettings(data.settings);
       if (data.users?.length) this.users.setUsers(data.users);
       if (data.ekskuls?.length) this.extracurriculars.setExtracurriculars(data.ekskuls);

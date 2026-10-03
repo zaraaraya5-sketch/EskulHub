@@ -25,8 +25,7 @@ interface EventDetailModalProps {
 
 const ROLE_LABELS: Record<string, string> = {
   pembina: 'Pembina Ekskul',
-  guru: 'Guru',
-  pengurus: 'Pengurus Ekskul',
+  pengurus: 'Pengurus Sekolah',
   student: 'Siswa',
   admin: 'Administrator',
 };
@@ -85,14 +84,14 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
         return normUser === 'pembina';
       }
       if (['school_event', 'national_holiday'].includes(cat as string)) {
-        return normUser === 'guru';
+        return normUser === 'pengurus';
       }
     }
 
     return false;
   })();
 
-  const creatorLabel = ROLE_LABELS[normCreator] || (normCreator ? capitalize(normCreator) : 'Pembina / Guru');
+  const creatorLabel = ROLE_LABELS[normCreator] || (normCreator ? capitalize(normCreator) : 'Pembina / Pengurus');
   const userLabel = ROLE_LABELS[normUser] || capitalize(normUser);
 
   const handleConfirmDelete = async () => {

@@ -23,7 +23,7 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath }) => {
-  const { login, register } = useAuth();
+  const { currentUser, role, login, register, logout } = useAuth();
   const settings = db.getSettings();
 
   // Mode: 'login' or 'register'
@@ -32,7 +32,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
   );
 
   // Form states for Login
-  const [loginIdentifier, setLoginIdentifier] = useState('budi@smknusantara.sch.id');
+  const [loginIdentifier, setLoginIdentifier] = useState('budi@smkn1ciomas.sch.id');
   const [loginPassword, setLoginPassword] = useState('password123');
 
   // Form states for Register
@@ -68,24 +68,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
     // Role-based redirection to respective dashboard
     const user = res.user;
     switch (user.role) {
-      case 'admin':
-        onNavigate('/admin/dashboard');
-        break;
       case 'student':
         onNavigate('/student/dashboard');
-        break;
-      case 'guru':
-        onNavigate('/guru/dashboard');
         break;
       case 'pembina':
       case 'teacher':
         onNavigate('/pembina/dashboard');
         break;
       case 'pengurus':
+      default:
         onNavigate('/pengurus/dashboard');
         break;
-      default:
-        onNavigate('/student/dashboard');
     }
   };
 
@@ -126,18 +119,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
     setRegPassword('');
   };
 
-  const fillCredentials = (type: 'student' | 'admin' | 'pembina' | 'pengurus') => {
+  const fillCredentials = (type: 'student' | 'pengurus' | 'pembina') => {
     if (type === 'student') {
-      setLoginIdentifier('budi@smknusantara.sch.id');
-      setLoginPassword('password123');
-    } else if (type === 'admin') {
-      setLoginIdentifier('admin@smknusantara.sch.id');
-      setLoginPassword('password123');
-    } else if (type === 'pembina') {
-      setLoginIdentifier('hendra@smknusantara.sch.id');
+      setLoginIdentifier('budi@smkn1ciomas.sch.id');
       setLoginPassword('password123');
     } else if (type === 'pengurus') {
-      setLoginIdentifier('rizky@smknusantara.sch.id');
+      setLoginIdentifier('rizky@smkn1ciomas.sch.id');
+      setLoginPassword('password123');
+    } else if (type === 'pembina') {
+      setLoginIdentifier('hendra@smkn1ciomas.sch.id');
       setLoginPassword('password123');
     }
     setError('');
@@ -194,6 +184,46 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           </div>
         )}
 
+        {/* Active Session Notice */}
+        {currentUser && (
+          <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl space-y-2.5 text-center">
+            <div className="text-xs text-[#525049]">
+              Saat ini Anda sedang masuk sebagai <strong className="text-[#171717]">{currentUser.name}</strong> (
+              <span className="font-semibold text-[#D15B40] uppercase">{role}</span>)
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  const pathMap: Record<string, string> = {
+                    student: '/student/dashboard',
+                    pembina: '/pembina/dashboard',
+                    teacher: '/pembina/dashboard',
+                    pengurus: '/pengurus/dashboard',
+                  };
+                  onNavigate(pathMap[role] || '/student/dashboard');
+                }}
+                className="w-full text-xs font-bold"
+              >
+                Buka Dasbor Saya
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  logout();
+                  setError('');
+                  setSuccessMessage('Sesi sebelumnya telah diakhiri. Silakan masuk dengan akun lain.');
+                }}
+                className="text-xs shrink-0"
+              >
+                Ganti Akun
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Form View: LOGIN */}
         {mode === 'login' ? (
           <form onSubmit={handleLoginSubmit} className="space-y-4">
@@ -202,7 +232,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               type="text"
               value={loginIdentifier}
               onChange={(e) => setLoginIdentifier(e.target.value)}
-              placeholder="admin@smknusantara.sch.id atau nama/email siswa"
+              placeholder="admin@smkn1ciomas.sch.id atau nama/email siswa"
               required
             />
 
@@ -257,7 +287,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               type="email"
               value={regEmail}
               onChange={(e) => setRegEmail(e.target.value)}
-              placeholder="Contoh: farhan@smknusantara.sch.id"
+              placeholder="Contoh: farhan@smkn1ciomas.sch.id"
               required
             />
 
@@ -306,7 +336,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
               <button
                 type="button"
                 onClick={() => fillCredentials('student')}
@@ -317,46 +347,33 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                   <span>Akun Siswa</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Budi Pratama</div>
-                <div className="text-[10px] text-[#68655F] truncate">budi@smknusantara...</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => fillCredentials('pengurus')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
-              >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
-                  <UserPlus className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
-                  <span>Akun Pengurus</span>
-                </div>
-                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Rizky Ramadhan</div>
-                <div className="text-[10px] text-[#68655F] truncate">rizky@smknusantara...</div>
+                <div className="text-[10px] text-[#68655F] truncate">budi@smkn1ciomas...</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => fillCredentials('pembina')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#8C6819]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#8C6819]">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
                   <BookOpen className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
                   <span>Akun Pembina</span>
                 </div>
                 <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Hendra Wijaya, S.Pd.</div>
-                <div className="text-[10px] text-[#68655F] truncate">hendra@smknusantara...</div>
+                <div className="text-[10px] text-[#68655F] truncate">hendra@smkn1ciomas...</div>
               </button>
 
               <button
                 type="button"
-                onClick={() => fillCredentials('admin')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#171717]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
+                onClick={() => fillCredentials('pengurus')}
+                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#2A2926]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
               >
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#171717]">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#2A2926]">
                   <ShieldCheck className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
-                  <span>Akun Admin</span>
+                  <span>Akun Pengurus</span>
                 </div>
-                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Drs. Bambang</div>
-                <div className="text-[10px] text-[#68655F] truncate">admin@smknusantara...</div>
+                <div className="text-[11px] text-[#171717] font-semibold mt-1 truncate">Rizky (Monitoring)</div>
+                <div className="text-[10px] text-[#68655F] truncate">rizky@smkn1ciomas...</div>
               </button>
             </div>
           </div>

@@ -1,1 +1,0 @@
-const a=["Semua Kategori","Olahraga","Sains & Teknologi","Seni & Budaya","Kepemimpinan","Bahasa & Literasi"],e={present:"Hadir",late:"Terlambat",excused:"Izin/Sakit",absent:"Alpa/Tanpa Keterangan"};export{e as A,a as E};
