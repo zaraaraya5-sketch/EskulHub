@@ -6,7 +6,6 @@ import { ArrowLeft } from 'lucide-react';
 import { DetailHero } from '../views/DetailHero';
 import { DetailContent } from '../views/DetailContent';
 import { DetailSidebar } from '../views/DetailSidebar';
-import { DetailRegisterModal } from '../views/DetailRegisterModal';
 
 interface DetailPageProps {
   slug: string;
@@ -16,13 +15,11 @@ interface DetailPageProps {
 export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
   const ekskul = db.getExtracurricularBySlug(slug);
 
-  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
   if (!ekskul) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center">
         <h2 className="text-xl font-bold text-[#171717] mb-2">Ekstrakurikuler Tidak Ditemukan</h2>
-        <p className="text-sm text-[#68655F] mb-4">Kegiatan yang Anda cari tidak terdaftar dalam pangkalan data sekolah.</p>
+        <p className="text-sm text-[#525049] mb-4">Kegiatan yang kamu cari tidak terdaftar di sistem sekolah.</p>
         <Button variant="outline" onClick={() => onNavigate('/ekskul')}>
           Kembali ke Katalog
         </Button>
@@ -34,13 +31,17 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
   const achievements = db.getAchievements().filter((a) => a.extracurricular_id === ekskul.id);
   const isCapacityFull = ekskul.current_member_count >= ekskul.member_capacity;
 
+  const handleGoToRegister = () => {
+    onNavigate(`/ekskul/${ekskul.slug}/daftar`);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Top back button */}
       <div>
         <button
           onClick={() => onNavigate('/ekskul')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#68655F] hover:text-[#234B36] transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#234B36] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Kembali ke Katalog Ekstrakurikuler</span>
@@ -50,7 +51,7 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
       <DetailHero
         ekskul={ekskul}
         isCapacityFull={isCapacityFull}
-        onOpenRegister={() => setIsRegisterModalOpen(true)}
+        onOpenRegister={handleGoToRegister}
       />
 
       {/* Main Content Layout */}
@@ -64,15 +65,9 @@ export const DetailPage: React.FC<DetailPageProps> = ({ slug, onNavigate }) => {
         <DetailSidebar
           ekskul={ekskul}
           isCapacityFull={isCapacityFull}
-          onOpenRegister={() => setIsRegisterModalOpen(true)}
+          onOpenRegister={handleGoToRegister}
         />
       </div>
-
-      <DetailRegisterModal
-        isOpen={isRegisterModalOpen}
-        onClose={() => setIsRegisterModalOpen(false)}
-        ekskul={ekskul}
-      />
     </div>
   );
 };

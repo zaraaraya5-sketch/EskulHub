@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Extracurricular } from '@/types';
 import { Search, Plus, Edit2, Trash2, ExternalLink } from 'lucide-react';
-import { AdminAddEkskulModal } from './AdminAddEkskulModal';
-import { AdminEditEkskulModal } from './AdminEditEkskulModal';
 import { AdminDeleteEkskulModal } from './AdminDeleteEkskulModal';
 
 interface AdminEkskulSectionProps {
@@ -13,8 +11,8 @@ interface AdminEkskulSectionProps {
   setEkskuls: (data: Extracurricular[]) => void;
   showNotification: (type: 'success' | 'error', message: string) => void;
   onNavigate: (path: string) => void;
-  isAddEkskulModalOpen: boolean;
-  setIsAddEkskulModalOpen: (open: boolean) => void;
+  isAddEkskulModalOpen?: boolean;
+  setIsAddEkskulModalOpen?: (open: boolean) => void;
 }
 
 export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
@@ -22,11 +20,8 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
   setEkskuls,
   showNotification,
   onNavigate,
-  isAddEkskulModalOpen,
-  setIsAddEkskulModalOpen,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingEkskul, setEditingEkskul] = useState<Extracurricular | null>(null);
   const [ekskulToDelete, setEkskulToDelete] = useState<Extracurricular | null>(null);
 
   const toggleEkskulStatus = (item: Extracurricular) => {
@@ -70,7 +65,7 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
                 className="pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]"
               />
             </div>
-            <Button variant="primary" size="sm" onClick={() => setIsAddEkskulModalOpen(true)} icon={<Plus className="w-3.5 h-3.5" />}>
+            <Button variant="primary" size="sm" onClick={() => onNavigate('/admin/ekskul/tambah')} icon={<Plus className="w-3.5 h-3.5" />}>
               Tambah Ekskul Baru
             </Button>
           </div>
@@ -87,11 +82,11 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
                   <h3 className="text-sm font-bold text-[#171717]">{ekskul.name}</h3>
                   <Badge variant="neutral">{ekskul.category}</Badge>
                 </div>
-                <p className="text-xs text-[#68655F] line-clamp-2 mb-3 leading-relaxed">
+                <p className="text-xs text-[#525049] line-clamp-2 mb-3 leading-relaxed">
                   {ekskul.short_description}
                 </p>
 
-                <div className="space-y-1.5 text-xs text-[#68655F] border-t border-[#EAE6DC]/70 pt-2.5 mb-3">
+                <div className="space-y-1.5 text-xs text-[#525049] border-t border-[#EAE6DC]/70 pt-2.5 mb-3">
                   <div className="flex items-center justify-between">
                     <span>Pembina:</span>
                     <strong className="text-[#171717]">{ekskul.supervisor_name}</strong>
@@ -127,22 +122,22 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
 
                 <div className="flex items-center gap-1">
                   <button
-                    onClick={() => setEditingEkskul(ekskul)}
-                    className="p-1 text-[#68655F] hover:text-[#234B36] hover:bg-white rounded cursor-pointer"
+                    onClick={() => onNavigate(`/admin/ekskul/${ekskul.id}/edit`)}
+                    className="p-1 text-[#525049] hover:text-[#234B36] hover:bg-white rounded cursor-pointer"
                     title="Edit Ekskul"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => setEkskulToDelete(ekskul)}
-                    className="p-1 text-[#68655F] hover:text-[#A33D35] hover:bg-white rounded cursor-pointer"
+                    className="p-1 text-[#525049] hover:text-[#A33D35] hover:bg-white rounded cursor-pointer"
                     title="Hapus Ekskul"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => onNavigate(`/ekskul/${ekskul.slug}`)}
-                    className="p-1 text-[#68655F] hover:text-[#234B36] hover:bg-white rounded cursor-pointer"
+                    className="p-1 text-[#525049] hover:text-[#234B36] hover:bg-white rounded cursor-pointer"
                     title="Lihat Publik"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -153,20 +148,6 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
           ))}
         </div>
       </div>
-
-      <AdminAddEkskulModal
-        isOpen={isAddEkskulModalOpen}
-        onClose={() => setIsAddEkskulModalOpen(false)}
-        onSuccess={handleSuccess}
-        onError={handleError}
-      />
-
-      <AdminEditEkskulModal
-        ekskul={editingEkskul}
-        onClose={() => setEditingEkskul(null)}
-        onSuccess={handleSuccess}
-        onError={handleError}
-      />
 
       <AdminDeleteEkskulModal
         ekskul={ekskulToDelete}

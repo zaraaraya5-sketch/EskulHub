@@ -6,17 +6,29 @@ import { UploadCloud, Award, ExternalLink } from 'lucide-react';
 
 interface StudentDocumentsTabProps {
   myCertificates: Certificate[];
-  setUploadModalOpen: (open: boolean) => void;
-  setDocError: (error: string) => void;
-  setDocSuccess: (success: string) => void;
+  onUploadNew?: () => void;
+  setUploadModalOpen?: (open: boolean) => void;
+  setDocError?: (error: string) => void;
+  setDocSuccess?: (success: string) => void;
 }
 
 export const StudentDocumentsTab: React.FC<StudentDocumentsTabProps> = ({
   myCertificates,
+  onUploadNew,
   setUploadModalOpen,
   setDocError,
   setDocSuccess,
 }) => {
+  const handleTriggerUpload = () => {
+    if (onUploadNew) {
+      onUploadNew();
+      return;
+    }
+    if (setDocError) setDocError('');
+    if (setDocSuccess) setDocSuccess('');
+    if (setUploadModalOpen) setUploadModalOpen(true);
+  };
+
   return (
     <div className="space-y-5">
       <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -29,11 +41,7 @@ export const StudentDocumentsTab: React.FC<StudentDocumentsTabProps> = ({
         <Button
           variant="primary"
           size="sm"
-          onClick={() => {
-            setDocError('');
-            setDocSuccess('');
-            setUploadModalOpen(true);
-          }}
+          onClick={handleTriggerUpload}
           icon={<UploadCloud className="w-3.5 h-3.5" />}
         >
           Unggah Dokumen Baru
@@ -48,11 +56,7 @@ export const StudentDocumentsTab: React.FC<StudentDocumentsTabProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => {
-                setDocError('');
-                setDocSuccess('');
-                setUploadModalOpen(true);
-              }}
+              onClick={handleTriggerUpload}
             >
               Unggah Dokumen Pertama
             </Button>

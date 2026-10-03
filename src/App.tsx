@@ -20,6 +20,10 @@ const TeacherDashboardPage = React.lazy(() => import('@/features/portfolios/page
 const GuruDashboardPage = React.lazy(() => import('@/features/portfolios/pages/GuruDashboardPage').then((m) => ({ default: m.GuruDashboardPage })));
 const PortfolioSamplePage = React.lazy(() => import('@/features/portfolios/pages/PortfolioSamplePage').then((m) => ({ default: m.PortfolioSamplePage })));
 const AdminDashboardPage = React.lazy(() => import('@/features/portfolios/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
+const RegisterEkskulPage = React.lazy(() => import('@/features/extracurriculars/pages/RegisterEkskulPage').then((m) => ({ default: m.RegisterEkskulPage })));
+const AdminFormEkskulPage = React.lazy(() => import('@/features/portfolios/pages/AdminFormEkskulPage').then((m) => ({ default: m.AdminFormEkskulPage })));
+const ImportEventsPage = React.lazy(() => import('@/features/school-events/pages/ImportEventsPage').then((m) => ({ default: m.ImportEventsPage })));
+const StudentUploadDocumentPage = React.lazy(() => import('@/features/portfolios/pages/StudentUploadDocumentPage').then((m) => ({ default: m.StudentUploadDocumentPage })));
 
 const AppContent: React.FC = () => {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
@@ -65,25 +69,38 @@ const AppContent: React.FC = () => {
       return <LoginPage currentPath="/login" onNavigate={navigate} />;
     }
 
-    // 1. Detail route: /ekskul/:slug
+    // 1. Ekstrakurikuler Registration: /ekskul/:slug/daftar
+    const daftarMatch = currentPath.match(/^\/ekskul\/([^/]+)\/daftar$/);
+    if (daftarMatch) {
+      return <RegisterEkskulPage slug={daftarMatch[1]} onNavigate={navigate} />;
+    }
+
+    // 2. Detail route: /ekskul/:slug
     if (currentPath.startsWith('/ekskul/')) {
       const slug = currentPath.replace('/ekskul/', '');
       return <DetailPage slug={slug} onNavigate={navigate} />;
     }
 
-    // 2. Verification route: /verify/:verificationId
+    // 3. Verification route: /verify/:verificationId
     if (currentPath.startsWith('/verify')) {
       const id = currentPath.replace(/^\/verify\/?/, '').trim();
       return <VerificationPage verificationId={id} onNavigate={navigate} />;
     }
 
-    // 3. Calendar Edit route: /calendar/edit/:id
+    // 4. Calendar Edit route: /calendar/edit/:id
     if (currentPath.startsWith('/calendar/edit/')) {
       const editId = currentPath.replace('/calendar/edit/', '');
       return <CreateEventPage onNavigate={navigate} editEventId={editId} />;
     }
 
-    // 3. Exact matching routes
+    // 5. Admin Ekskul Edit route: /admin/ekskul/:id/edit
+    if (currentPath.startsWith('/admin/ekskul/') && currentPath.endsWith('/edit')) {
+      const parts = currentPath.split('/');
+      const editId = parts[3];
+      return <AdminFormEkskulPage onNavigate={navigate} editId={editId} />;
+    }
+
+    // 6. Exact matching routes
     switch (currentPath) {
       case '/':
         return <HomePage onNavigate={navigate} />;
@@ -94,6 +111,8 @@ const AppContent: React.FC = () => {
       case '/calendar/create':
       case '/events/create':
         return <CreateEventPage onNavigate={navigate} />;
+      case '/calendar/import':
+        return <ImportEventsPage onNavigate={navigate} />;
       case '/contoh-portofolio':
         return <PortfolioSamplePage onNavigate={navigate} />;
       case '/login':
@@ -115,6 +134,8 @@ const AppContent: React.FC = () => {
         return <StudentDashboardPage onNavigate={navigate} initialTab="achievements" />;
       case '/student/documents':
         return <StudentDashboardPage onNavigate={navigate} initialTab="documents" />;
+      case '/student/documents/tambah':
+        return <StudentUploadDocumentPage onNavigate={navigate} />;
       case '/student/portfolio':
         return <StudentDashboardPage onNavigate={navigate} initialTab="portfolio" />;
 
@@ -163,6 +184,9 @@ const AppContent: React.FC = () => {
       case '/admin/teachers':
       case '/admin/pembina':
       case '/admin/ekskul':
+        return <AdminDashboardPage currentPath={currentPath} onNavigate={navigate} />;
+      case '/admin/ekskul/tambah':
+        return <AdminFormEkskulPage onNavigate={navigate} />;
       case '/admin/schedule':
       case '/admin/events':
       case '/admin/verification':
