@@ -427,14 +427,14 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+    <div className="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-10">
       {/* ======================================================== */}
       {/* STAGE 1: INITIAL GATE ("Sudah Tahu" vs "Belum Tahu")     */}
       {/* ======================================================== */}
       {stage === 'gate' && (
-        <div className="space-y-8 animate-fade-in-up">
+        <div className="space-y-6 sm:space-y-8 animate-fade-in-up">
           {/* Header Banner */}
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-2.5 sm:space-y-3">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E7EFEA] text-[#234B36] border border-[#234B36]/20 text-xs font-bold uppercase tracking-wider shadow-2xs">
               <Sparkles className="w-3.5 h-3.5" />
               Langkah Pertama Siswa Baru
@@ -442,16 +442,16 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#171717] tracking-tight">
               Selamat Datang di EskulHub, <span className="text-[#234B36]">{studentName}</span>!
             </h1>
-            <p className="text-sm sm:text-base text-[#68655F] max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm md:text-base text-[#68655F] max-w-2xl mx-auto leading-relaxed">
               Sebelum masuk ke dasbor utama, mari tentukan langkah awal kegiatan ekstrakurikuler non-akademikmu di{' '}
               <strong className="text-[#171717]">SMKN 1 Ciomas</strong>.
             </p>
           </div>
 
           {/* Gate Card */}
-          <div className="bg-white border border-[#EAE6DC] rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="bg-white border border-[#EAE6DC] rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-sm space-y-6 sm:space-y-8">
             <div className="text-center space-y-2">
-              <h2 className="text-lg sm:text-xl font-bold text-[#171717]">
+              <h2 className="text-base sm:text-lg md:text-xl font-bold text-[#171717]">
                 Apakah Anda sudah menetapkan ingin ikut ekstrakurikuler apa?
               </h2>
               <p className="text-xs sm:text-sm text-[#68655F]">
@@ -459,21 +459,21 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
               {/* Option A: Sudah Tahu */}
               <div
                 onClick={handleAnswerAlreadyDecided}
-                className="group p-6 sm:p-8 rounded-2xl border-2 border-[#EAE6DC] hover:border-[#234B36] bg-[#F9F8F6] hover:bg-white hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-6"
+                className="group p-5 sm:p-7 rounded-2xl border-2 border-[#EAE6DC] hover:border-[#234B36] bg-[#F9F8F6] hover:bg-white hover:shadow-lg active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-5 select-none"
               >
-                <div className="space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs">
-                    <Compass className="w-7 h-7" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs">
+                    <Compass className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#171717] group-hover:text-[#234B36] transition-colors">
                       Sudah, saya sudah tahu pilihan saya
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#68655F] mt-2 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#68655F] mt-1.5 leading-relaxed">
                       Saya sudah menetapkan ekskul yang ingin saya ikuti dan ingin langsung membuka formulir pendaftaran.
                     </p>
                   </div>
@@ -488,7 +488,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
               {/* Option B: Belum Tahu -> Kuisioner */}
               <div
                 onClick={handleStartQuestionnaire}
-                className="group p-6 sm:p-8 rounded-2xl border-2 border-[#D15B40]/40 hover:border-[#D15B40] bg-white hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-6 relative overflow-hidden"
+                className="group p-5 sm:p-7 rounded-2xl border-2 border-[#D15B40]/40 hover:border-[#D15B40] bg-white hover:shadow-lg active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-5 relative overflow-hidden select-none"
               >
                 <div className="absolute top-3 right-3">
                   <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] border border-[#D15B40]/20">
@@ -496,15 +496,15 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                   </span>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs">
-                    <Sparkles className="w-7 h-7" />
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#FDEDE9] text-[#D15B40] flex items-center justify-center group-hover:scale-110 transition-transform shadow-xs">
+                    <Sparkles className="w-6 h-6 sm:w-7 sm:h-7" />
                   </div>
                   <div>
                     <h3 className="text-base sm:text-lg font-bold text-[#171717] group-hover:text-[#D15B40] transition-colors">
                       Belum, saya masih bingung & butuh rekomendasi
                     </h3>
-                    <p className="text-xs sm:text-sm text-[#68655F] mt-2 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-[#68655F] mt-1.5 leading-relaxed">
                       Bantu saya menemukan ekskul yang paling pas dengan kepribadian dan minat bakat saya melalui{' '}
                       <strong>5 pertanyaan psikologis singkat (±1 menit)</strong>.
                     </p>
@@ -526,7 +526,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                   markOnboardingDone();
                   onNavigate('/student/dashboard');
                 }}
-                className="text-xs text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer transition-colors"
+                className="min-h-[44px] px-4 py-2 inline-flex items-center justify-center text-xs text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer transition-colors"
               >
                 Lewati dan langsung masuk ke Dasbor Siswa &rarr;
               </button>
@@ -539,27 +539,28 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
       {/* STAGE 2: 5 SOAL KUISIONER PSIKOLOGIS                     */}
       {/* ======================================================== */}
       {stage === 'quiz' && (
-        <div className="space-y-6 animate-fade-in-up">
+        <div className="space-y-5 sm:space-y-6 animate-fade-in-up">
           {/* Progress Header */}
-          <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white border border-[#EAE6DC] rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex items-center gap-3">
               <button
                 onClick={handlePrevQuestion}
                 disabled={currentQuestionIndex === 0}
-                className={`p-2 rounded-xl border border-[#EAE6DC] transition-colors ${
+                className={`min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl border border-[#EAE6DC] transition-colors ${
                   currentQuestionIndex === 0
                     ? 'opacity-30 cursor-not-allowed text-[#68655F]'
-                    : 'hover:bg-[#F9F8F6] text-[#171717] cursor-pointer'
+                    : 'hover:bg-[#F9F8F6] text-[#171717] cursor-pointer active:bg-[#EAE6DC]'
                 }`}
                 title="Pertanyaan Sebelumnya"
+                aria-label="Kembali ke soal sebelumnya"
               >
                 <ArrowLeft className="w-4 h-4" />
               </button>
-              <div>
+              <div className="min-w-0">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#234B36]">
                   Soal {currentQuestionIndex + 1} dari {QUESTIONS.length}
                 </span>
-                <div className="text-xs font-semibold text-[#68655F]">{currentQuestion.categoryName}</div>
+                <div className="text-xs font-semibold text-[#68655F] truncate">{currentQuestion.categoryName}</div>
               </div>
             </div>
 
@@ -579,12 +580,12 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
           </div>
 
           {/* Question Card */}
-          <div className="bg-white border border-[#EAE6DC] rounded-3xl p-6 sm:p-10 shadow-sm space-y-8">
+          <div className="bg-white border border-[#EAE6DC] rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 shadow-sm space-y-6 sm:space-y-8">
             <div className="space-y-2">
               <div className="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold bg-[#E7EFEA] text-[#234B36]">
                 Pertanyaan {currentQuestion.id}
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-[#171717] tracking-tight">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[#171717] tracking-tight leading-snug">
                 {currentQuestion.title}
               </h2>
               <p className="text-xs sm:text-sm text-[#68655F] leading-relaxed">
@@ -593,7 +594,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
             </div>
 
             {/* Options List */}
-            <div className="space-y-3.5">
+            <div className="space-y-3">
               {currentQuestion.options.map((opt, idx) => {
                 const isSelected = currentSelection === opt.id;
                 const letter = String.fromCharCode(65 + idx); // A, B, C, D, E
@@ -602,26 +603,26 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                   <div
                     key={opt.id}
                     onClick={() => handleSelectOption(opt.id)}
-                    className={`p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer flex items-start gap-4 ${
+                    className={`p-3.5 sm:p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer flex items-start gap-3 sm:gap-4 active:scale-[0.99] select-none ${
                       isSelected
                         ? 'border-[#234B36] bg-[#E7EFEA]/30 shadow-xs'
-                        : 'border-[#EAE6DC] hover:border-[#234B36]/40 hover:bg-[#F9F8F6]'
+                        : 'border-[#EAE6DC] hover:border-[#234B36]/40 hover:bg-[#F9F8F6] active:bg-[#F0EDE6]'
                     }`}
                   >
                     {/* Circle / Letter Indicator */}
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs transition-colors ${
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs transition-colors ${
                         isSelected
-                          ? 'bg-[#234B36] text-white'
+                          ? 'bg-[#234B36] text-white shadow-2xs'
                           : 'bg-white border border-[#EAE6DC] text-[#68655F]'
                       }`}
                     >
-                      {isSelected ? <CheckCircle2 className="w-5 h-5" /> : letter}
+                      {isSelected ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : letter}
                     </div>
 
                     {/* Content */}
-                    <div className="flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
                         {opt.icon}
                         <h4 className="text-xs sm:text-sm font-bold text-[#171717]">
                           {opt.label}
@@ -636,12 +637,12 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
               })}
             </div>
 
-            {/* Footer Buttons */}
-            <div className="pt-4 border-t border-[#EAE6DC] flex items-center justify-between">
+            {/* Footer Buttons (Mobile Reflow Stacked) */}
+            <div className="pt-4 border-t border-[#EAE6DC] flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setStage('gate')}
-                className="text-xs text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer"
+                className="min-h-[44px] px-3 inline-flex items-center justify-center text-xs text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer active:scale-95 transition-all"
               >
                 &larr; Kembali ke pilihan awal
               </button>
@@ -650,7 +651,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                 variant="primary"
                 onClick={handleNextQuestion}
                 disabled={!currentSelection}
-                className="text-xs font-bold px-6 py-2.5 shadow-xs cursor-pointer"
+                className="min-h-[44px] w-full sm:w-auto justify-center text-xs font-bold px-6 py-2.5 shadow-xs cursor-pointer active:scale-[0.98]"
                 icon={isLastQuestion ? <Sparkles className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
               >
                 {isLastQuestion ? 'Lihat Rekomendasi Ekskul ✨' : 'Selanjutnya'}
@@ -759,11 +760,11 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       </div>
                     </div>
 
-                    <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                    <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
                       <Button
                         variant="primary"
                         onClick={() => onNavigate(`/ekskul/${top.ekskul.slug}/daftar`)}
-                        className="flex-1 justify-center text-xs font-bold py-2.5 cursor-pointer shadow-xs"
+                        className="min-h-[44px] flex-1 justify-center text-xs font-bold py-2.5 cursor-pointer shadow-xs active:scale-[0.98]"
                         icon={<CheckCircle2 className="w-4 h-4" />}
                       >
                         Daftar {top.ekskul.name} Sekarang
@@ -771,7 +772,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       <Button
                         variant="outline"
                         onClick={() => onNavigate(`/ekskul/${top.ekskul.slug}`)}
-                        className="justify-center text-xs font-semibold py-2.5 cursor-pointer"
+                        className="min-h-[44px] justify-center text-xs font-semibold py-2.5 cursor-pointer active:scale-[0.98]"
                       >
                         Lihat Profil Lengkap
                       </Button>
@@ -793,7 +794,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
               {rankedResults.slice(1, 3).map((alt) => (
                 <div
                   key={alt.ekskul.id}
-                  className="bg-white border border-[#EAE6DC] rounded-2xl p-5 hover:shadow-md transition-all space-y-4 flex flex-col justify-between"
+                  className="bg-white border border-[#EAE6DC] rounded-2xl p-4 sm:p-5 hover:shadow-md transition-all space-y-4 flex flex-col justify-between"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -805,15 +806,15 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <img
                         src={alt.ekskul.profile_image}
                         alt={alt.ekskul.name}
                         className="w-12 h-12 rounded-xl object-cover border border-[#EAE6DC] shrink-0"
                       />
-                      <div>
-                        <h4 className="text-base font-bold text-[#171717]">{alt.ekskul.name}</h4>
-                        <div className="text-[11px] text-[#68655F] truncate max-w-[200px]">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-base font-bold text-[#171717] truncate">{alt.ekskul.name}</h4>
+                        <div className="text-[11px] text-[#68655F] truncate">
                           {alt.ekskul.location}
                         </div>
                       </div>
@@ -829,7 +830,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       variant="primary"
                       size="sm"
                       onClick={() => onNavigate(`/ekskul/${alt.ekskul.slug}/daftar`)}
-                      className="flex-1 justify-center text-xs font-semibold cursor-pointer"
+                      className="min-h-[40px] flex-1 justify-center text-xs font-semibold cursor-pointer active:scale-[0.98]"
                     >
                       Daftar
                     </Button>
@@ -837,7 +838,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       variant="outline"
                       size="sm"
                       onClick={() => onNavigate(`/ekskul/${alt.ekskul.slug}`)}
-                      className="justify-center text-xs font-semibold cursor-pointer"
+                      className="min-h-[40px] justify-center text-xs font-semibold cursor-pointer active:scale-[0.98]"
                     >
                       Rincian
                     </Button>
@@ -848,20 +849,20 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
           </div>
 
           {/* Action Navigation Footer */}
-          <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-[#F9F8F6] border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
-              <h4 className="text-xs font-bold text-[#171717]">Ingin Mempertimbangkan Pilihan Lain?</h4>
-              <p className="text-[11px] text-[#68655F]">
+              <h4 className="text-xs sm:text-sm font-bold text-[#171717]">Ingin Mempertimbangkan Pilihan Lain?</h4>
+              <p className="text-[11px] sm:text-xs text-[#68655F] mt-0.5">
                 Kamu tetap bebas mendaftar ekskul apa pun dari 8 cabang resmi SMKN 1 Ciomas.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleRetakeQuiz}
-                className="text-xs font-semibold cursor-pointer"
+                className="min-h-[44px] justify-center text-xs font-semibold cursor-pointer active:scale-[0.98]"
                 icon={<RotateCcw className="w-3.5 h-3.5" />}
               >
                 Ulangi Tes
@@ -870,7 +871,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                 variant="outline"
                 size="sm"
                 onClick={() => onNavigate('/ekskul')}
-                className="text-xs font-semibold cursor-pointer"
+                className="min-h-[44px] justify-center text-xs font-semibold cursor-pointer active:scale-[0.98]"
                 icon={<BookOpen className="w-3.5 h-3.5" />}
               >
                 Buka Katalog Lengkap
@@ -879,7 +880,7 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                 variant="primary"
                 size="sm"
                 onClick={() => onNavigate('/student/dashboard')}
-                className="text-xs font-bold cursor-pointer"
+                className="min-h-[44px] justify-center text-xs font-bold cursor-pointer active:scale-[0.98]"
                 icon={<ArrowRight className="w-3.5 h-3.5" />}
               >
                 Masuk ke Dasbor Siswa

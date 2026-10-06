@@ -392,7 +392,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-200">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs transition-opacity duration-200">
       <div
         className="fixed inset-0"
         onClick={() => {
@@ -403,24 +403,24 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
       />
 
       <div
-        className="relative w-full max-w-2xl bg-white border border-[#EAE6DC] rounded-3xl shadow-2xl z-10 overflow-hidden animate-scale-in max-h-[92vh] flex flex-col"
+        className="relative w-full max-w-2xl bg-white border-t sm:border border-[#EAE6DC] rounded-t-3xl sm:rounded-3xl shadow-2xl z-10 overflow-hidden animate-scale-in max-h-[92dvh] sm:max-h-[90vh] flex flex-col"
         role="dialog"
         aria-modal="true"
       >
-        {/* Header Modal */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#EAE6DC] bg-[#F9F8F6]">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shadow-2xs">
+        {/* Header Modal - Compact on mobile, 44px close target */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-[#EAE6DC] bg-[#F9F8F6] shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shadow-2xs shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div>
-              <h3 className="text-sm font-bold text-[#171717]">
+            <div className="min-w-0">
+              <h3 className="text-xs sm:text-sm font-bold text-[#171717] truncate">
                 {stage === 'gate' && 'Langkah Pertama Siswa Baru'}
-                {stage === 'quiz' && `Kuisioner Minat Bakat (Soal ${currentQuestionIndex + 1}/5)`}
+                {stage === 'quiz' && `Kuisioner Minat Bakat (${currentQuestionIndex + 1}/5)`}
                 {stage === 'analyzing' && 'Menganalisis Jawaban...'}
                 {stage === 'result' && 'Rekomendasi Ekstrakurikuler'}
               </h3>
-              <p className="text-[10px] text-[#68655F]">EskulHub • SMKN 1 Ciomas</p>
+              <p className="text-[10px] text-[#68655F] truncate">EskulHub • SMKN 1 Ciomas</p>
             </div>
           </div>
           <button
@@ -428,15 +428,16 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
               markOnboardingDone();
               onClose();
             }}
-            className="p-1.5 text-[#68655F] hover:text-[#171717] rounded-xl hover:bg-[#EAE6DC] transition-all cursor-pointer"
+            className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-[#68655F] hover:text-[#171717] rounded-xl hover:bg-[#EAE6DC] active:bg-[#E0DDD5] transition-all cursor-pointer shrink-0"
             title="Tutup & Lewati ke Dasbor"
+            aria-label="Tutup modal kuisioner"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="p-5 sm:p-7 overflow-y-auto flex-1">
+        <div className="p-4 sm:p-6 overflow-y-auto overscroll-contain flex-1">
           {/* ======================================================== */}
           {/* STAGE 1: GATE IN POPUP                                   */}
           {/* ======================================================== */}
@@ -458,7 +459,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                 {/* Opsi 1: Sudah Tahu -> Katalog */}
                 <div
                   onClick={handleAlreadyDecided}
-                  className="group p-5 rounded-2xl border-2 border-[#EAE6DC] hover:border-[#234B36] bg-[#F9F8F6] hover:bg-white hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4"
+                  className="group p-4 sm:p-5 rounded-2xl border-2 border-[#EAE6DC] hover:border-[#234B36] bg-[#F9F8F6] hover:bg-white hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4 select-none"
                 >
                   <div className="space-y-3">
                     <div className="w-11 h-11 rounded-xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -482,7 +483,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                 {/* Opsi 2: Belum Tahu -> Kuisioner */}
                 <div
                   onClick={handleStartQuiz}
-                  className="group p-5 rounded-2xl border-2 border-[#D15B40]/40 hover:border-[#D15B40] bg-white hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4 relative overflow-hidden"
+                  className="group p-4 sm:p-5 rounded-2xl border-2 border-[#D15B40]/40 hover:border-[#D15B40] bg-white hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-4 relative overflow-hidden select-none"
                 >
                   <div className="absolute top-2.5 right-2.5">
                     <span className="px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40]">
@@ -517,7 +518,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     onClose();
                     onNavigate('/student/dashboard');
                   }}
-                  className="text-[11px] text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer"
+                  className="min-h-[44px] px-4 py-2 inline-flex items-center justify-center text-xs text-[#68655F] hover:text-[#171717] hover:underline cursor-pointer"
                 >
                   Lewati dan langsung masuk ke Dasbor Siswa &rarr;
                 </button>
@@ -555,7 +556,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
               </div>
 
               {/* Options */}
-              <div className="space-y-2.5">
+              <div className="space-y-2 sm:space-y-2.5">
                 {currentQuestion.options.map((opt, idx) => {
                   const isSelected = currentSelection === opt.id;
                   const letter = String.fromCharCode(65 + idx);
@@ -564,55 +565,32 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     <div
                       key={opt.id}
                       onClick={() => handleSelectOption(opt.id)}
-                      className={`p-3.5 rounded-xl border-2 transition-all duration-150 cursor-pointer flex items-start gap-3 ${
+                      className={`p-3 sm:p-3.5 rounded-xl border-2 transition-all duration-150 cursor-pointer flex items-start gap-3 active:scale-[0.99] select-none ${
                         isSelected
                           ? 'border-[#234B36] bg-[#E7EFEA]/30 shadow-xs'
-                          : 'border-[#EAE6DC] hover:border-[#234B36]/40 hover:bg-[#F9F8F6]'
+                          : 'border-[#EAE6DC] hover:border-[#234B36]/40 hover:bg-[#F9F8F6] active:bg-[#F0EDE6]'
                       }`}
                     >
                       <div
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-[11px] ${
+                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 font-bold text-[11px] sm:text-xs transition-colors ${
                           isSelected
-                            ? 'bg-[#234B36] text-white'
+                            ? 'bg-[#234B36] text-white shadow-2xs'
                             : 'bg-white border border-[#EAE6DC] text-[#68655F]'
                         }`}
                       >
                         {isSelected ? <CheckCircle2 className="w-4 h-4" /> : letter}
                       </div>
 
-                      <div className="flex-1 space-y-0.5">
-                        <div className="flex items-center gap-1.5">
+                      <div className="flex-1 min-w-0 space-y-0.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           {opt.icon}
-                          <div className="text-xs font-bold text-[#171717]">{opt.label}</div>
+                          <span className="text-xs sm:text-sm font-bold text-[#171717]">{opt.label}</span>
                         </div>
-                        <div className="text-[10px] text-[#68655F] leading-relaxed">{opt.sublabel}</div>
+                        <p className="text-[10px] sm:text-[11px] text-[#68655F] leading-relaxed">{opt.sublabel}</p>
                       </div>
                     </div>
                   );
                 })}
-              </div>
-
-              {/* Quiz Footer Controls */}
-              <div className="pt-3 border-t border-[#EAE6DC] flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={currentQuestionIndex === 0 ? () => setStage('gate') : handlePrev}
-                  className="text-xs text-[#68655F] hover:text-[#171717] flex items-center gap-1 cursor-pointer"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>{currentQuestionIndex === 0 ? 'Pilihan Awal' : 'Sebelumnya'}</span>
-                </button>
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={handleNext}
-                  disabled={!currentSelection}
-                  className="text-xs font-bold px-4 py-2 cursor-pointer shadow-xs"
-                  icon={isLastQuestion ? <Sparkles className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
-                >
-                  {isLastQuestion ? 'Lihat Hasil Rekomendasi ✨' : 'Lanjut'}
-                </Button>
               </div>
             </div>
           )}
@@ -670,31 +648,31 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                       <img
                         src={top.ekskul.profile_image}
                         alt={top.ekskul.name}
-                        className="w-full sm:w-28 h-28 object-cover rounded-xl border border-[#EAE6DC] shrink-0"
+                        className="w-full sm:w-28 h-36 sm:h-28 object-cover rounded-xl border border-[#EAE6DC] shrink-0"
                       />
-                      <div className="space-y-2 flex-1 text-center sm:text-left">
+                      <div className="space-y-2 flex-1 text-center sm:text-left min-w-0">
                         <div>
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[#234B36]">
                             {top.ekskul.category}
                           </span>
-                          <h4 className="text-xl font-black text-[#171717]">{top.ekskul.name}</h4>
+                          <h4 className="text-xl font-black text-[#171717] truncate">{top.ekskul.name}</h4>
                           <p className="text-[11px] text-[#68655F] italic mt-0.5 leading-relaxed">
                             "{top.reason}"
                           </p>
                         </div>
 
                         <div className="text-[11px] text-[#171717] flex flex-wrap gap-2 justify-center sm:justify-start">
-                          <span className="p-1 px-2 rounded-lg bg-[#F9F8F6] border border-[#EAE6DC]">
+                          <span className="p-1 px-2 rounded-lg bg-[#F9F8F6] border border-[#EAE6DC] truncate">
                             📍 {top.ekskul.location}
                           </span>
-                          <span className="p-1 px-2 rounded-lg bg-[#F9F8F6] border border-[#EAE6DC]">
+                          <span className="p-1 px-2 rounded-lg bg-[#F9F8F6] border border-[#EAE6DC] truncate">
                             👤 Pembina: {top.ekskul.supervisor_name}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="p-4 bg-[#F9F8F6] border-t border-[#EAE6DC] flex flex-col sm:flex-row gap-2">
+                    <div className="p-3.5 sm:p-4 bg-[#F9F8F6] border-t border-[#EAE6DC] flex flex-col sm:flex-row gap-2">
                       <Button
                         variant="primary"
                         size="sm"
@@ -703,8 +681,8 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                           onClose();
                           onNavigate(`/ekskul/${top.ekskul.slug}/daftar`);
                         }}
-                        className="flex-1 justify-center text-xs font-bold py-2 cursor-pointer shadow-xs"
-                        icon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                        className="min-h-[44px] flex-1 justify-center text-xs font-bold py-2 cursor-pointer shadow-xs active:scale-[0.98]"
+                        icon={<CheckCircle2 className="w-4 h-4" />}
                       >
                         Daftar {top.ekskul.name} Sekarang
                       </Button>
@@ -716,7 +694,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                           onClose();
                           onNavigate(`/ekskul/${top.ekskul.slug}`);
                         }}
-                        className="justify-center text-xs font-semibold py-2 cursor-pointer"
+                        className="min-h-[44px] justify-center text-xs font-semibold py-2 cursor-pointer active:scale-[0.98]"
                       >
                         Profil Ekskul
                       </Button>
@@ -727,21 +705,21 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
 
               {/* Alternative Match */}
               {rankedResults[1] && (
-                <div className="p-3.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
+                <div className="p-3.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] flex items-center justify-between gap-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <img
                       src={rankedResults[1].ekskul.profile_image}
                       alt={rankedResults[1].ekskul.name}
-                      className="w-10 h-10 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
+                      className="w-11 h-11 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                     />
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <h5 className="text-xs font-bold text-[#171717]">{rankedResults[1].ekskul.name}</h5>
-                        <span className="text-[10px] text-[#234B36] font-bold">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h5 className="text-xs font-bold text-[#171717] truncate">{rankedResults[1].ekskul.name}</h5>
+                        <span className="text-[10px] text-[#234B36] font-bold shrink-0">
                           • {rankedResults[1].matchPercent}% Cocok
                         </span>
                       </div>
-                      <p className="text-[10px] text-[#68655F] truncate max-w-[240px]">
+                      <p className="text-[10px] text-[#68655F] truncate">
                         Alternatif pilihan lain yang sesuai potensimu
                       </p>
                     </div>
@@ -753,7 +731,7 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                       onClose();
                       onNavigate(`/ekskul/${rankedResults[1].ekskul.slug}/daftar`);
                     }}
-                    className="px-2.5 py-1.5 rounded-lg bg-white border border-[#EAE6DC] hover:border-[#234B36] text-[11px] font-bold text-[#171717] hover:text-[#234B36] transition-colors cursor-pointer shrink-0"
+                    className="min-h-[36px] px-3 py-1.5 rounded-lg bg-white border border-[#EAE6DC] hover:border-[#234B36] active:bg-[#F0EDE6] text-xs font-bold text-[#171717] hover:text-[#234B36] transition-colors cursor-pointer shrink-0"
                   >
                     Daftar
                   </button>
@@ -770,8 +748,8 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     onClose();
                     onNavigate('/ekskul');
                   }}
-                  className="w-full sm:w-auto text-xs font-semibold cursor-pointer"
-                  icon={<BookOpen className="w-3.5 h-3.5" />}
+                  className="min-h-[44px] w-full sm:w-auto text-xs font-semibold cursor-pointer active:scale-[0.98]"
+                  icon={<BookOpen className="w-4 h-4" />}
                 >
                   Katalog Lengkap
                 </Button>
@@ -783,8 +761,8 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     onClose();
                     onNavigate('/student/dashboard');
                   }}
-                  className="w-full sm:w-auto text-xs font-bold cursor-pointer"
-                  icon={<ArrowRight className="w-3.5 h-3.5" />}
+                  className="min-h-[44px] w-full sm:w-auto text-xs font-bold cursor-pointer active:scale-[0.98]"
+                  icon={<ArrowRight className="w-4 h-4" />}
                 >
                   Masuk ke Dasbor Siswa
                 </Button>
@@ -792,6 +770,31 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
             </div>
           )}
         </div>
+
+        {/* Sticky Mobile-Friendly Footer for Quiz Stage (always in thumb reach) */}
+        {stage === 'quiz' && (
+          <div className="px-4 sm:px-6 py-3 border-t border-[#EAE6DC] bg-[#F9F8F6] shrink-0 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={currentQuestionIndex === 0 ? () => setStage('gate') : handlePrev}
+              className="min-h-[44px] px-3 -ml-2 text-xs font-semibold text-[#68655F] hover:text-[#171717] active:text-[#171717] flex items-center gap-1.5 cursor-pointer select-none"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>{currentQuestionIndex === 0 ? 'Pilihan Awal' : 'Sebelumnya'}</span>
+            </button>
+
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleNext}
+              disabled={!currentSelection}
+              className="min-h-[44px] text-xs font-bold px-5 py-2.5 cursor-pointer shadow-xs active:scale-[0.98]"
+              icon={isLastQuestion ? <Sparkles className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
+            >
+              {isLastQuestion ? 'Lihat Rekomendasi ✨' : 'Lanjut'}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

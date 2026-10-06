@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from '@/features/authentication/providers/AuthP
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { PageLoader } from '@/components/ui/PageLoader';
+import { db } from '@/lib/database';
+import { Menu } from 'lucide-react';
 
 const HomePage = React.lazy(() => import('@/features/extracurriculars/pages/HomePage').then((m) => ({ default: m.HomePage })));
 const CatalogPage = React.lazy(() => import('@/features/extracurriculars/pages/CatalogPage').then((m) => ({ default: m.CatalogPage })));
@@ -27,11 +29,14 @@ const OnboardingQuestionnairePage = React.lazy(() => import('@/features/extracur
 
 const AppContent: React.FC = () => {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { currentUser, role } = useAuth();
+  const settings = db.getSettings();
 
   useEffect(() => {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname || '/');
+      setMobileSidebarOpen(false);
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -40,6 +45,7 @@ const AppContent: React.FC = () => {
   const navigate = (path: string) => {
     window.history.pushState({}, '', path);
     setCurrentPath(path);
+    setMobileSidebarOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -278,12 +284,49 @@ const AppContent: React.FC = () => {
     );
   }
 
-  // If in dashboard: Render ONLY Sidebar and full-height content (NO NAVBAR!)
+  // If in dashboard: Render mobile header on < lg, responsive Sidebar, and full-height content
   if (isAuthenticatedDashboardRoute) {
     return (
-      <div className="min-h-screen flex bg-[#F9F8F6] text-[#171717]">
-        <Sidebar currentPath={currentPath} onNavigate={navigate} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto min-h-screen">
+      <div className="min-h-screen flex flex-col lg:flex-row bg-[#F9F8F6] text-[#171717]">
+        {/* Mobile Dashboard Header (< lg) */}
+        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-4 h-15 flex items-center justify-between shadow-2xs">
+          <div
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2.5 cursor-pointer select-none min-w-0"
+          >
+            <div className="w-9 h-9 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+              EH
+            </div>
+            <div className="min-w-0">
+              <span className="text-sm font-bold text-[#171717] block leading-none truncate">
+                EKSKUL-HUB
+              </span>
+              <span className="text-[10px] text-[#68655F] font-medium uppercase mt-0.5 block truncate">
+                {settings.school_name}
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="min-h-[40px] px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-colors"
+            aria-label="Buka navigasi dasbor"
+          >
+            <Menu className="w-4 h-4 text-[#D15B40]" />
+            <span className="uppercase tracking-wider text-[11px]">Menu</span>
+          </button>
+        </header>
+
+        {/* Sidebar Component (Handles both desktop sticky aside and mobile slide drawer) */}
+        <Sidebar
+          currentPath={currentPath}
+          onNavigate={navigate}
+          isMobileOpen={mobileSidebarOpen}
+          onCloseMobile={() => setMobileSidebarOpen(false)}
+        />
+
+        {/* Main Content Area */}
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 overflow-y-auto min-w-0 max-w-full">
           <div key={currentPath} className="max-w-7xl mx-auto animate-fade-in-up">
             <React.Suspense fallback={<PageLoader />}>
               {renderContent()}

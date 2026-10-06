@@ -133,12 +133,12 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans space-y-8">
+    <div className="max-w-5xl mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 font-sans space-y-6 sm:space-y-8">
       {/* Top back button */}
       <div>
         <button
           onClick={() => onNavigate(`/ekskul/${ekskul.slug}`)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#D15B40] transition-colors cursor-pointer"
+          className="min-h-[40px] inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#D15B40] active:scale-95 transition-all cursor-pointer select-none"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Kembali ke Detail {ekskul.name}</span>
@@ -380,7 +380,7 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
               {/* Agreement Checkbox */}
               <div
                 onClick={() => setAgreedToRules(!agreedToRules)}
-                className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex items-start gap-3 select-none ${
+                className={`p-3.5 sm:p-4 rounded-xl border transition-all duration-200 cursor-pointer flex items-start gap-3 select-none active:scale-[0.99] min-h-[48px] ${
                   agreedToRules
                     ? 'bg-[#FDEDE9] border-[#D15B40]/50 text-[#171717] shadow-2xs'
                     : 'bg-[#F9F8F6] border-[#EAE6DC] text-[#525049] hover:border-[#D15B40]/40'
@@ -400,28 +400,28 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#EAE6DC]">
-                <div className="text-[11px]">
+              <div className="pt-3 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-[#EAE6DC]">
+                <div className="text-[11px] text-center sm:text-left">
                   {!agreedToRules ? (
                     <span className="inline-flex items-center gap-1.5 text-[#B58A32] font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#B58A32]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#B58A32] shrink-0" />
                       Centang kotak komitmen di atas untuk mengaktifkan tombol pendaftaran.
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1.5 text-[#3B7A82] font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#3B7A82]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#3B7A82] shrink-0" />
                       Data siap dikirimkan ke guru pembina.
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
                   <Button
                     type="button"
                     variant="outline"
                     size="md"
                     onClick={() => onNavigate(`/ekskul/${ekskul.slug}`)}
-                    className="w-full sm:w-auto rounded-xl"
+                    className="min-h-[44px] w-full sm:w-auto rounded-xl justify-center"
                   >
                     Batal
                   </Button>
@@ -429,9 +429,9 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
                   <button
                     type="submit"
                     disabled={!agreedToRules || isSubmitting}
-                    className={`w-full sm:w-auto inline-flex items-center justify-center font-bold text-xs sm:text-sm rounded-xl px-7 py-2.5 gap-2 transition-all duration-300 select-none ${
+                    className={`min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center font-bold text-xs sm:text-sm rounded-xl px-7 py-2.5 gap-2 transition-all duration-300 select-none ${
                       agreedToRules
-                        ? 'bg-[#D15B40] text-white hover:bg-[#B94931] active:bg-[#A63F28] shadow-lg shadow-[#D15B40]/30 ring-2 ring-[#D15B40]/40 cursor-pointer transform scale-[1.01]'
+                        ? 'bg-[#D15B40] text-white hover:bg-[#B94931] active:bg-[#A63F28] active:scale-[0.98] shadow-md shadow-[#D15B40]/20 ring-2 ring-[#D15B40]/40 cursor-pointer'
                         : 'bg-[#2A2926] text-[#8C8980] border border-[#3E3C38] cursor-not-allowed opacity-80 shadow-none'
                     }`}
                   >

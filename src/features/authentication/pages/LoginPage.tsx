@@ -174,12 +174,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 py-8">
+    <div className="w-full max-w-md mx-auto px-3.5 sm:px-4 py-4 sm:py-8">
       {/* Top Back Navigation */}
-      <div className="mb-5 flex justify-start">
+      <div className="mb-4 sm:mb-5 flex justify-start">
         <button
           onClick={() => onNavigate('/')}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white border border-[#EAE6DC] rounded text-xs font-bold text-[#171717] hover:bg-[#F9F8F6] transition-colors cursor-pointer shadow-xs"
+          className="min-h-[40px] inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-[#EAE6DC] rounded-xl text-xs font-bold text-[#171717] hover:bg-[#F9F8F6] active:scale-95 transition-all cursor-pointer shadow-xs select-none"
         >
           <ArrowLeft className="w-4 h-4 text-[#D15B40]" />
           <span>Kembali ke Beranda</span>
@@ -187,20 +187,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       </div>
 
       {/* Main Card */}
-      <div className="bg-white border border-[#EAE6DC] rounded-xl shadow-sm overflow-hidden p-6 sm:p-8 space-y-6">
+      <div className="bg-white border border-[#EAE6DC] rounded-2xl sm:rounded-3xl shadow-sm overflow-hidden p-5 sm:p-8 space-y-5 sm:space-y-6">
         {/* Brand & Page Header */}
         <div className="text-center">
-          <div className="w-13 h-13 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
+          <div className="w-12 h-12 sm:w-13 sm:h-13 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
             {mode === 'login' ? (
-              <GraduationCap className="w-7 h-7 text-white" />
+              <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             ) : (
-              <UserPlus className="w-7 h-7 text-white" />
+              <UserPlus className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
             )}
           </div>
           <div className="inline-block px-2.5 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] text-[11px] font-bold uppercase tracking-wider mb-2">
             {mode === 'login' ? 'Portal Masuk Terpadu' : 'Registrasi Akun Baru'}
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#171717]">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#171717]">
             {mode === 'login' ? 'Masuk ke Ekskul-Hub' : 'Daftar Akun Siswa'}
           </h1>
           <p className="text-xs text-[#68655F] mt-1">
@@ -290,7 +290,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               variant="primary"
               isLoading={isSubmitting}
               disabled={isSubmitting}
-              className="w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs"
+              className="min-h-[44px] w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs active:scale-[0.98]"
               icon={<LogIn className="w-4 h-4" />}
             >
               {isSubmitting ? 'Memeriksa Kredensial...' : 'Masuk'}
@@ -306,7 +306,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                   setError('');
                   setSuccessMessage('');
                 }}
-                className="font-bold text-[#D15B40] hover:underline cursor-pointer ml-1"
+                className="min-h-[36px] inline-flex items-center font-bold text-[#D15B40] hover:underline active:text-[#A33D35] cursor-pointer ml-1 select-none"
               >
                 Buat akun
               </button>
@@ -358,7 +358,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               variant="primary"
               isLoading={isSubmitting}
               disabled={isSubmitting}
-              className="w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs"
+              className="min-h-[44px] w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs active:scale-[0.98]"
               icon={<UserPlus className="w-4 h-4" />}
             >
               {isSubmitting ? 'Mendaftarkan Akun...' : 'Daftar Akun Siswa'}
@@ -373,7 +373,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
                   setMode('login');
                   setError('');
                 }}
-                className="font-bold text-[#D15B40] hover:underline cursor-pointer ml-1"
+                className="min-h-[36px] inline-flex items-center font-bold text-[#D15B40] hover:underline active:text-[#A33D35] cursor-pointer ml-1 select-none"
               >
                 Masuk di sini
               </button>
@@ -395,7 +395,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('student')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#D15B40]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
+                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#D15B40]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#D15B40]">
                   <GraduationCap className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
@@ -408,7 +408,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pembina')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
+                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
                   <BookOpen className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
@@ -421,7 +421,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pengurus')}
-                className="p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#2A2926]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group"
+                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#2A2926]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#2A2926]">
                   <ShieldCheck className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
