@@ -147,8 +147,15 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
         $currentUser = $request->user();
 
+        if (!$currentUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
+            ], 401);
+        }
+
         // Enforce ownership: user can only edit their own profile, unless admin or pengurus
-        if ($currentUser && $currentUser->id !== $id && !in_array($currentUser->role, ['admin', 'pengurus'], true)) {
+        if ($currentUser->id !== $id && !in_array($currentUser->role, ['admin', 'pengurus'], true)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Akses ditolak: Anda hanya dapat memperbarui profil Anda sendiri.',
@@ -194,10 +201,21 @@ class AuthController extends Controller
             return response()->json(User::all());
         }
 
-        // For public / student access, sanitize sensitive information
-        $users = User::select(['id', 'name', 'email', 'role', 'avatar_url', 'class_name', 'is_active'])->get();
-        return response()->json($users);
+        // If authenticated student: return safe list without private email/phone/nisn
+        if ($currentUser && $currentUser->role === 'student') {
+            $users = User::select(['id', 'name', 'role', 'avatar_url', 'class_name', 'is_active'])
+                ->get();
+            return response()->json($users);
+        }
+
+        // For public unauthenticated visitors: only return official staff, teachers, and pembina
+        $staff = User::whereIn('role', ['pengurus', 'pembina', 'teacher', 'admin'])
+            ->where('is_active', true)
+            ->select(['id', 'name', 'role', 'avatar_url', 'nip', 'subject'])
+            ->get();
+        return response()->json($staff);
     }
+
 
     /**
      * Admin-only user creation with strict validation.
@@ -264,11 +282,19 @@ class AuthController extends Controller
     }
 
     /**
-     * Admin-only user deletion.
+     * Admin-only user deletion with self-deletion prevention.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
+        if ($request->user()?->id === $id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tindakan ditolak: Anda tidak dapat menghapus akun Anda sendiri.',
+            ], 400);
+        }
+
         User::destroy($id);
         return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus.']);
     }
+
 }

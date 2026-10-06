@@ -136,13 +136,14 @@ class SQLiteDatabaseClient {
         apiService.getEkskulsAPI(),
         apiService.getAllMembersAPI(),
         hasToken ? apiService.getRegistrationsAPI() : Promise.resolve([]),
-        apiService.getAttendanceSessionsAPI(),
-        apiService.getAttendanceRecordsAPI(),
+        hasToken ? apiService.getAttendanceSessionsAPI() : Promise.resolve([]),
+        hasToken ? apiService.getAttendanceRecordsAPI() : Promise.resolve([]),
         apiService.getEventsAPI(),
         apiService.getAchievementsAPI(),
-        apiService.getCertificatesAPI(),
-        apiService.getVerificationsAPI(),
+        hasToken ? apiService.getCertificatesAPI() : Promise.resolve([]),
+        hasToken ? apiService.getVerificationsAPI() : Promise.resolve([]),
       ]);
+
 
       if (settings) this.settings.setSettings(settings);
       if (users && users.length > 0) this.users.setUsers(users);

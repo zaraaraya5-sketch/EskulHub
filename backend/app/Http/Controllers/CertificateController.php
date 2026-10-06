@@ -11,11 +11,18 @@ class CertificateController extends Controller
     public function index(Request $request)
     {
         $query = Certificate::query();
-        if ($request->has('student_id')) {
+        $currentUser = $request->user();
+
+        // Enforce student data isolation: students can only view their own certificates
+        if ($currentUser && $currentUser->role === 'student') {
+            $query->where('student_id', $currentUser->id);
+        } elseif ($request->has('student_id')) {
             $query->where('student_id', $request->student_id);
         }
+
         return response()->json($query->orderBy('issue_date', 'desc')->get());
     }
+
 
     public function store(Request $request)
     {

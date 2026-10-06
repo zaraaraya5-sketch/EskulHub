@@ -59,8 +59,15 @@ class AttendanceController extends Controller
         $query = AttendanceRecord::query();
         $user = $request->user();
 
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
+            ], 401);
+        }
+
         // If authenticated user is a student, enforce viewing ONLY their own records
-        if ($user && $user->role === 'student') {
+        if ($user->role === 'student') {
             $query->where('student_id', $user->id);
         } else {
             if ($request->has('student_id')) {
@@ -74,6 +81,7 @@ class AttendanceController extends Controller
 
         return response()->json($query->orderBy('session_date', 'desc')->get());
     }
+
 
     /**
      * Save/update attendance record with strict status validation

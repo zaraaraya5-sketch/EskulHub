@@ -202,14 +202,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCurrentUser(null);
   };
 
-  const switchRole = (newRole: UserRole) => {
+  const switchRole = async (newRole: UserRole) => {
     const found = db.getUsers().find(u => u.role === newRole);
     if (found) {
       setCurrentUser(found);
-      // Attempt background token synchronization for demo switch
-      loginAPI(found.email, 'password123').catch(() => {});
+      localStorage.setItem('ekskul_auth_user', JSON.stringify(found));
+      localStorage.setItem('ekskul_auth_user_id', found.id);
+      try {
+        const res = await loginAPI(found.email, 'password123');
+        if (res && res.token) {
+          localStorage.setItem('ekskul_auth_token', res.token);
+        }
+      } catch {}
     }
   };
+
 
   const updateProfile = (data: Partial<User>) => {
     if (!currentUser) return { success: false, message: 'Tidak ada sesi pengguna aktif.' };

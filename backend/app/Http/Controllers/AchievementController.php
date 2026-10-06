@@ -11,9 +11,27 @@ class AchievementController extends Controller
     public function index(Request $request)
     {
         $query = Achievement::query();
+        $currentUser = $request->user();
+        $isStaff = $currentUser && in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
+
         if ($request->has('student_id')) {
-            $query->where('student_id', $request->student_id);
+            $studentId = $request->input('student_id');
+            // If caller is student checking their own, show all (including pending verification)
+            if ($currentUser && $currentUser->id === $studentId) {
+                $query->where('student_id', $studentId);
+            } elseif ($isStaff) {
+                $query->where('student_id', $studentId);
+            } else {
+                // Public or other students only see verified achievements
+                $query->where('student_id', $studentId)->where('is_verified', true);
+            }
+        } else {
+            // General listing: non-staff only see verified achievements
+            if (!$isStaff) {
+                $query->where('is_verified', true);
+            }
         }
+
         return response()->json($query->orderBy('achievement_date', 'desc')->get());
     }
 
@@ -32,10 +50,23 @@ class AchievementController extends Controller
             'certificate_url' => 'nullable|string|max:500',
         ]);
 
+        $currentUser = $request->user();
+        if (!$currentUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
+            ], 401);
+        }
+
+        // Anti-IDOR: If the caller is a student, strictly lock student_id and student_name to caller's identity
+        if ($currentUser->role === 'student') {
+            $validated['student_id'] = $currentUser->id;
+            $validated['student_name'] = $currentUser->name;
+        }
+
         $validated['id'] = 'ach-' . time() . '-' . Str::random(4);
 
-        $currentUser = $request->user();
-        $isStaff = $currentUser && in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
+        $isStaff = in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
 
         // Only authorized staff can immediately verify on creation
         if ($isStaff && $request->boolean('is_verified', false)) {
@@ -51,6 +82,7 @@ class AchievementController extends Controller
         $achievement = Achievement::create($validated);
         return response()->json(['success' => true, 'achievement' => $achievement], 201);
     }
+
 
     public function verify(Request $request, string $id)
     {

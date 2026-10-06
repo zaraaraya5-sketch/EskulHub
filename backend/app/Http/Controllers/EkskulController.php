@@ -78,17 +78,49 @@ class EkskulController extends Controller
         return response()->json(['success' => true, 'message' => 'Ekstrakurikuler berhasil dihapus.']);
     }
 
-    // Members
-    public function getMembers(string $id)
+    // Members with PII protection (masked NISN for non-staff)
+    public function getMembers(Request $request, string $id)
     {
         $members = EkskulMember::where('extracurricular_id', $id)->get();
+        $user = $request->user();
+        $isStaff = $user && in_array($user->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
+
+        if (!$isStaff) {
+            $members = $members->map(function ($m) use ($user) {
+                if ($user && $user->id === $m->student_id) {
+                    return $m;
+                }
+                if (!empty($m->student_nisn)) {
+                    $m->student_nisn = substr($m->student_nisn, 0, 3) . '****' . substr($m->student_nisn, -2);
+                }
+                return $m;
+            });
+        }
+
         return response()->json($members);
     }
 
-    public function allMembers()
+    public function allMembers(Request $request)
     {
-        return response()->json(EkskulMember::all());
+        $members = EkskulMember::all();
+        $user = $request->user();
+        $isStaff = $user && in_array($user->role, ['admin', 'pengurus', 'pembina', 'teacher'], true);
+
+        if (!$isStaff) {
+            $members = $members->map(function ($m) use ($user) {
+                if ($user && $user->id === $m->student_id) {
+                    return $m;
+                }
+                if (!empty($m->student_nisn)) {
+                    $m->student_nisn = substr($m->student_nisn, 0, 3) . '****' . substr($m->student_nisn, -2);
+                }
+                return $m;
+            });
+        }
+
+        return response()->json($members);
     }
+
 
     public function addMember(Request $request, string $id)
     {

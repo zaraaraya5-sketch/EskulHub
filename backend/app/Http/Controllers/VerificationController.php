@@ -8,10 +8,23 @@ use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $currentUser = $request->user();
+        if (!$currentUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Autentikasi diperlukan. Silakan login terlebih dahulu.',
+            ], 401);
+        }
+
+        if ($currentUser->role === 'student') {
+            return response()->json(PortfolioVerification::where('student_id', $currentUser->id)->get());
+        }
+
         return response()->json(PortfolioVerification::all());
     }
+
 
     public function show(string $id)
     {

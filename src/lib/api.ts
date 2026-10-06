@@ -91,6 +91,9 @@ export const logoutAPI = async () => {
 export const registerAPI = async (userData: Partial<User>) => {
   try {
     const res = await api.post('/auth/register', userData);
+    if (res.data?.token) {
+      localStorage.setItem('ekskul_auth_token', res.data.token);
+    }
     return res.data;
   } catch (err: any) {
     if (!err.response) {

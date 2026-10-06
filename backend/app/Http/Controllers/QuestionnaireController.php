@@ -239,7 +239,11 @@ class QuestionnaireController extends Controller
      */
     public function submit(Request $request)
     {
-        $answers = $request->input('answers', []); // [question_id => option_id]
+        $validated = $request->validate([
+            'answers' => 'nullable|array',
+        ]);
+
+        $answers = $validated['answers'] ?? []; // [question_id => option_id]
 
         $scores = [
             'futsal' => 0,

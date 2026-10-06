@@ -39,29 +39,32 @@ Route::get('/events', [EventController::class, 'index']);
 Route::get('/settings', [SettingsController::class, 'get']);
 Route::get('/verification/{id}', [VerificationController::class, 'show']);
 Route::get('/questionnaire', [QuestionnaireController::class, 'index']);
-Route::post('/questionnaire/submit', [QuestionnaireController::class, 'submit']);
+Route::post('/questionnaire/submit', [QuestionnaireController::class, 'submit'])->middleware('throttle:30,1');
 
 // Public Read-Only data with privacy sanitization in controllers
 Route::get('/users', [AuthController::class, 'index']);
 Route::get('/achievements', [AchievementController::class, 'index']);
-Route::get('/certificates', [CertificateController::class, 'index']);
-Route::get('/verifications', [VerificationController::class, 'index']);
-Route::get('/attendance/sessions', [AttendanceController::class, 'getSessions']);
-Route::get('/attendance/records', [AttendanceController::class, 'getRecords']);
 
 // ==========================================
-// 2. Authenticated Routes (Requires Bearer Token or Verified Session Header)
+// 2. Authenticated Routes (Requires Validated Sanctum Bearer Token)
 // ==========================================
-Route::middleware(['hybrid.auth'])->group(function () {
+Route::middleware(['hybrid.auth', 'throttle:60,1'])->group(function () {
     // Auth & Profile
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::put('/auth/profile/{id}', [AuthController::class, 'updateProfile']);
 
+    // Protected data listings (Isolated by student_id or restricted to staff)
+    Route::get('/certificates', [CertificateController::class, 'index']);
+    Route::get('/verifications', [VerificationController::class, 'index']);
+    Route::get('/attendance/sessions', [AttendanceController::class, 'getSessions']);
+    Route::get('/attendance/records', [AttendanceController::class, 'getRecords']);
+
     // Registrations & Achievements creation
     Route::get('/registrations', [RegistrationController::class, 'index']);
     Route::post('/registrations', [RegistrationController::class, 'store']);
     Route::post('/achievements', [AchievementController::class, 'store']);
+
 
     // ==========================================
     // 3. Operational Staff (Pengurus, Pembina, Guru, Teacher, Admin)

@@ -125,9 +125,29 @@ class RegistrationController extends Controller
         ]);
 
         $reg = Registration::findOrFail($id);
+        $user = $request->user();
+
+        // Attribute-based Access Control (ABAC): If reviewer is Pembina/Teacher, verify they supervise this specific ekskul
+        if ($user && in_array(strtolower($user->role), ['pembina', 'teacher'], true)) {
+            $isSupervisor = Ekskul::where('id', $reg->extracurricular_id)
+                ->where(function ($q) use ($user) {
+                    $q->where('supervisor_id', $user->id)
+                      ->orWhere('supervisor_name', $user->name);
+                })
+                ->exists();
+
+            if (!$isSupervisor) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak: Anda hanya memiliki wewenang menyetujui pendaftaran ekskul binaan Anda.',
+                ], 403);
+            }
+        }
+
         $status = $validated['status'];
-        $reviewer = $validated['reviewer_name'] ?? ($request->user()?->name ?? 'Pembina Ekskul');
+        $reviewer = $validated['reviewer_name'] ?? ($user?->name ?? 'Pembina Ekskul');
         $notes = $validated['notes'] ?? $reg->notes;
+
 
         $reg->update([
             'status' => $status,
