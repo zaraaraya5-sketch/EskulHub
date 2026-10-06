@@ -28,7 +28,7 @@ export class UsersModule {
     password?: string;
     phone?: string;
   }): { success: boolean; message: string; user?: User } {
-    const existing = this.users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
+    const existing = this.users.find((u) => u.email && u.email.toLowerCase() === data.email.toLowerCase());
     if (existing) {
       return { success: false, message: 'Alamat email sudah terdaftar di sistem.' };
     }
@@ -50,7 +50,9 @@ export class UsersModule {
     };
 
     this.users.push(newUser);
-    apiService.registerAPI(newUser);
+    if (typeof apiService.registerAPI === 'function') {
+      apiService.registerAPI(newUser).catch(() => {});
+    }
     this.notify();
     return { success: true, message: 'Pendaftaran akun berhasil!', user: newUser };
   }
@@ -62,7 +64,7 @@ export class UsersModule {
     phone?: string;
     is_active?: boolean;
   }): { success: boolean; message: string; user?: User } {
-    const existing = this.users.find((u) => u.email.toLowerCase() === data.email.toLowerCase());
+    const existing = this.users.find((u) => u.email && u.email.toLowerCase() === data.email.toLowerCase());
     if (existing) {
       return { success: false, message: 'Email sudah terdaftar untuk pengguna lain.' };
     }
@@ -94,7 +96,7 @@ export class UsersModule {
       return { success: false, message: 'Pengguna tidak ditemukan.' };
     }
     if (data.email) {
-      const emailDup = this.users.find((u) => u.id !== id && u.email.toLowerCase() === data.email!.toLowerCase());
+      const emailDup = this.users.find((u) => u.id !== id && u.email && u.email.toLowerCase() === data.email!.toLowerCase());
       if (emailDup) {
         return { success: false, message: 'Alamat email sudah digunakan oleh pengguna lain.' };
       }

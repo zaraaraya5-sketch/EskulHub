@@ -16,6 +16,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { UserRole } from '@/types';
+import { OnboardingQuestionnaireModal } from '@/features/extracurriculars/views/OnboardingQuestionnaireModal';
 
 interface LoginPageProps {
   onNavigate: (path: string) => void;
@@ -31,6 +32,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
     currentPath === '/register' ? 'register' : 'login'
   );
 
+  // Sync mode if currentPath prop changes
+  React.useEffect(() => {
+    if (currentPath === '/register') {
+      setMode('register');
+    } else if (currentPath === '/login') {
+      setMode('login');
+    }
+  }, [currentPath]);
+
+  // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Form states for Login
   const [loginIdentifier, setLoginIdentifier] = useState('budi@smkn1ciomas.sch.id');
   const [loginPassword, setLoginPassword] = useState('password123');
@@ -43,6 +56,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
   // Status alerts
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Onboarding Questionnaire Popup Modal right after registration
+  const [isQuestionnaireModalOpen, setIsQuestionnaireModalOpen] = useState(false);
+  const [registeredStudentInfo, setRegisteredStudentInfo] = useState<{ id: string; name: string } | null>(null);
 
   // Handle Login submission
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -59,64 +76,87 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       return;
     }
 
-    const res = await login(loginIdentifier, loginPassword);
-    if (!res.success || !res.user) {
-      setError(res.message || 'Kredensial login tidak valid. Pastikan nama/email dan password sudah tepat.');
-      return;
-    }
+    setIsSubmitting(true);
+    try {
+      const res = await login(loginIdentifier, loginPassword);
+      if (!res.success || !res.user) {
+        setError(res.message || 'Kredensial login tidak valid. Pastikan nama/email dan password sudah tepat.');
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Role-based redirection to respective dashboard
-    const user = res.user;
-    switch (user.role) {
-      case 'student':
-        onNavigate('/student/dashboard');
-        break;
-      case 'pembina':
-      case 'teacher':
-        onNavigate('/pembina/dashboard');
-        break;
-      case 'pengurus':
-      default:
-        onNavigate('/pengurus/dashboard');
-        break;
+      // Role-based redirection to respective dashboard
+      const user = res.user;
+      switch (user.role) {
+        case 'student': {
+          const isCompleted = localStorage.getItem(`ekskul_onboarding_completed_${user.id}`) === 'true';
+          if (!isCompleted) {
+            onNavigate('/student/kuisioner');
+          } else {
+            onNavigate('/student/dashboard');
+          }
+          break;
+        }
+        case 'pembina':
+        case 'teacher':
+          onNavigate('/pembina/dashboard');
+          break;
+        case 'pengurus':
+        default:
+          onNavigate('/pengurus/dashboard');
+          break;
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError(err?.message || 'Terjadi kesalahan sistem saat masuk.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Handle Registration submission
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
 
-    if (!regName.trim()) {
+    const cleanName = regName.trim();
+    const cleanEmail = regEmail.trim().toLowerCase();
+    const cleanPassword = regPassword.trim();
+
+    if (!cleanName) {
       setError('Silakan masukkan Nama Lengkap siswa.');
       return;
     }
-    if (!regEmail.trim() || !regEmail.includes('@')) {
-      setError('Silakan masukkan alamat email yang valid.');
+    if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      setError('Silakan masukkan alamat email yang valid (contoh: siswa@smkn1ciomas.sch.id).');
       return;
     }
-    if (regPassword.length < 6) {
+    if (cleanPassword.length < 6) {
       setError('Kata sandi harus minimal 6 karakter.');
       return;
     }
 
-    const result = register(regName.trim(), regEmail.trim(), 'student', regPassword);
-    if (!result.success) {
-      setError(result.message);
-      return;
+    setIsSubmitting(true);
+    try {
+      const result = await register(cleanName, cleanEmail, 'student', cleanPassword);
+      if (!result.success || !result.user) {
+        setError(result.message || 'Pendaftaran akun gagal. Silakan coba lagi.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      setSuccessMessage('Pendaftaran berhasil! Mengalihkan ke kuisioner peminatan...');
+      
+      // Direct immediate redirect to the questionnaire questions page!
+      setTimeout(() => {
+        onNavigate('/student/kuisioner');
+      }, 250);
+    } catch (err: any) {
+      console.error('Registration error:', err);
+      setError(err?.message || 'Terjadi gangguan jaringan atau server saat mendaftar.');
+      setIsSubmitting(false);
     }
-
-    // Prepare credentials for easy login
-    setLoginIdentifier(regEmail.trim());
-    setLoginPassword(regPassword);
-    setSuccessMessage('Pendaftaran berhasil! Akun siswa Anda telah terdaftar. Silakan klik Masuk untuk menuju Dasbor Siswa.');
-    setMode('login');
-
-    // Reset register fields
-    setRegName('');
-    setRegEmail('');
-    setRegPassword('');
   };
 
   const fillCredentials = (type: 'student' | 'pengurus' | 'pembina') => {
@@ -184,8 +224,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           </div>
         )}
 
-        {/* Active Session Notice */}
-        {currentUser && (
+        {/* Active Session Notice (Only shown on Login mode to avoid blocking register) */}
+        {currentUser && mode === 'login' && (
           <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl space-y-2.5 text-center">
             <div className="text-xs text-[#525049]">
               Saat ini Anda sedang masuk sebagai <strong className="text-[#171717]">{currentUser.name}</strong> (
@@ -248,10 +288,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
             <Button
               type="submit"
               variant="primary"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
               className="w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs"
               icon={<LogIn className="w-4 h-4" />}
             >
-              Masuk
+              {isSubmitting ? 'Memeriksa Kredensial...' : 'Masuk'}
             </Button>
 
             {/* Toggle to Register */}
@@ -272,13 +314,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           </form>
         ) : (
           /* Form View: REGISTER */
-          <form onSubmit={handleRegisterSubmit} className="space-y-4">
+          <form onSubmit={handleRegisterSubmit} noValidate className="space-y-4">
             <Input
               label="Nama Lengkap Siswa"
               type="text"
               value={regName}
               onChange={(e) => setRegName(e.target.value)}
               placeholder="Contoh: Muhammad Farhan"
+              disabled={isSubmitting}
               required
             />
 
@@ -288,6 +331,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               value={regEmail}
               onChange={(e) => setRegEmail(e.target.value)}
               placeholder="Contoh: farhan@smkn1ciomas.sch.id"
+              disabled={isSubmitting}
               required
             />
 
@@ -297,16 +341,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               value={regPassword}
               onChange={(e) => setRegPassword(e.target.value)}
               placeholder="Minimal 6 karakter"
+              disabled={isSubmitting}
               required
             />
+
+            {/* Inline Error Alert if registration fails */}
+            {error && (
+              <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] rounded-xl flex items-start gap-2.5 text-xs text-[#A33D35] animate-fade-in">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#D15B40]" />
+                <span className="font-semibold leading-relaxed">{error}</span>
+              </div>
+            )}
 
             <Button
               type="submit"
               variant="primary"
+              isLoading={isSubmitting}
+              disabled={isSubmitting}
               className="w-full justify-center text-xs font-bold uppercase tracking-wider py-2.5 shadow-xs"
               icon={<UserPlus className="w-4 h-4" />}
             >
-              Daftar
+              {isSubmitting ? 'Mendaftarkan Akun...' : 'Daftar Akun Siswa'}
             </Button>
 
             {/* Toggle to Login */}
@@ -385,6 +440,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           <span>Akses terenkripsi & diaudit untuk kepatuhan kearsipan sekolah.</span>
         </div>
       </div>
+
+      {/* Onboarding Questionnaire Popup Modal */}
+      <OnboardingQuestionnaireModal
+        isOpen={isQuestionnaireModalOpen}
+        onClose={() => setIsQuestionnaireModalOpen(false)}
+        onNavigate={onNavigate}
+        studentName={registeredStudentInfo?.name || currentUser?.name}
+        studentId={registeredStudentInfo?.id || currentUser?.id}
+      />
     </div>
   );
 };

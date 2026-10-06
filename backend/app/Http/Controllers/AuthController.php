@@ -195,7 +195,7 @@ class AuthController extends Controller
         }
 
         // For public / student access, sanitize sensitive information
-        $users = User::select(['id', 'name', 'role', 'avatar_url', 'class_name', 'is_active'])->get();
+        $users = User::select(['id', 'name', 'email', 'role', 'avatar_url', 'class_name', 'is_active'])->get();
         return response()->json($users);
     }
 

@@ -93,9 +93,28 @@ export const registerAPI = async (userData: Partial<User>) => {
     const res = await api.post('/auth/register', userData);
     return res.data;
   } catch (err: any) {
+    if (!err.response) {
+      return {
+        success: false,
+        message: 'Gagal terhubung ke server autentikasi lokal.',
+      };
+    }
+    let msg = err.response?.data?.message || 'Gagal mendaftarkan akun ke server lokal.';
+    if (err.response?.data?.errors) {
+      const errors = err.response.data.errors;
+      if (errors.email) {
+        msg = errors.email[0].includes('already')
+          ? 'Alamat email ini sudah terdaftar di sistem. Silakan gunakan email lain atau langsung masuk.'
+          : errors.email[0];
+      } else if (errors.name) {
+        msg = errors.name[0];
+      } else if (errors.password) {
+        msg = errors.password[0];
+      }
+    }
     return {
       success: false,
-      message: err.response?.data?.message || 'Gagal mendaftarkan akun ke server lokal.',
+      message: msg,
     };
   }
 };
@@ -525,5 +544,28 @@ export const saveVerificationAPI = async (data: Partial<PortfolioVerification>) 
   } catch (err) {
     console.error('Error saving verification via API:', err);
     return { success: false };
+  }
+};
+
+// ==========================================
+// 10. Questionnaire (Minat & Bakat Ekskul)
+// ==========================================
+export const getQuestionnaireAPI = async () => {
+  try {
+    const res = await api.get('/questionnaire');
+    return res.data;
+  } catch (err) {
+    console.error('Error fetching questionnaire from API:', err);
+    return null;
+  }
+};
+
+export const submitQuestionnaireAPI = async (answers: Record<number, string>) => {
+  try {
+    const res = await api.post('/questionnaire/submit', { answers });
+    return res.data;
+  } catch (err) {
+    console.error('Error submitting questionnaire to API:', err);
+    return null;
   }
 };

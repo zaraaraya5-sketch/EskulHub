@@ -12,6 +12,8 @@ import {
   Search,
   Eye,
   MapPin,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
 
 interface StudentOverviewTabProps {
@@ -28,6 +30,7 @@ interface StudentOverviewTabProps {
   setActiveTab: (tab: any) => void;
   setSelectedEkskulDetail: (ekskul: Extracurricular | null) => void;
   handleDownloadPdf: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
@@ -44,9 +47,40 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
   setActiveTab,
   setSelectedEkskulDetail,
   handleDownloadPdf,
+  onNavigate,
 }) => {
   return (
     <div className="space-y-6">
+      {/* Onboarding / Retake Questionnaire Banner */}
+      <div className="bg-white border border-[#EAE6DC] rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs relative overflow-hidden">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-[#E7EFEA] text-[#234B36] flex items-center justify-center shrink-0 shadow-2xs">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-xs sm:text-sm font-bold text-[#171717]">
+                Tes Minat Bakat & Rekomendasi Ekstrakurikuler
+              </h4>
+              <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#E7EFEA] text-[#234B36]">
+                5 Pertanyaan
+              </span>
+            </div>
+            <p className="text-[11px] text-[#68655F] mt-0.5">
+              Bingung memilih cabang kegiatan yang tepat? Ikuti tes kuisioner psikologis singkat untuk menemukan rekomendasi ekskul yang paling pas dengan potensimu.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => onNavigate ? onNavigate('/student/onboarding-quiz') : (window.location.href = '/student/onboarding-quiz')}
+          className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#234B36] hover:bg-[#1a3828] text-white text-xs font-bold transition-all shrink-0 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
+        >
+          <span>Mulai Tes Minat</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
       {/* 5 Core Metrics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         <div

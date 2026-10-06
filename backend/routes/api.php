@@ -10,6 +10,7 @@ use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\QuestionnaireController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,8 @@ Route::get('/members', [EkskulController::class, 'allMembers']);
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/settings', [SettingsController::class, 'get']);
 Route::get('/verification/{id}', [VerificationController::class, 'show']);
+Route::get('/questionnaire', [QuestionnaireController::class, 'index']);
+Route::post('/questionnaire/submit', [QuestionnaireController::class, 'submit']);
 
 // Public Read-Only data with privacy sanitization in controllers
 Route::get('/users', [AuthController::class, 'index']);

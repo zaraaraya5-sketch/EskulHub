@@ -180,6 +180,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           setActiveTab={handleTabChange}
           setSelectedEkskulDetail={handleSelectEkskul}
           handleDownloadPdf={handleDownloadPdf}
+          onNavigate={onNavigate}
         />
       )}
 

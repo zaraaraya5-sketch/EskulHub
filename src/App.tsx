@@ -23,6 +23,7 @@ const RegisterEkskulPage = React.lazy(() => import('@/features/extracurriculars/
 const AdminFormEkskulPage = React.lazy(() => import('@/features/portfolios/pages/AdminFormEkskulPage').then((m) => ({ default: m.AdminFormEkskulPage })));
 const ImportEventsPage = React.lazy(() => import('@/features/school-events/pages/ImportEventsPage').then((m) => ({ default: m.ImportEventsPage })));
 const StudentUploadDocumentPage = React.lazy(() => import('@/features/portfolios/pages/StudentUploadDocumentPage').then((m) => ({ default: m.StudentUploadDocumentPage })));
+const OnboardingQuestionnairePage = React.lazy(() => import('@/features/extracurriculars/pages/OnboardingQuestionnairePage').then((m) => ({ default: m.OnboardingQuestionnairePage })));
 
 const AppContent: React.FC = () => {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
@@ -42,13 +43,20 @@ const AppContent: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Determine if current page is questionnaire onboarding
+  const isOnboardingQuiz =
+    currentPath === '/student/onboarding-quiz' ||
+    currentPath === '/student/kuisioner' ||
+    currentPath === '/kuisioner';
+
   // Determine if current page is within authenticated dashboard layout
   const isAuthenticatedDashboardRoute =
-    currentPath.startsWith('/student') ||
-    currentPath.startsWith('/pengurus') ||
-    currentPath.startsWith('/pembina') ||
-    currentPath.startsWith('/teacher') ||
-    currentPath.startsWith('/admin');
+    !isOnboardingQuiz &&
+    (currentPath.startsWith('/student') ||
+      currentPath.startsWith('/pengurus') ||
+      currentPath.startsWith('/pembina') ||
+      currentPath.startsWith('/teacher') ||
+      currentPath.startsWith('/admin'));
 
   // Verify client-side route authorization
   const isUnauthorizedForDashboard =
@@ -176,6 +184,10 @@ const AppContent: React.FC = () => {
         return <LoginPage currentPath={currentPath} onNavigate={navigate} />;
 
       // Student routes
+      case '/student/onboarding-quiz':
+      case '/student/kuisioner':
+      case '/kuisioner':
+        return <OnboardingQuestionnairePage onNavigate={navigate} />;
       case '/student/dashboard':
       case '/student':
         return <StudentDashboardPage onNavigate={navigate} initialTab="overview" />;

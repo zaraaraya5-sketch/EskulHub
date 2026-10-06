@@ -81,8 +81,8 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
     .filter((u) => roleFilters.includes(u.role))
     .filter(
       (u) =>
-        u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.email.toLowerCase().includes(searchQuery.toLowerCase())
+        (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (u.email || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
   const handleAddSubmit = (e: React.FormEvent) => {

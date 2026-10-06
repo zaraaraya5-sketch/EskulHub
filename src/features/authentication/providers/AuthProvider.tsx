@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
 import { db } from '@/lib/database';
-import { loginAPI, logoutAPI } from '@/lib/api';
+import { loginAPI, logoutAPI, registerAPI } from '@/lib/api';
 
 interface AuthContextType {
   currentUser: User | null;
   role: UserRole;
   isAuthenticated: boolean;
   login: (identifier: string, password?: string) => Promise<{ success: boolean; message?: string; user?: User }>;
-  register: (name: string, email: string, role?: UserRole, password?: string, phone?: string) => { success: boolean; message: string; user?: User };
+  register: (name: string, email: string, role?: UserRole, password?: string, phone?: string) => Promise<{ success: boolean; message: string; user?: User }>;
   logout: () => void;
   switchRole: (role: UserRole) => void;
   updateProfile: (data: Partial<User>) => { success: boolean; message: string; user?: User };
@@ -108,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // 2. Strict local validation fallback (No wildcard substring matching)
     const allUsers = db.getUsers();
     const found = allUsers.find(
-      u => u.email.toLowerCase() === clean || u.name.toLowerCase() === clean
+      u => (u.email && u.email.toLowerCase() === clean) || (u.name && u.name.toLowerCase() === clean)
     );
 
     if (!found) {
@@ -131,8 +131,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true, user: found };
   };
 
-  const register = (name: string, email: string, role: UserRole = 'student', password?: string, phone?: string) => {
-    const res = db.registerUser({ name, email, role, password, phone });
+  const register = async (
+    name: string,
+    email: string,
+    role: UserRole = 'student',
+    password?: string,
+    phone?: string
+  ): Promise<{ success: boolean; message: string; user?: User }> => {
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPassword = password || 'password123';
+
+    // 1. First attempt registration on the Laravel backend API
+    try {
+      const apiRes = await registerAPI({
+        name: cleanName,
+        email: cleanEmail,
+        password: cleanPassword,
+        phone: phone ? phone.trim() : undefined,
+        role,
+      });
+
+      if (apiRes && apiRes.success && apiRes.user) {
+        if (apiRes.token) {
+          localStorage.setItem('ekskul_auth_token', apiRes.token);
+        }
+        localStorage.setItem('ekskul_auth_user', JSON.stringify(apiRes.user));
+        localStorage.setItem('ekskul_auth_user_id', apiRes.user.id);
+        setCurrentUser(apiRes.user);
+
+        // Sync local in-memory user list
+        const allUsers = db.getUsers();
+        if (!allUsers.some(u => u.id === apiRes.user.id || (u.email && u.email.toLowerCase() === cleanEmail))) {
+          allUsers.unshift(apiRes.user);
+        }
+
+        return {
+          success: true,
+          message: apiRes.message || 'Pendaftaran akun siswa berhasil!',
+          user: apiRes.user,
+        };
+      }
+
+      // If backend explicitly returned a validation error (like email duplicate), return it
+      if (apiRes && apiRes.success === false && apiRes.message && !apiRes.message.includes('Gagal terhubung')) {
+        return {
+          success: false,
+          message: apiRes.message,
+        };
+      }
+    } catch {
+      // Backend unreachable, proceed with local fallback
+    }
+
+    // 2. Fallback to local database module for offline / client operation
+    const res = db.registerUser({ name: cleanName, email: cleanEmail, role, password: cleanPassword, phone });
+    if (res.success && res.user) {
+      localStorage.setItem('ekskul_auth_user', JSON.stringify(res.user));
+      localStorage.setItem('ekskul_auth_user_id', res.user.id);
+      setCurrentUser(res.user);
+    }
     return res;
   };
 

@@ -19,12 +19,14 @@ import { Extracurricular } from '@/types';
 
 interface AdminFormEkskulPageProps {
   ekskulId?: string; // If provided, Edit mode; otherwise Create mode
+  editId?: string;
   onNavigate: (path: string) => void;
 }
 
-export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskulId, onNavigate }) => {
-  const isEditMode = Boolean(ekskulId);
-  const existingEkskul = isEditMode && ekskulId ? db.getExtracurricularById(ekskulId) : null;
+export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskulId, editId, onNavigate }) => {
+  const targetId = ekskulId || editId;
+  const isEditMode = Boolean(targetId);
+  const existingEkskul = isEditMode && targetId ? db.getExtracurricularById(targetId) : null;
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState<Extracurricular['category']>('Olahraga');
