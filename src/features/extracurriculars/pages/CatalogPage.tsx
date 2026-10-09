@@ -21,22 +21,38 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchEkskuls = async () => {
       try {
         const data = await getEkskulsAPI();
+        if (!isMounted) return;
         if (data && data.length > 0) {
           setAllEkskuls(data);
+          db.setExtracurriculars(data);
         } else {
-          // Fallback to mock DB if API is down or empty
           setAllEkskuls(db.getExtracurriculars());
         }
       } catch (err) {
+        if (!isMounted) return;
         setAllEkskuls(db.getExtracurriculars());
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     fetchEkskuls();
+
+    const unsubscribe = db.subscribe(() => {
+      if (!isMounted) return;
+      const current = db.getExtracurriculars();
+      if (current && current.length > 0) {
+        setAllEkskuls([...current]);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const filteredEkskuls = useMemo(() => {

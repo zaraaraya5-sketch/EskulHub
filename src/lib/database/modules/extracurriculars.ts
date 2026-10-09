@@ -43,7 +43,7 @@ const INITIAL_EXTRACURRICULARS: Extracurricular[] = [
     category: 'Olahraga',
     short_description: 'Pengembangan teknik passing, servis presisi, smash tajam, dan kekompakan tim bola voli.',
     full_description: 'Ekstrakurikuler Voli melatih teknik dasar passing atas/bawah, variasi servis menukik, pertahanan receive solid, serta kombinasi spike tajam untuk kejuaraan voli pelajar.',
-    profile_image: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
+    profile_image: '/images/voli.jpeg',
     supervisor_name: 'Agus Setiawan, S.Pd.',
     chairperson_name: 'Dimas Pratama',
     practice_schedule: 'Setiap Senin & Kamis (15:30 - 17:30 WIB)',
@@ -77,7 +77,7 @@ const INITIAL_EXTRACURRICULARS: Extracurricular[] = [
     category: 'Kepemimpinan',
     short_description: 'Kepanduan, penjelajahan alam, tali-temali pioneering, dan kemandirian karakter pemuda.',
     full_description: 'Gugus Depan Pramuka menanamkan Dasa Darma melalui kegiatan survival alam terbuka, pioneering menara/jembatan, sandi morse/semapur, perkemahan, dan pengabdian masyarakat.',
-    profile_image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800',
+    profile_image: '/images/pramuka.jpeg',
     supervisor_name: 'Bambang Supriyadi, S.Pd.',
     chairperson_name: 'Aditya Pratama',
     practice_schedule: 'Setiap Jumat (15:30 - 17:30 WIB)',
@@ -94,7 +94,7 @@ const INITIAL_EXTRACURRICULARS: Extracurricular[] = [
     category: 'Kemanusiaan',
     short_description: 'Pertolongan pertama (P3K), kesiapsiagaan darurat medis, tandu darurat, dan aksi kemanusiaan.',
     full_description: 'Palang Merah Remaja (PMR) melatih ketanggapdaruratan medis, balut bidai, evakuasi tandu, perawatan keluarga, kesiapan tanggap bencana, serta bakti donor darah.',
-    profile_image: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800',
+    profile_image: '/images/PMR.jpeg',
     supervisor_name: 'Rina Marlina, S.Kep.',
     chairperson_name: 'Nabila Safitri',
     practice_schedule: 'Setiap Sabtu (08:30 - 11:00 WIB)',
@@ -111,7 +111,8 @@ const INITIAL_EXTRACURRICULARS: Extracurricular[] = [
     category: 'Keagamaan',
     short_description: 'Pembinaan akhlak mulia, kajian inspiratif keislaman, tahsin Al-Qur\'an, dan kepedulian sosial.',
     full_description: 'Rohani Islam (Rohis) mempererat ukhuwah islamiyah melalui mentoring akhlak, pendalaman ilmu agama, tadarus dan tahsin Al-Qur\'an, peringatan hari besar Islam, dan aksi kepedulian sesama.',
-    profile_image: 'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=800',
+    profile_image: '/images/Rohis.jpeg',
+
     supervisor_name: 'Ustadz Ahmad Fauzi, S.Ag.',
     chairperson_name: 'Muhammad Ilham',
     practice_schedule: 'Setiap Jumat (13:00 - 15:00 WIB)',
@@ -170,18 +171,64 @@ export class ExtracurricularsModule {
   }
 
   public addExtracurricular(
-    data: Omit<Extracurricular, 'id' | 'current_member_count' | 'slug'> & { slug?: string }
+    data: Omit<Extracurricular, 'id' | 'current_member_count' | 'slug'> & { slug?: string; id?: string }
   ): { success: boolean; message: string; ekskul?: Extracurricular } {
     const slug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     const newEkskul: Extracurricular = {
       ...data,
-      id: `eks-${Date.now()}`,
+      id: data.id || `eks-${Date.now()}`,
       slug,
       current_member_count: 0,
       achievements_count: 0,
     };
     this.extracurriculars.push(newEkskul);
-    apiService.createEkskulAPI(newEkskul);
+    this.notify();
+
+    apiService.createEkskulAPI(newEkskul).then((res) => {
+      if (res && res.ekskul) {
+        const idx = this.extracurriculars.findIndex((e) => e.id === newEkskul.id || e.slug === newEkskul.slug);
+        if (idx !== -1) {
+          this.extracurriculars[idx] = { ...this.extracurriculars[idx], ...res.ekskul };
+        }
+        this.notify();
+      }
+    }).catch(console.error);
+
+    return { success: true, message: `Ekstrakurikuler "${newEkskul.name}" berhasil ditambahkan!`, ekskul: newEkskul };
+  }
+
+  public async addExtracurricularAsync(
+    data: Omit<Extracurricular, 'id' | 'current_member_count' | 'slug'> & { slug?: string; id?: string }
+  ): Promise<{ success: boolean; message: string; ekskul?: Extracurricular }> {
+    const slug = data.slug || data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const newEkskul: Extracurricular = {
+      ...data,
+      id: data.id || `eks-${Date.now()}`,
+      slug,
+      current_member_count: 0,
+      achievements_count: 0,
+    };
+
+    try {
+      const res = await apiService.createEkskulAPI(newEkskul);
+      if (res && res.ekskul) {
+        const created = res.ekskul as Extracurricular;
+        const exists = this.extracurriculars.some((e) => e.id === created.id);
+        if (!exists) {
+          this.extracurriculars.push(created);
+        } else {
+          const idx = this.extracurriculars.findIndex((e) => e.id === created.id);
+          this.extracurriculars[idx] = created;
+        }
+        this.notify();
+        return { success: true, message: `Ekstrakurikuler "${created.name}" berhasil ditambahkan!`, ekskul: created };
+      }
+    } catch (err) {
+      console.warn('Backend creation failed, falling back to local memory:', err);
+    }
+
+    // Fallback: local memory
+    this.extracurriculars.push(newEkskul);
     this.notify();
     return { success: true, message: `Ekstrakurikuler "${newEkskul.name}" berhasil ditambahkan!`, ekskul: newEkskul };
   }

@@ -201,9 +201,12 @@ export const createEkskulAPI = async (data: Partial<Extracurricular>) => {
   try {
     const res = await api.post('/ekskul', data);
     return res.data;
-  } catch (err) {
-    console.error('Error creating ekskul via API:', err);
-    return { success: false };
+  } catch (err: any) {
+    console.error('Error creating ekskul via API:', err?.response?.data || err.message);
+    return {
+      success: false,
+      message: err?.response?.data?.message || 'Gagal menyimpan data ekstrakurikuler ke database server.',
+    };
   }
 };
 
@@ -211,9 +214,12 @@ export const updateEkskulAPI = async (id: string, data: Partial<Extracurricular>
   try {
     const res = await api.put(`/ekskul/${id}`, data);
     return res.data;
-  } catch (err) {
-    console.error(`Error updating ekskul ${id} via API:`, err);
-    return { success: false };
+  } catch (err: any) {
+    console.error(`Error updating ekskul ${id} via API:`, err?.response?.data || err.message);
+    return {
+      success: false,
+      message: err?.response?.data?.message || 'Gagal memperbarui data ekstrakurikuler di database server.',
+    };
   }
 };
 
@@ -221,9 +227,12 @@ export const deleteEkskulAPI = async (id: string) => {
   try {
     const res = await api.delete(`/ekskul/${id}`);
     return res.data;
-  } catch (err) {
-    console.error(`Error deleting ekskul ${id} via API:`, err);
-    return { success: false };
+  } catch (err: any) {
+    console.error(`Error deleting ekskul ${id} via API:`, err?.response?.data || err.message);
+    return {
+      success: false,
+      message: err?.response?.data?.message || 'Gagal menghapus data ekstrakurikuler dari database server.',
+    };
   }
 };
 

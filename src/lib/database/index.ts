@@ -82,12 +82,19 @@ class SQLiteDatabaseClient {
       if (
         (data.settings?.school_name && !data.settings.school_name.includes('Ciomas')) ||
         (data.ekskuls?.[0]?.name && data.ekskuls[0].name.includes('Ciomas')) ||
-        data.ekskuls?.some((e: any) => e.slug === 'paskibra' && e.profile_image?.includes('photo-1532375810709')) ||
+        data.ekskuls?.some((e: any) => 
+          (e.slug === 'paskibra' && e.profile_image?.includes('photo-1532375810709')) ||
+          (e.slug === 'voli' && !e.profile_image?.includes('/images/voli.jpeg')) ||
+          (e.slug === 'pmr' && !e.profile_image?.includes('/images/PMR.jpeg')) ||
+          (e.slug === 'rohis' && !e.profile_image?.includes('/images/Rohis.jpeg')) ||
+          (e.slug === 'pramuka' && !e.profile_image?.includes('/images/pramuka.jpeg'))
+        ) ||
         !data.events || data.events.length === 0
       ) {
         localStorage.removeItem('ekskul_cached_snapshot');
         return;
       }
+
       if (data.settings) this.settings.setSettings(data.settings);
       if (data.users?.length) this.users.setUsers(data.users);
       if (data.ekskuls?.length) this.extracurriculars.setExtracurriculars(data.ekskuls);
@@ -185,9 +192,11 @@ class SQLiteDatabaseClient {
 
   // Extracurriculars & Members
   public getExtracurriculars = () => this.extracurriculars.getExtracurriculars();
+  public setExtracurriculars = (ekskuls: any[]) => this.extracurriculars.setExtracurriculars(ekskuls);
   public getExtracurricularBySlug = (slug: string) => this.extracurriculars.getExtracurricularBySlug(slug);
   public getExtracurricularById = (id: string) => this.extracurriculars.getExtracurricularById(id);
   public addExtracurricular = (data: any) => this.extracurriculars.addExtracurricular(data);
+  public addExtracurricularAsync = (data: any) => this.extracurriculars.addExtracurricularAsync(data);
   public updateExtracurricular = (id: string, data: any) => this.extracurriculars.updateExtracurricular(id, data);
   public deleteExtracurricular = (id: string) => this.extracurriculars.deleteExtracurricular(id);
   public getMembers = () => this.extracurriculars.getMembers();

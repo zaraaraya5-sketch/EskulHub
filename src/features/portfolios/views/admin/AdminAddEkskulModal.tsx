@@ -27,14 +27,14 @@ export const AdminAddEkskulModal: React.FC<AdminAddEkskulModalProps> = ({
   const [ekskulLocation, setEkskulLocation] = useState('');
   const [ekskulDesc, setEkskulDesc] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!ekskulName.trim() || !ekskulSupervisor.trim()) {
       onError('Nama ekskul dan guru pembina wajib diisi.');
       return;
     }
 
-    const res = db.addExtracurricular({
+    const res = await db.addExtracurricularAsync({
       name: ekskulName.trim(),
       category: ekskulCategory,
       supervisor_name: ekskulSupervisor.trim(),

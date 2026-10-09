@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { School, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react';
@@ -53,6 +53,17 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
   const [events, setEvents] = useState<SchoolEvent[]>(() => db.getSchoolEvents());
   const [verifications, setVerifications] = useState<PortfolioVerification[]>(() => db.getVerifications());
   const [registrations, setRegistrations] = useState(() => db.getRegistrations());
+
+  useEffect(() => {
+    const unsubscribe = db.subscribe(() => {
+      setUsers([...db.getUsers()]);
+      setEkskuls([...db.getExtracurriculars()]);
+      setEvents([...db.getSchoolEvents()]);
+      setVerifications([...db.getVerifications()]);
+      setRegistrations([...db.getRegistrations()]);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 

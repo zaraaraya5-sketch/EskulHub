@@ -73,7 +73,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
     setFormSuccess('');
@@ -122,7 +122,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
         setFormError(res.message);
       }
     } else {
-      const res = db.addExtracurricular({
+      const res = await db.addExtracurricularAsync({
         name: name.trim(),
         category,
         registration_status: registrationStatus,

@@ -89,9 +89,9 @@ Route::middleware(['hybrid.auth', 'throttle:60,1'])->group(function () {
     });
 
     // ==========================================
-    // 4. Pedagogical & Advisory Staff (Pembina, Guru, Teacher, Admin)
+    // 4. Pedagogical & Advisory Staff (Pengurus, Pembina, Guru, Teacher, Admin)
     // ==========================================
-    Route::middleware(['role:pembina,guru,teacher,admin'])->group(function () {
+    Route::middleware(['role:pengurus,pembina,guru,teacher,admin'])->group(function () {
         Route::put('/achievements/{id}/verify', [AchievementController::class, 'verify']);
         Route::post('/certificates', [CertificateController::class, 'store']);
         Route::delete('/certificates/{id}', [CertificateController::class, 'destroy']);
