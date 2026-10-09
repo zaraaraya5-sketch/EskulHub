@@ -23,23 +23,42 @@ class EkskulController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'id' => 'nullable|string|max:100',
             'name' => 'required|string|max:120',
-            'category' => 'required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi',
-            'short_description' => 'required|string|max:300',
-            'full_description' => 'required|string|max:3000',
+            'category' => 'required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi,Keagamaan,Kemanusiaan',
+            'short_description' => 'required|string|max:500',
+            'full_description' => 'nullable|string|max:3000',
             'profile_image' => 'nullable|string|max:500',
+            'image_url' => 'nullable|string|max:500',
             'supervisor_name' => 'required|string|max:120',
             'supervisor_id' => 'nullable|string|max:100',
-            'chairperson_name' => 'required|string|max:120',
-            'practice_schedule' => 'required|string|max:150',
-            'location' => 'required|string|max:150',
-            'member_capacity' => 'required|integer|min:5|max:500',
-            'registration_status' => 'required|in:open,closed',
+            'chairperson_name' => 'nullable|string|max:120',
+            'practice_schedule' => 'nullable|string|max:150',
+            'location' => 'nullable|string|max:150',
+            'member_capacity' => 'nullable|integer|min:1|max:1000',
+            'registration_status' => 'nullable|in:open,closed',
         ]);
 
-        $validated['id'] = 'eks-' . time() . '-' . Str::random(4);
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['current_member_count'] = 0;
+        $validated['id'] = $request->input('id') ?: ('eks-' . time() . '-' . Str::random(4));
+        
+        $baseSlug = Str::slug($validated['name']);
+        $slug = $baseSlug ?: ('ekskul-' . time());
+        $counter = 1;
+        while (Ekskul::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+        $validated['slug'] = $slug;
+
+        $validated['profile_image'] = !empty($validated['profile_image']) ? $validated['profile_image'] : (!empty($request->input('image_url')) ? $request->input('image_url') : 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800');
+        $validated['chairperson_name'] = !empty($validated['chairperson_name']) ? $validated['chairperson_name'] : 'Siswa Terpilih';
+        $validated['practice_schedule'] = !empty($validated['practice_schedule']) ? $validated['practice_schedule'] : 'Setiap Jumat (15:30 - 17:00 WIB)';
+        $validated['location'] = !empty($validated['location']) ? $validated['location'] : 'Kampus SMKN 1 Ciomas';
+        $validated['member_capacity'] = !empty($validated['member_capacity']) ? (int) $validated['member_capacity'] : 30;
+        $validated['current_member_count'] = (int) $request->input('current_member_count', 0);
+        $validated['registration_status'] = !empty($validated['registration_status']) ? $validated['registration_status'] : 'open';
+        $validated['full_description'] = !empty($validated['full_description']) ? $validated['full_description'] : $validated['short_description'];
+
+        unset($validated['image_url']);
 
         $ekskul = Ekskul::create($validated);
         return response()->json(['success' => true, 'ekskul' => $ekskul], 201);
@@ -51,22 +70,34 @@ class EkskulController extends Controller
 
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:120',
-            'category' => 'sometimes|required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi',
-            'short_description' => 'sometimes|required|string|max:300',
-            'full_description' => 'sometimes|required|string|max:3000',
+            'category' => 'sometimes|required|in:Olahraga,Seni & Budaya,Sains & Teknologi,Kepemimpinan,Bahasa & Literasi,Keagamaan,Kemanusiaan',
+            'short_description' => 'sometimes|required|string|max:500',
+            'full_description' => 'nullable|string|max:3000',
             'profile_image' => 'nullable|string|max:500',
+            'image_url' => 'nullable|string|max:500',
             'supervisor_name' => 'sometimes|required|string|max:120',
             'supervisor_id' => 'nullable|string|max:100',
-            'chairperson_name' => 'sometimes|required|string|max:120',
-            'practice_schedule' => 'sometimes|required|string|max:150',
-            'location' => 'sometimes|required|string|max:150',
-            'member_capacity' => 'sometimes|required|integer|min:5|max:500',
+            'chairperson_name' => 'nullable|string|max:120',
+            'practice_schedule' => 'nullable|string|max:150',
+            'location' => 'nullable|string|max:150',
+            'member_capacity' => 'sometimes|required|integer|min:1|max:1000',
             'registration_status' => 'sometimes|required|in:open,closed',
         ]);
 
         if (isset($validated['name']) && $validated['name'] !== $ekskul->name) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $baseSlug = Str::slug($validated['name']);
+            $slug = $baseSlug ?: ('ekskul-' . time());
+            $counter = 1;
+            while (Ekskul::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $baseSlug . '-' . $counter++;
+            }
+            $validated['slug'] = $slug;
         }
+
+        if (isset($validated['image_url']) && empty($validated['profile_image'])) {
+            $validated['profile_image'] = $validated['image_url'];
+        }
+        unset($validated['image_url']);
 
         $ekskul->update($validated);
         return response()->json(['success' => true, 'ekskul' => $ekskul->fresh()]);

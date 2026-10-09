@@ -217,66 +217,66 @@ class AuthController extends Controller
     }
 
 
-    /**
-     * Admin-only user creation with strict validation.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:120',
-            'email' => 'required|email|max:150|unique:users,email',
-            'role' => 'required|in:student,pengurus,pembina,teacher,admin',
-            'password' => 'required|string|min:6',
-            'phone' => 'nullable|string|max:25',
-            'avatar_url' => 'nullable|url',
-            'is_active' => 'boolean',
-            'nisn' => 'nullable|string|max:20',
-            'class_name' => 'nullable|string|max:50',
-            'gender' => 'nullable|in:L,P',
-            'bio' => 'nullable|string|max:500',
-            'nip' => 'nullable|string|max:30',
-            'subject' => 'nullable|string|max:100',
-        ]);
+        /**
+         * Admin-only user creation with strict validation.
+         */
+        public function store(Request $request)
+        {
+            $validated = $request->validate([
+                'name' => 'required|string|max:120',
+                'email' => 'required|email|max:150|unique:users,email',
+                'role' => 'required|in:student,pengurus,pembina,teacher,admin',
+                'password' => 'required|string|min:6',
+                'phone' => 'nullable|string|max:25',
+                'avatar_url' => 'nullable|url',
+                'is_active' => 'boolean',
+                'nisn' => 'nullable|string|max:20',
+                'class_name' => 'nullable|string|max:50',
+                'gender' => 'nullable|in:L,P',
+                'bio' => 'nullable|string|max:500',
+                'nip' => 'nullable|string|max:30',
+                'subject' => 'nullable|string|max:100',
+            ]);
 
-        $validated['id'] = 'usr-' . $validated['role'] . '-' . time() . '-' . Str::random(4);
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = $validated['is_active'] ?? true;
-
-        $user = User::create($validated);
-
-        return response()->json(['success' => true, 'user' => $user], 201);
-    }
-
-    /**
-     * Admin-only user update.
-     */
-    public function update(Request $request, string $id)
-    {
-        $user = User::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'sometimes|required|string|max:120',
-            'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'role' => 'sometimes|required|in:student,pengurus,pembina,teacher,admin',
-            'password' => 'nullable|string|min:6',
-            'phone' => 'nullable|string|max:25',
-            'avatar_url' => 'nullable|url',
-            'is_active' => 'boolean',
-            'nisn' => 'nullable|string|max:20',
-            'class_name' => 'nullable|string|max:50',
-            'gender' => 'nullable|in:L,P',
-            'bio' => 'nullable|string|max:500',
-            'nip' => 'nullable|string|max:30',
-            'subject' => 'nullable|string|max:100',
-        ]);
-
-        if (!empty($validated['password'])) {
+            $validated['id'] = 'usr-' . $validated['role'] . '-' . time() . '-' . Str::random(4);
             $validated['password'] = Hash::make($validated['password']);
-        } else {
-            unset($validated['password']);
+            $validated['is_active'] = $validated['is_active'] ?? true;
+
+            $user = User::create($validated);
+
+            return response()->json(['success' => true, 'user' => $user], 201);
         }
 
-        $user->update($validated);
+        /**
+         * Admin-only user update.
+         */
+        public function update(Request $request, string $id)
+        {
+            $user = User::findOrFail($id);
+
+            $validated = $request->validate([
+                'name' => 'sometimes|required|string|max:120',
+                'email' => 'sometimes|required|email|unique:users,email,' . $id,
+                'role' => 'sometimes|required|in:student,pengurus,pembina,teacher,admin',
+                'password' => 'nullable|string|min:6',
+                'phone' => 'nullable|string|max:25',
+                'avatar_url' => 'nullable|url',
+                'is_active' => 'boolean',
+                'nisn' => 'nullable|string|max:20',
+                'class_name' => 'nullable|string|max:50',
+                'gender' => 'nullable|in:L,P',
+                'bio' => 'nullable|string|max:500',
+                'nip' => 'nullable|string|max:30',
+                'subject' => 'nullable|string|max:100',
+            ]);
+
+            if (!empty($validated['password'])) {
+                $validated['password'] = Hash::make($validated['password']);
+            } else {
+                unset($validated['password']);
+            }
+
+            $user->update($validated);
 
         return response()->json(['success' => true, 'user' => $user->fresh()]);
     }
