@@ -1,74 +1,213 @@
 # EskulHub SMKN 1 Ciomas
 
-EskulHub adalah sistem pengelolaan kegiatan ekstrakurikuler, presensi kehadiran latihan, pencatatan prestasi, dan penerbitan portofolio non-akademik untuk siswa SMKN 1 Ciomas. Sistem ini menghubungkan siswa, guru pembina, dan pengurus sekolah dalam satu alur kerja yang terstruktur dan tercatat rapi.
+EskulHub adalah sistem informasi berbasis web untuk mengelola kegiatan ekstrakurikuler, presensi latihan mingguan, pencatatan prestasi, serta penerbitan portofolio non-akademik siswa di SMKN 1 Ciomas. Sistem ini menggantikan pencatatan manual berbasis kertas dengan alur kerja digital yang menghubungkan siswa, guru pembina, dan staf kesiswaan sekolah.
 
-## Peran Pengguna dan Batas Akses
+---
 
-Sistem menggunakan pembagian peran berdasarkan tanggung jawab masing-masing pihak di sekolah.
+## Masalah yang Diselesaikan
 
-### 1. Siswa
-Siswa menggunakan sistem untuk mencari informasi ekstrakurikuler yang aktif di SMKN 1 Ciomas, mendaftarkan diri pada kegiatan yang diminati, memantau rekap kehadiran latihan mingguan, mengunggah bukti keikutsertaan lomba atau kegiatan, dan mencetak dokumen portofolio resmi saat diperlukan untuk keperluan kelulusan, seleksi perguruan tinggi, maupun lamaran kerja.
+Sebelum sistem ini dibangun, pengelolaan kegiatan kesiswaan di SMKN 1 Ciomas menghadapi beberapa kendala operasional:
 
-### 2. Pembina Ekskul
-Guru pembina bertanggung jawab mengelola satu atau beberapa ekstrakurikuler yang dibina. Pembina memeriksa berkas pendaftaran calon anggota baru, menyetujui atau menolak pendaftaran sesuai kuota, membuka sesi latihan rutin, mengisi catatan kehadiran anggota, menyusun agenda latihan atau persiapan kompetisi, serta memvalidasi sertifikat penghargaan yang diajukan oleh siswa binaannya.
+1. Formulir pendaftaran anggota sering tercecer dan kuota peserta per cabang sulit dipantau secara langsung.
+2. Rekapitulasi absensi mingguan di lapangan atau aula sering hilang atau rusak, sehingga pembina kesulitan menilai keaktifan siswa secara objektif.
+3. Fasilitas bersama seperti lapangan serbaguna dan laboratorium sering mengalami bentrok jadwal karena tidak ada kalender terpusat.
+4. Piagam dan sertifikat lomba milik siswa jarang terdata rapi dalam satu arsip terpusat, sehingga penyusunan surat keterangan prestasi menjelang kelulusan membutuhkan waktu lama.
+5. Pihak luar seperti perguruan tinggi dan penyedia beasiswa kesulitan memverifikasi keaslian dokumen portofolio non-akademik yang dibawa siswa.
 
-### 3. Pengurus Sekolah
-Pengurus memegang wewenang pengawasan menyeluruh terhadap seluruh aktivitas ekstrakurikuler di SMKN 1 Ciomas. Tugas pengurus mencakup pemantauan keaktifan siswa dan pembina, peninjauan kapasitas anggota per cabang, pemantauan agenda resmi sekolah dan hari libur nasional pada kalender, impor massal jadwal kegiatan dari berkas Excel, serta penerbitan tanda tangan elektronik dan kode verifikasi portofolio kesiswaan.
+EskulHub menyatukan seluruh proses tersebut ke dalam satu sistem terintegrasi yang mencakup verifikasi daring, pembagian hak akses terstruktur, dan perlindungan privasi data siswa.
 
-## Alur Kerja Sistem
+---
 
-### 1. Alur Pendaftaran Anggota Baru
-Siswa membuka katalog ekstrakurikuler dan memilih salah satu cabang yang pendaftarannya masih terbuka. Siswa mengisi formulir pendaftaran yang memuat alasan memilih cabang tersebut, pengalaman sebelumnya jika ada, nomor kontak aktif, dan persetujuan tata tertib latihan. Sistem memastikan siswa tidak mendaftar dua kali pada cabang yang sama dan memeriksa sisa kuota yang tersedia.
+## Fitur Utama Sistem
 
-Data pendaftaran masuk ke dasbor guru pembina terkait dengan status menunggu persetujuan. Pembina meninjau data pemohon, lalu memilih opsi terima atau tolak disertai catatan singkat. Saat pendaftaran disetujui, identitas siswa langsung tercatat ke dalam daftar anggota resmi cabang tersebut.
+### 1. Onboarding dan Kuisioner Minat Bakat Siswa Baru
+Siswa yang baru mendaftarkan akun diarahkan ke alur penentuan minat. Siswa dapat memilih untuk langsung menuju katalog jika sudah memiliki pilihan, atau mengikuti kuisioner pemetaan bakat yang terdiri dari lima pertanyaan situasi:
+* Pola energi dan gaya kegiatan saat waktu luang.
+* Respon spontan saat menghadapi perubahan situasi atau tekanan.
+* Peran alami yang disukai dalam kerja sama kelompok.
+* Suasana lingkungan belajar dan tempat berlatih yang paling nyaman.
+* Target kualitas karakter yang ingin dibangun sebelum lulus sekolah.
 
-### 2. Alur Presensi Latihan Rutin
-Pada hari pelaksanaan kegiatan, pembina membuka sesi latihan baru dengan memilih tanggal, waktu mulai, materi atau fokus latihan, dan lokasi fasilitas yang digunakan. Daftar seluruh anggota resmi cabang tersebut ditampilkan pada layar presensi.
+Sistem menghitung pembobotan nilai secara otomatis dan memberikan saran cabang ekstrakurikuler utama beserta alternatif yang paling sesuai dengan kepribadian siswa.
 
-Pembina menandai status kehadiran setiap anggota: hadir, terlambat, izin atau sakit, atau alpa. Sistem menghitung persentase kehadiran setiap siswa secara otomatis. Rekapitulasi kehadiran ini dapat dilihat langsung oleh siswa pada dasbor pribadi dan tercatat sebagai komponen evaluasi keaktifan dalam portofolio akhir.
+### 2. Katalog Terpadu dan Profil Ekstrakurikuler
+Katalog menyajikan seluruh cabang kegiatan aktif di SMKN 1 Ciomas: Futsal, Basket, Bola Voli, Paskibra, Pramuka, Palang Merah Remaja (PMR), Rohani Islam (Rohis), dan English Club. Setiap profil memuat:
+* Deskripsi pembinaan dan tujuan kegiatan.
+* Informasi pembina guru dan pengurus siswa yang bertugas.
+* Jadwal latihan mingguan dan lokasi fasilitas yang digunakan.
+* Status ketersediaan kuota anggota secara langsung.
+* Dokumentasi galeri kegiatan dan daftar prestasi yang pernah diraih.
 
-### 3. Alur Penjadwalan dan Pemeriksaan Bentrok Lokasi
-Pembina dan pengurus dapat menambahkan agenda kegiatan baru melalui kalender sekolah. Setiap agenda memuat judul kegiatan, kategori acara, tanggal dan jam pelaksanaan, nama penanggung jawab, serta lokasi ruangan atau lapangan yang dipakai.
+### 3. Pendaftaran Anggota Digital
+Siswa mendaftarkan diri secara daring dengan melengkapi data kontak, kelas, NISN, serta alasan memilih cabang tersebut. Sistem memvalidasi kapasitas anggota, memeriksa apakah pendaftaran masih dibuka, dan mencegah pendaftaran ganda pada cabang yang sama. Berkas masuk ke dasbor pembina terkait untuk ditinjau dan diputuskan statusnya.
 
-Sebelum data tersimpan, sistem melakukan pengecekan otomatis terhadap penggunaan lokasi. Jika pada rentang waktu yang sama terdapat kegiatan lain yang telah memesan fasilitas tersebut, sistem menolak penyimpanan dan menampilkan peringatan bentrok ruangan beserta rincian kegiatan yang mendahuluinya. Pengguna harus memilih waktu atau lokasi alternatif agar jadwal tidak saling tumpang tindih.
+### 4. Presensi Digital Sesi Latihan
+Guru pembina dapat membuka sesi latihan baru dengan mencantumkan tanggal, jam, materi latihan, dan lokasi. Pada layar presensi, pembina menandai kehadiran anggota dengan empat status: hadir, terlambat, izin atau sakit, dan alpa. Persentase kehadiran dihitung secara otomatis dan menjadi salah satu syarat kelayakan penerbitan portofolio akhir.
 
-### 4. Alur Pengesahan Prestasi Siswa
-Siswa yang meraih penghargaan atau sertifikat keikutsertaan kompetisi dapat mengunggah rincian capaian melalui menu dokumen portofolio. Siswa mencantumkan nama kejuaraan, cabang lomba, tingkatan wilayah (tingkat sekolah, kecamatan, kota/kabupaten, provinsi, atau nasional), tahun perolehan, peringkat juara, serta berkas foto piagam atau sertifikat pendukung.
+### 5. Kalender Kegiatan dan Pencegahan Bentrok Fasilitas
+Kalender memadukan jadwal latihan rutin, agenda perlombaan, kegiatan resmi sekolah seperti Masa Pengenalan Lingkungan Sekolah (MPLS) dan Porseni, serta hari libur nasional. Saat pengguna menjadwalkan kegiatan baru, sistem secara otomatis memeriksa ketersediaan lokasi dan waktu. Jika ruangan atau lapangan telah dipesan pada jam yang sama, sistem menolak penginputan dan menampilkan rincian kegiatan yang mendahuluinya.
 
-Data prestasi yang dikirim berstatus belum diverifikasi. Pembina memeriksa keaslian bukti piagam tersebut melalui menu pembina. Jika dokumen sesuai, pembina menyetujui capaian tersebut sehingga statusnya berubah menjadi terverifikasi resmi dan berhak dimasukkan ke dalam dokumen transkrip portofolio sekolah.
+### 6. Impor Massal Jadwal via Berkas Excel
+Pengurus dan pembina dapat memasukkan agenda kegiatan satu semester sekaligus melalui fitur unggah berkas Excel atau CSV. Sistem membaca susunan kolom, memvalidasi format tanggal dan jam, memetakan kategori kegiatan, serta menyimpan data langsung ke dalam basis data melalui transaksi yang aman.
 
-### 5. Alur Penerbitan dan Pembuktian Portofolio Resmi
-Setelah siswa menyelesaikan masa kegiatan ekstrakurikuler atau menjelang kelulusan, siswa mengajukan permohonan penerbitan portofolio. Pengurus sekolah memeriksa kelengkapan data siswa, keabsahan keanggotaan organisasi, persentase kehadiran latihan, dan daftar prestasi yang telah disahkan oleh pembina.
+### 7. Pengesahan Prestasi Siswa
+Siswa yang memenangkan kompetisi dapat mengunggah rincian prestasi mandiri, mulai dari tingkat sekolah, kota atau kabupaten, provinsi, nasional, hingga internasional. Berkas bukti piagam atau sertifikat yang diunggah akan diverifikasi langsung oleh guru pembina sebelum dinyatakan sah dan masuk ke dalam rekam jejak resmi.
 
-Pengurus menerbitkan dokumen portofolio non-akademik berformat PDF yang memuat identitas lengkap siswa, riwayat keikutsertaan ekskul, rekapitulasi kehadiran, daftar prestasi terverifikasi, catatan pembinaan, serta nomor registrasi unik sekolah. Dokumen dilengkapi tanda tangan elektronik pejabat kesiswaan dan kode QR khusus.
-
-Pihak luar seperti panitia seleksi beasiswa, perguruan tinggi, maupun bagian personalia perusahaan dapat memindai kode QR atau memasukkan nomor verifikasi pada halaman publik verifikasi situs. Sistem menampilkan data asli yang tersimpan di basis data sekolah untuk memastikan keabsahan dokumen fisik tanpa risiko pemalsuan.
-
-## Rincian Fitur Aplikasi
-
-### 1. Katalog Terpadu SMKN 1 Ciomas
-Katalog menampilkan delapan cabang ekstrakurikuler yang aktif di SMKN 1 Ciomas: Basket, Voli, Futsal, Paskibra, English Club, Rohis, Pramuka, dan PMR. Pengunjung dapat menyaring daftar berdasarkan rumpun kegiatan (olahraga, kepemimpinan, keagamaan, kemanusiaan, atau bahasa), memeriksa status ketersediaan kuota, dan mencari nama pembina atau kata kunci tertentu.
-
-### 2. Profil Rinci Cabang Ekstrakurikuler
-Halaman profil memuat deskripsi lengkap tujuan pembinaan, jadwal latihan mingguan, lokasi fasilitas yang digunakan, nama guru pembina dan ketua ekskul yang bertugas, dokumentasi galeri foto kegiatan, serta daftar pencapaian yang pernah diraih oleh tim sekolah.
-
-### 3. Dasbor Mandiri Siswa
-Halaman khusus siswa untuk memantau status keanggotaan ekskul yang diikuti, melihat riwayat persetujuan pendaftaran, memeriksa grafik kehadiran latihan berkala, mengunggah sertifikat lomba baru, dan melihat draf portofolio kegiatan sebelum dicetak.
-
-### 4. Dasbor Pengelolaan Pembina
-Ruang kerja digital bagi guru pembina untuk memproses pendaftaran anggota masuk, memantau daftar anggota aktif, menyelenggarakan presensi digital pada setiap sesi latihan, mengelola agenda tryout atau jadwal lomba, dan memvalidasi sertifikat prestasi siswa binaan.
-
-### 5. Dasbor Pemantauan Pengurus Sekolah
-Pusat monitoring bagi pengurus untuk melihat statistik menyeluruh sekolah, mengawasi sebaran minat siswa per jurusan, mengelola data induk ekstrakurikuler dan dewan pembina, serta mengesahkan penerbitan dokumen resmi kesiswaan.
-
-### 6. Kalender Agenda Bulanan
-Tampilan kalender interaktif yang memuat seluruh agenda latihan rutin, pertandingan resmi, acara peringatan hari besar sekolah seperti PORSENI, serta hari libur nasional. Kalender dilengkapi filter kategori warna untuk mempermudah identifikasi jenis kegiatan.
-
-### 7. Pengunggahan Jadwal Massal via Excel
-Fitur impor berkas spreadsheet yang memungkinkan pengurus mengunggah jadwal kegiatan satu semester sekaligus. Sistem membaca tanggal, waktu, kategori, lokasi, dan penyelenggara kegiatan secara otomatis dari tabel lembar kerja, memvalidasi formatnya, dan langsung memasukkannya ke dalam kalender sekolah.
-
-### 8. Generator Dokumen Portofolio Resmi
-Modul pencetakan dokumen portofolio siswa yang menghasilkan berkas PDF berstandar arsip sekolah. Format cetak memuat kop surat resmi SMKN 1 Ciomas, rincian kompetensi non-akademik siswa, tanda tangan penanggung jawab kesiswaan, dan kode verifikasi QR yang terhubung ke server sekolah.
+### 8. Penerbitan Portofolio PDF Bersegel Kriptografi
+Siswa yang memenuhi syarat dapat mengunduh dokumen portofolio non-akademik resmi berformat PDF. Dokumen ini memuat:
+* Kop resmi SMKN 1 Ciomas dan identitas lengkap siswa.
+* Ringkasan keaktifan dan persentase kehadiran latihan.
+* Daftar prestasi yang telah diverifikasi guru pembina.
+* Tanda tangan digital pejabat kesiswaan sekolah.
+* Nomor registrasi unik dan kode segel keamanan berbasis HMAC-SHA256 untuk memastikan keaslian isi dokumen.
 
 ### 9. Halaman Verifikasi Publik
-Laman terbuka yang dapat diakses siapa saja untuk menguji keaslian dokumen portofolio yang diterbitkan oleh SMKN 1 Ciomas. Pihak penilai cukup memasukkan kode verifikasi atau memindai barcode pada dokumen cetak untuk melihat catatan prestasi resmi langsung dari basis data sekolah.
+Sistem menyediakan halaman publik terbuka untuk memeriksa keabsahan dokumen portofolio yang diterbitkan sekolah. Pihak verifikator luar (perguruan tinggi atau perusahaan) cukup memasukkan kode registrasi dokumen atau memindai barcode pada cetakan PDF untuk mencocokkan data langsung dengan catatan arsip sekolah.
+
+---
+
+## Hak Akses Pengguna
+
+Sistem menerapkan kontrol akses berbasis peran (Role-Based Access Control) dan atribut (Attribute-Based Access Control):
+
+* **Siswa**: Menjelajahi katalog, mengisi kuisioner minat, mendaftar ke cabang ekskul, memantau rekap absensi pribadi, mengunggah bukti prestasi, dan mengunduh berkas portofolio PDF resmi. Siswa hanya dapat melihat dan memperbarui data akun milik sendiri.
+* **Pembina / Guru**: Meninjau permohonan anggota baru, menyetujui atau menolak pendaftaran sesuai kuota cabang binaannya, membuka sesi latihan, mengisi absensi mingguan, mengunggah jadwal latihan, dan memvalidasi keaslian sertifikat lomba siswa.
+* **Pengurus Sekolah**: Memantau statistik keikutsertaan siswa di seluruh cabang, memvalidasi permohonan portofolio akhir, mengelola kalender acara tingkat sekolah, dan melakukan impor massal agenda dari berkas Excel.
+* **Administrator**: Mengelola data induk pengguna, mengatur konfigurasi sekolah (NPSN, kepala sekolah, tahun ajaran), menonaktifkan akun yang melanggar aturan, dan mengelola struktur basis data.
+
+---
+
+## Standar Keamanan Sistem
+
+EskulHub telah melalui proses audit dan pengerasan keamanan (*security hardening*) menyeluruh:
+
+1. **Autentikasi Ketat**: Menggunakan Laravel Sanctum Personal Access Token dengan masa kedaluwarsa 7 hari. Permintaan tanpa token yang sah ditolak secara tegas dengan respon HTTP 401 Unauthorized.
+2. **Pencegahan IDOR (Insecure Direct Object Reference)**: Pada pembuatan prestasi dan registrasi, identitas siswa dikunci langsung ke ID pengguna yang terautentikasi pada server. Pengguna tidak dapat memalsukan pengajuan atas nama siswa lain.
+3. **Pembatasan Wewenang Pembina (ABAC)**: Pembina hanya berwenang menyetujui pendaftaran dan memvalidasi kegiatan pada ekstrakurikuler yang berada di bawah bimbingannya.
+4. **Proteksi Privasi Siswa (PII)**: Akses publik ke daftar anggota menyamarkan Nomor Induk Siswa Nasional (contoh: `006****10`). Daftar pengguna publik hanya menampilkan staf pengajar dan pembina resmi, tanpa membocorkan alamat email siswa.
+5. **Pembatasan Frekuensi Permintaan (Rate Limiting)**: Endpoint login dan registrasi dibatasi 15 permintaan per menit, endpoint kuisioner dibatasi 30 permintaan per menit, dan seluruh mutasi data terlindungi dengan pembatasan 60 permintaan per menit untuk mencegah serangan spam.
+6. **Header Keamanan HTTP**: Server menyematkan header standar keamanan mencakup `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `X-XSS-Protection: 1; mode=block`, `Strict-Transport-Security`, dan `Cross-Origin-Opener-Policy: same-origin`.
+
+---
+
+## Tumpukan Teknologi
+
+### Frontend
+* React 18 dengan TypeScript
+* Vite sebagai bundler dan alat pengembangan
+* Tailwind CSS dan CSS murni dengan variabel desain terpusat
+* Lucide React untuk pustaka ikon antarmuka
+* Axios untuk komunikasi data HTTP dengan penanganan token otomatis
+* jsPDF dan html2canvas untuk generator dokumen portofolio sekolah
+* SheetJS (xlsx) untuk penguraian berkas spreadsheet di sisi peramban
+
+### Backend
+* PHP 8.2 atau yang lebih baru
+* Framework Laravel 12
+* Basis data SQLite (dapat dialihkan ke MySQL / PostgreSQL jika diperlukan)
+* Laravel Sanctum untuk manajemen token autentikasi API
+* Enkripsi kata sandi menggunakan Bcrypt (12 rounds)
+
+---
+
+## Panduan Instalasi dan Menjalankan Proyek
+
+### Prasyarat
+Pastikan perangkat Anda telah terpasang:
+* Node.js versi 18 atau lebih baru
+* PHP versi 8.2 atau lebih baru
+* Composer versi 2 atau lebih baru
+* Git
+
+### 1. Menyiapkan Backend (Laravel API)
+Buka terminal dan jalankan perintah berikut:
+
+```bash
+# Masuk ke direktori backend
+cd backend
+
+# Pasang pustaka dependensi PHP
+composer install
+
+# Salin berkas lingkungan jika belum ada
+cp .env.example .env
+
+# Buat kunci enkripsi aplikasi
+php artisan key:generate
+
+# Jalankan migrasi tabel dan pengisian data awal (seeding)
+php artisan migrate --seed
+
+# Jalankan server lokal backend pada port 8000
+php artisan serve
+```
+
+Server backend akan berjalan pada alamat `http://127.0.0.1:8000`.
+
+### 2. Menyiapkan Frontend (React Vite)
+Buka terminal baru di direktori utama proyek:
+
+```bash
+# Pasang dependensi Node.js
+npm install
+
+# Jalankan server pengembangan Vite
+npm run dev
+```
+
+Aplikasi frontend dapat diakses melalui peramban pada alamat `http://localhost:5173`.
+
+---
+
+## Akun Uji Coba (Data Awal)
+
+Seluruh akun di bawah ini telah disiapkan oleh sistem pengisi data awal (*Database Seeder*) dengan kata sandi bawaan yang sama:
+
+| Peran | Nama | Alamat Email | Kata Sandi | Keterangan |
+|---|---|---|---|---|
+| Siswa | Budi Pratama | `budi@smkn1ciomas.sch.id` | `password123` | Anggota aktif ekskul Futsal dan Basket |
+| Guru / Pembina | Hendra Wijaya, S.Pd. | `hendra@smkn1ciomas.sch.id` | `password123` | Guru PJOK dan Pembina resmi Ekskul Futsal |
+| Pengurus Sekolah | Dra. Hj. Sri Wahyuni, M.Pd. | `sri.wahyuni@smkn1ciomas.sch.id` | `password123` | Staf Kesiswaan dan Pengawas Ekstrakurikuler |
+| Administrator | Drs. Bambang Suryono | `admin@smkn1ciomas.sch.id` | `password123` | Wakil Kepala Sekolah Bidang Kesiswaan |
+
+---
+
+## Struktur Direktori Proyek
+
+```text
+EskulHub/
+├── backend/                        # Backend Laravel 12 API
+│   ├── app/
+│   │   ├── Http/
+│   │   │   ├── Controllers/        # Logika API (Auth, Ekskul, Event, Presensi, dll)
+│   │   │   └── Middleware/         # HybridAuthenticate, EnsureUserRole, SecurityHeaders
+│   │   └── Models/                 # Model Eloquent (User, Ekskul, Event, Attendance, dll)
+│   ├── config/                     # Konfigurasi aplikasi, CORS, dan Sanctum
+│   ├── database/
+│   │   ├── migrations/             # Skema tabel SQLite / database
+│   │   └── seeders/                # Data awal pengguna, ekskul, dan kegiatan
+│   └── routes/
+│       └── api.php                 # Rute RESTful API terlindungi
+├── src/                            # Frontend React TypeScript
+│   ├── components/                 # Komponen antarmuka global dan UI umum
+│   ├── features/                   # Modul per fitur aplikasi
+│   │   ├── achievements/           # Pencatatan dan verifikasi prestasi
+│   │   ├── attendance/             # Dasbor dan sesi presensi latihan
+│   │   ├── authentication/         # Halaman masuk, pendaftaran, dan provider sesi
+│   │   ├── extracurriculars/       # Katalog, profil, dan pendaftaran ekskul
+│   │   ├── onboarding/             # Kuisioner minat bakat siswa baru
+│   │   ├── portfolios/             # Dasbor peran, manajemen dokumen, dan cetak PDF
+│   │   ├── school-events/          # Kalender interaktif dan impor Excel
+│   │   └── verification/           # Pemeriksaan keaslian sertifikat publik
+│   ├── lib/                        # Konfigurasi Axios API dan modul penyimpanan lokal
+│   ├── types/                      # Deklarasi tipe data TypeScript
+│   └── main.tsx                    # Titik masuk utama aplikasi React
+├── package.json                    # Konfigurasi paket dan dependensi frontend
+└── README.md                       # Dokumentasi resmi proyek
+```
+
+---
+
+## Lisensi dan Kepemilikan
+
+Proyek ini dikembangkan untuk kebutuhan operasional kesiswaan di SMKN 1 Ciomas, Kabupaten Bogor, Jawa Barat.
