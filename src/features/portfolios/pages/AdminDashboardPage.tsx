@@ -76,7 +76,11 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
   const pembinaList = users.filter((u) => u.role === 'pembina' || u.role === 'teacher');
 
   const openAddUserModal = (role: string) => {
-    switchSection(role === 'student' ? 'students' : 'pembina');
+    if (role === 'student') {
+      onNavigate('/pengurus/students/tambah');
+    } else {
+      onNavigate('/pengurus/pembina/tambah');
+    }
   };
 
   // State lifting for modals that are needed by header shortcuts in Ekskul
@@ -153,6 +157,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           users={users}
           setUsers={setUsers}
           showNotification={showNotification}
+          onNavigate={onNavigate}
         />
       )}
 
@@ -166,6 +171,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           users={users}
           setUsers={setUsers}
           showNotification={showNotification}
+          onNavigate={onNavigate}
         />
       )}
 

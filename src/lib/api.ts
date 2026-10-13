@@ -148,9 +148,10 @@ export const addUserAPI = async (userData: Partial<User>) => {
   try {
     const res = await api.post('/users', userData);
     return res.data;
-  } catch (err) {
-    console.error('Error adding user via API:', err);
-    return { success: false };
+  } catch (err: any) {
+    console.error('Error adding user via API:', err?.response?.data || err.message);
+    const msg = err?.response?.data?.message || (err?.response?.data?.errors ? Object.values(err.response.data.errors)[0] : 'Gagal menambahkan akun ke server.');
+    return { success: false, message: Array.isArray(msg) ? msg[0] : msg };
   }
 };
 
@@ -158,9 +159,10 @@ export const updateUserAPI = async (id: string, userData: Partial<User>) => {
   try {
     const res = await api.put(`/users/${id}`, userData);
     return res.data;
-  } catch (err) {
-    console.error(`Error updating user ${id} via API:`, err);
-    return { success: false };
+  } catch (err: any) {
+    console.error(`Error updating user ${id} via API:`, err?.response?.data || err.message);
+    const msg = err?.response?.data?.message || (err?.response?.data?.errors ? Object.values(err.response.data.errors)[0] : 'Gagal memperbarui akun di server.');
+    return { success: false, message: Array.isArray(msg) ? msg[0] : msg };
   }
 };
 
@@ -168,9 +170,9 @@ export const deleteUserAPI = async (id: string) => {
   try {
     const res = await api.delete(`/users/${id}`);
     return res.data;
-  } catch (err) {
-    console.error(`Error deleting user ${id} via API:`, err);
-    return { success: false };
+  } catch (err: any) {
+    console.error(`Error deleting user ${id} via API:`, err?.response?.data || err.message);
+    return { success: false, message: err?.response?.data?.message || 'Gagal menghapus akun dari server.' };
   }
 };
 

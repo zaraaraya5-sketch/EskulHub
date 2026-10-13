@@ -187,6 +187,7 @@ class SQLiteDatabaseClient {
   public getUserById = (id: string) => this.users.getUserById(id);
   public registerUser = (data: any) => this.users.registerUser(data);
   public addUser = (data: any) => this.users.addUser(data);
+  public addUserAsync = (data: any) => this.users.addUserAsync(data);
   public updateUser = (id: string, data: any) => this.users.updateUser(id, data);
   public deleteUser = (id: string) => this.users.deleteUser(id);
 

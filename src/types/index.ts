@@ -10,6 +10,12 @@ export interface User {
   avatar_url?: string;
   is_active: boolean;
   extracurricular_id?: string;
+  nisn?: string;
+  class_name?: string;
+  gender?: 'L' | 'P';
+  bio?: string;
+  nip?: string;
+  subject?: string;
 }
 
 export interface StudentProfile {

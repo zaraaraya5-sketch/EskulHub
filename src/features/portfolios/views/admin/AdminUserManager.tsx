@@ -16,6 +16,7 @@ interface AdminUserManagerProps {
   users: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
   showNotification: (type: 'success' | 'error', message: string) => void;
+  onNavigate?: (path: string) => void;
 }
 
 const themes = {
@@ -57,16 +58,10 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
   users,
   setUsers,
   showNotification,
+  onNavigate,
 }) => {
   const theme = themes[themeColor];
   const [searchQuery, setSearchQuery] = useState('');
-
-  // Modals state
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [addUserTargetRole, setAddUserTargetRole] = useState<UserRole>(roleFilters[0]);
-  const [userNameInput, setUserNameInput] = useState('');
-  const [userEmailInput, setUserEmailInput] = useState('');
-  const [userPhoneInput, setUserPhoneInput] = useState('');
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [editUserName, setEditUserName] = useState('');
@@ -84,33 +79,6 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
         (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (u.email || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-  const handleAddSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userNameInput.trim() || !userEmailInput.trim()) {
-      showNotification('error', 'Nama dan email wajib diisi.');
-      return;
-    }
-
-    const res = db.addUser({
-      name: userNameInput.trim(),
-      email: userEmailInput.trim(),
-      role: addUserTargetRole,
-      phone: userPhoneInput.trim(),
-      is_active: true,
-    });
-
-    if (res.success) {
-      setUsers([...db.getUsers()]);
-      setIsAddModalOpen(false);
-      setUserNameInput('');
-      setUserEmailInput('');
-      setUserPhoneInput('');
-      showNotification('success', res.message);
-    } else {
-      showNotification('error', res.message);
-    }
-  };
 
   const handleEditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,8 +140,21 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
               className={`pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 ${theme.focusRing}`}
             />
           </div>
-          <Button variant="primary" size="sm" onClick={() => setIsAddModalOpen(true)} icon={<Plus className="w-3.5 h-3.5" />}>
-            Tambah Baru
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              if (onNavigate) {
+                if (roleFilters.includes('student')) {
+                  onNavigate('/pengurus/students/tambah');
+                } else {
+                  onNavigate('/pengurus/pembina/tambah');
+                }
+              }
+            }}
+            icon={<Plus className="w-3.5 h-3.5" />}
+          >
+            {roleFilters.includes('student') ? 'Tambah Siswa Baru' : 'Tambah Guru Pembina'}
           </Button>
         </div>
       </div>
@@ -256,27 +237,7 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
         </table>
       </div>
 
-      {/* Modals */}
-      <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title={`Tambah Akun Baru`}>
-        <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
-          <Input label="Nama Lengkap Beserta Gelar" type="text" value={userNameInput} onChange={(e) => setUserNameInput(e.target.value)} placeholder="Contoh: Muhammad Farhan" required />
-          <Input label="Alamat Email Akun" type="email" value={userEmailInput} onChange={(e) => setUserEmailInput(e.target.value)} placeholder="nama@smkn1ciomas.sch.id" required />
-          <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">Peran Akun</label>
-            <select value={addUserTargetRole} onChange={(e) => setAddUserTargetRole(e.target.value as UserRole)} className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]">
-              <option value="student">Siswa</option>
-              <option value="pembina">Pembina Ekskul</option>
-              <option value="pengurus">Pengurus Sekolah</option>
-            </select>
-          </div>
-          <Input label="Nomor Telepon / WhatsApp" type="tel" value={userPhoneInput} onChange={(e) => setUserPhoneInput(e.target.value)} placeholder="081234567890" />
-          <div className="flex justify-end gap-2.5 pt-2">
-            <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>Batal</Button>
-            <Button type="submit" variant="primary">Simpan Akun</Button>
-          </div>
-        </form>
-      </Modal>
-
+      {/* Edit User Modal */}
       <Modal isOpen={editingUser !== null} onClose={() => setEditingUser(null)} title={`Edit Data Pengguna: ${editingUser?.name}`}>
         <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
           <Input label="Nama Lengkap" type="text" value={editUserName} onChange={(e) => setEditUserName(e.target.value)} required />

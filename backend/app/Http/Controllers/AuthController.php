@@ -195,6 +195,12 @@ class AuthController extends Controller
     public function index(Request $request)
     {
         $currentUser = $request->user();
+        if (!$currentUser && $request->bearerToken()) {
+            $token = \Laravel\Sanctum\PersonalAccessToken::findToken($request->bearerToken());
+            if ($token && $token->tokenable && $token->tokenable->is_active) {
+                $currentUser = $token->tokenable;
+            }
+        }
 
         // If authenticated staff/admin/pengurus, return full details
         if ($currentUser && in_array($currentUser->role, ['admin', 'pengurus', 'pembina', 'teacher'], true)) {
@@ -223,12 +229,13 @@ class AuthController extends Controller
         public function store(Request $request)
         {
             $validated = $request->validate([
+                'id' => 'nullable|string|max:100',
                 'name' => 'required|string|max:120',
                 'email' => 'required|email|max:150|unique:users,email',
                 'role' => 'required|in:student,pengurus,pembina,teacher,admin',
-                'password' => 'required|string|min:6',
+                'password' => 'nullable|string|min:6',
                 'phone' => 'nullable|string|max:25',
-                'avatar_url' => 'nullable|url',
+                'avatar_url' => 'nullable|string|max:500',
                 'is_active' => 'boolean',
                 'nisn' => 'nullable|string|max:20',
                 'class_name' => 'nullable|string|max:50',
@@ -238,9 +245,16 @@ class AuthController extends Controller
                 'subject' => 'nullable|string|max:100',
             ]);
 
-            $validated['id'] = 'usr-' . $validated['role'] . '-' . time() . '-' . Str::random(4);
-            $validated['password'] = Hash::make($validated['password']);
+            $rawPassword = !empty($validated['password']) ? $validated['password'] : 'password123';
+            $validated['id'] = $request->input('id') ?: ('usr-' . $validated['role'] . '-' . time() . '-' . Str::random(4));
+            $validated['password'] = Hash::make($rawPassword);
             $validated['is_active'] = $validated['is_active'] ?? true;
+
+            if (empty($validated['avatar_url'])) {
+                $validated['avatar_url'] = $validated['role'] === 'student'
+                    ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+                    : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150';
+            }
 
             $user = User::create($validated);
 

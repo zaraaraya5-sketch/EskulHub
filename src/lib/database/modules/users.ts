@@ -62,7 +62,14 @@ export class UsersModule {
     email: string;
     role: UserRole;
     phone?: string;
+    password?: string;
     is_active?: boolean;
+    nisn?: string;
+    class_name?: string;
+    gender?: 'L' | 'P';
+    bio?: string;
+    nip?: string;
+    subject?: string;
   }): { success: boolean; message: string; user?: User } {
     const existing = this.users.find((u) => u.email && u.email.toLowerCase() === data.email.toLowerCase());
     if (existing) {
@@ -74,6 +81,7 @@ export class UsersModule {
       name: data.name.trim(),
       email: data.email.trim().toLowerCase(),
       role: data.role,
+      password: data.password || 'password123',
       phone: data.phone || '081234567890',
       avatar_url:
         data.role === 'student'
@@ -82,10 +90,91 @@ export class UsersModule {
           ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
           : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       is_active: data.is_active !== undefined ? data.is_active : true,
+      nisn: data.nisn,
+      class_name: data.class_name,
+      gender: data.gender,
+      bio: data.bio,
+      nip: data.nip,
+      subject: data.subject,
     };
 
     this.users.unshift(newUser);
-    apiService.addUserAPI(newUser);
+    apiService.addUserAPI(newUser).then((res) => {
+      if (res && res.user) {
+        const idx = this.users.findIndex((u) => u.id === newUser.id || u.email === newUser.email);
+        if (idx !== -1) {
+          this.users[idx] = { ...this.users[idx], ...res.user };
+          this.notify();
+        }
+      }
+    }).catch(console.error);
+
+    this.notify();
+    return { success: true, message: 'Pengguna baru berhasil ditambahkan.', user: newUser };
+  }
+
+  public async addUserAsync(data: {
+    name: string;
+    email: string;
+    role: UserRole;
+    phone?: string;
+    password?: string;
+    is_active?: boolean;
+    nisn?: string;
+    class_name?: string;
+    gender?: 'L' | 'P';
+    bio?: string;
+    nip?: string;
+    subject?: string;
+  }): Promise<{ success: boolean; message: string; user?: User }> {
+    const existing = this.users.find((u) => u.email && u.email.toLowerCase() === data.email.toLowerCase());
+    if (existing) {
+      return { success: false, message: 'Email sudah terdaftar untuk pengguna lain.' };
+    }
+
+    const newUser: User = {
+      id: `usr-${data.role}-${Date.now()}`,
+      name: data.name.trim(),
+      email: data.email.trim().toLowerCase(),
+      role: data.role,
+      password: data.password || 'password123',
+      phone: data.phone || '081234567890',
+      avatar_url:
+        data.role === 'student'
+          ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+          : data.role === 'pembina' || data.role === 'teacher'
+          ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
+          : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+      is_active: data.is_active !== undefined ? data.is_active : true,
+      nisn: data.nisn,
+      class_name: data.class_name,
+      gender: data.gender,
+      bio: data.bio,
+      nip: data.nip,
+      subject: data.subject,
+    };
+
+    try {
+      const res = await apiService.addUserAPI(newUser);
+      if (res && res.user) {
+        const created = res.user as User;
+        const exists = this.users.some((u) => u.id === created.id);
+        if (!exists) {
+          this.users.unshift(created);
+        } else {
+          const idx = this.users.findIndex((u) => u.id === created.id);
+          this.users[idx] = created;
+        }
+        this.notify();
+        return { success: true, message: `Akun ${created.name} berhasil ditambahkan!`, user: created };
+      } else if (res && res.success === false && res.message) {
+        return { success: false, message: res.message };
+      }
+    } catch (err: any) {
+      console.warn('Backend user creation error, falling back to local memory:', err);
+    }
+
+    this.users.unshift(newUser);
     this.notify();
     return { success: true, message: 'Pengguna baru berhasil ditambahkan.', user: newUser };
   }

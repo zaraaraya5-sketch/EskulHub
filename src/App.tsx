@@ -23,6 +23,8 @@ const PortfolioSamplePage = React.lazy(() => import('@/features/portfolios/pages
 const AdminDashboardPage = React.lazy(() => import('@/features/portfolios/pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
 const RegisterEkskulPage = React.lazy(() => import('@/features/extracurriculars/pages/RegisterEkskulPage').then((m) => ({ default: m.RegisterEkskulPage })));
 const AdminFormEkskulPage = React.lazy(() => import('@/features/portfolios/pages/AdminFormEkskulPage').then((m) => ({ default: m.AdminFormEkskulPage })));
+const AdminFormStudentPage = React.lazy(() => import('@/features/portfolios/pages/AdminFormStudentPage').then((m) => ({ default: m.AdminFormStudentPage })));
+const AdminFormPembinaPage = React.lazy(() => import('@/features/portfolios/pages/AdminFormPembinaPage').then((m) => ({ default: m.AdminFormPembinaPage })));
 const ImportEventsPage = React.lazy(() => import('@/features/school-events/pages/ImportEventsPage').then((m) => ({ default: m.ImportEventsPage })));
 const StudentUploadDocumentPage = React.lazy(() => import('@/features/portfolios/pages/StudentUploadDocumentPage').then((m) => ({ default: m.StudentUploadDocumentPage })));
 const OnboardingQuestionnairePage = React.lazy(() => import('@/features/extracurriculars/pages/OnboardingQuestionnairePage').then((m) => ({ default: m.OnboardingQuestionnairePage })));
@@ -230,6 +232,11 @@ const AppContent: React.FC = () => {
         return <AdminDashboardPage currentPath={currentPath} onNavigate={navigate} />;
       case '/pengurus/ekskul/tambah':
         return <AdminFormEkskulPage onNavigate={navigate} />;
+      case '/pengurus/students/tambah':
+        return <AdminFormStudentPage onNavigate={navigate} />;
+      case '/pengurus/pembina/tambah':
+      case '/pengurus/teachers/tambah':
+        return <AdminFormPembinaPage onNavigate={navigate} />;
 
       // Unified Pembina & Teacher routes
       case '/pembina/dashboard':
@@ -257,6 +264,11 @@ const AppContent: React.FC = () => {
         return <AdminDashboardPage currentPath={currentPath} onNavigate={navigate} />;
       case '/admin/ekskul/tambah':
         return <AdminFormEkskulPage onNavigate={navigate} />;
+      case '/admin/students/tambah':
+        return <AdminFormStudentPage onNavigate={navigate} />;
+      case '/admin/pembina/tambah':
+      case '/admin/teachers/tambah':
+        return <AdminFormPembinaPage onNavigate={navigate} />;
       case '/admin/schedule':
       case '/admin/events':
       case '/admin/verification':
