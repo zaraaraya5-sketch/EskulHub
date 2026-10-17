@@ -101,7 +101,7 @@ Route::middleware(['hybrid.auth', 'throttle:60,1'])->group(function () {
     });
 
     // ==========================================
-    // 5. User Management (Pengurus, Admin)
+    // 5. User Management (Pengurus / Admin)
     // ==========================================
     Route::middleware(['role:pengurus,admin'])->group(function () {
         Route::post('/users', [AuthController::class, 'store']);
@@ -110,9 +110,9 @@ Route::middleware(['hybrid.auth', 'throttle:60,1'])->group(function () {
     });
 
     // ==========================================
-    // 6. High-Privilege Administration (Admin only)
+    // 6. High-Privilege Administration (Pengurus / Admin)
     // ==========================================
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['role:pengurus,admin'])->group(function () {
         Route::put('/settings', [SettingsController::class, 'update']);
         Route::delete('/achievements/{id}', [AchievementController::class, 'destroy']);
     });

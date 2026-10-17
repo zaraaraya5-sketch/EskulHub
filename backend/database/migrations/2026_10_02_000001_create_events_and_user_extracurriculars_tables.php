@@ -37,6 +37,8 @@ return new class extends Migration
                 $table->string('location');
                 $table->string('organizer');
                 $table->text('description')->nullable();
+                $table->string('created_by_id')->nullable();
+                $table->string('created_by_role')->nullable();
                 $table->timestamps();
 
                 $table->index('category');
@@ -47,7 +49,11 @@ return new class extends Migration
 
         // 3. Create or sync view/table for extracurriculars alias if needed
         if (!Schema::hasTable('extracurriculars')) {
-            DB::statement('CREATE VIEW IF NOT EXISTS extracurriculars AS SELECT id, name, slug, category, short_description, full_description, profile_image, supervisor_name, practice_schedule, location, member_capacity, current_member_count, registration_status, achievements_count, created_at, updated_at FROM ekskuls;');
+            if (DB::getDriverName() === 'pgsql') {
+                DB::statement('CREATE OR REPLACE VIEW extracurriculars AS SELECT id, name, slug, category, short_description, full_description, profile_image, supervisor_name, practice_schedule, location, member_capacity, current_member_count, registration_status, achievements_count, created_at, updated_at FROM ekskuls;');
+            } else {
+                DB::statement('CREATE VIEW IF NOT EXISTS extracurriculars AS SELECT id, name, slug, category, short_description, full_description, profile_image, supervisor_name, practice_schedule, location, member_capacity, current_member_count, registration_status, achievements_count, created_at, updated_at FROM ekskuls;');
+            }
         }
     }
 

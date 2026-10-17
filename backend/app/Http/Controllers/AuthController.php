@@ -154,8 +154,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // Enforce ownership: user can only edit their own profile, unless admin or pengurus
-        if ($currentUser->id !== $id && !in_array($currentUser->role, ['admin', 'pengurus'], true)) {
+        // Enforce ownership: user can only edit their own profile, unless pengurus or admin
+        if ($currentUser->id !== $id && !in_array($currentUser->role, ['pengurus', 'admin'], true)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Akses ditolak: Anda hanya dapat memperbarui profil Anda sendiri.',
@@ -224,10 +224,18 @@ class AuthController extends Controller
 
 
         /**
-         * Admin-only user creation with strict validation.
+         * Pengurus & Admin user creation with strict validation.
          */
         public function store(Request $request)
         {
+            $currentUser = $request->user();
+            if (!$currentUser || !in_array($currentUser->role, ['pengurus', 'admin'], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak: Hanya pengurus kesiswaan atau administrator yang berwenang membuat pengguna baru.',
+                ], 403);
+            }
+
             $validated = $request->validate([
                 'id' => 'nullable|string|max:100',
                 'name' => 'required|string|max:120',
@@ -262,11 +270,41 @@ class AuthController extends Controller
         }
 
         /**
-         * Admin-only user update.
+         * Pengurus & Admin user update.
          */
         public function update(Request $request, string $id)
         {
+            $currentUser = $request->user();
+            if (!$currentUser || !in_array($currentUser->role, ['pengurus', 'admin'], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak: Hanya pengurus kesiswaan atau administrator yang berwenang memperbarui data pengguna.',
+                ], 403);
+            }
+
             $user = User::findOrFail($id);
+
+            // Prevent demoting or deactivating the last active pengurus/admin
+            if (in_array($user->role, ['pengurus', 'admin'], true)) {
+                $newRole = $request->input('role');
+                $isActive = $request->input('is_active');
+                $totalActiveAdmins = User::whereIn('role', ['pengurus', 'admin'])->where('is_active', true)->count();
+
+                if ($totalActiveAdmins <= 1) {
+                    if ($newRole && !in_array($newRole, ['pengurus', 'admin'], true)) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Tindakan ditolak: Tidak dapat mengubah peran pengurus utama terakhir.',
+                        ], 400);
+                    }
+                    if ($isActive === false || $isActive === 0 || $isActive === '0') {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Tindakan ditolak: Tidak dapat menonaktifkan pengurus utama terakhir.',
+                        ], 400);
+                    }
+                }
+            }
 
             $validated = $request->validate([
                 'name' => 'sometimes|required|string|max:120',
@@ -292,23 +330,42 @@ class AuthController extends Controller
 
             $user->update($validated);
 
-        return response()->json(['success' => true, 'user' => $user->fresh()]);
-    }
-
-    /**
-     * Admin-only user deletion with self-deletion prevention.
-     */
-    public function destroy(Request $request, string $id)
-    {
-        if ($request->user()?->id === $id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tindakan ditolak: Anda tidak dapat menghapus akun Anda sendiri.',
-            ], 400);
+            return response()->json(['success' => true, 'user' => $user->fresh()]);
         }
 
-        User::destroy($id);
-        return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus.']);
-    }
+        /**
+         * Pengurus & Admin user deletion with self-deletion and last-staff prevention.
+         */
+        public function destroy(Request $request, string $id)
+        {
+            $currentUser = $request->user();
+            if (!$currentUser || !in_array($currentUser->role, ['pengurus', 'admin'], true)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak: Hanya pengurus kesiswaan atau administrator yang berwenang menghapus akun.',
+                ], 403);
+            }
+
+            if ($currentUser->id === $id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tindakan ditolak: Anda tidak dapat menghapus akun Anda sendiri.',
+                ], 400);
+            }
+
+            $user = User::findOrFail($id);
+            if (in_array($user->role, ['pengurus', 'admin'], true)) {
+                $totalAdmins = User::whereIn('role', ['pengurus', 'admin'])->count();
+                if ($totalAdmins <= 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tindakan ditolak: Tidak dapat menghapus pengurus utama terakhir.',
+                    ], 400);
+                }
+            }
+
+            $user->delete();
+            return response()->json(['success' => true, 'message' => 'Akun berhasil dihapus.']);
+        }
 
 }

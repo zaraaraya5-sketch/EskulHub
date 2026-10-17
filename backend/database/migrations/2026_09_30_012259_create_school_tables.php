@@ -102,6 +102,8 @@ return new class extends Migration
             $table->string('end_datetime');
             $table->text('description')->nullable();
             $table->string('organizer');
+            $table->string('created_by_id')->nullable();
+            $table->string('created_by_role')->nullable();
             $table->timestamps();
         });
 
