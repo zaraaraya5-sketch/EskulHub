@@ -16,6 +16,7 @@ export interface User {
   bio?: string;
   nip?: string;
   subject?: string;
+  created_at?: string;
 }
 
 export interface StudentProfile {

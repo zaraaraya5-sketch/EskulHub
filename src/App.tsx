@@ -28,6 +28,7 @@ const AdminFormPembinaPage = React.lazy(() => import('@/features/portfolios/page
 const ImportEventsPage = React.lazy(() => import('@/features/school-events/pages/ImportEventsPage').then((m) => ({ default: m.ImportEventsPage })));
 const StudentUploadDocumentPage = React.lazy(() => import('@/features/portfolios/pages/StudentUploadDocumentPage').then((m) => ({ default: m.StudentUploadDocumentPage })));
 const OnboardingQuestionnairePage = React.lazy(() => import('@/features/extracurriculars/pages/OnboardingQuestionnairePage').then((m) => ({ default: m.OnboardingQuestionnairePage })));
+const MonthlyReportPage = React.lazy(() => import('@/features/reports/pages/MonthlyReportPage').then((m) => ({ default: m.MonthlyReportPage })));
 
 const AppContent: React.FC = () => {
   const [currentPath, setCurrentPath] = useState<string>(() => window.location.pathname || '/');
@@ -230,6 +231,9 @@ const AppContent: React.FC = () => {
       case '/pengurus/activities':
       case '/pengurus/achievements':
         return <AdminDashboardPage currentPath={currentPath} onNavigate={navigate} />;
+      case '/pengurus/rekap':
+      case '/admin/rekap':
+        return <MonthlyReportPage onNavigate={navigate} overrideRole="pengurus" />;
       case '/pengurus/ekskul/tambah':
         return <AdminFormEkskulPage onNavigate={navigate} />;
       case '/pengurus/students/tambah':
@@ -253,6 +257,9 @@ const AppContent: React.FC = () => {
       case '/teacher/activities':
       case '/teacher/achievements':
         return <TeacherDashboardPage currentPath={currentPath} onNavigate={navigate} />;
+      case '/pembina/rekap':
+      case '/teacher/rekap':
+        return <MonthlyReportPage onNavigate={navigate} overrideRole="pembina" />;
 
       // Admin fallback routes (mapped to Pengurus Monitoring)
       case '/admin/dashboard':

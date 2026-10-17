@@ -38,6 +38,7 @@ vendor/
 backend/vendor/
 backend/node_modules/
 
+
 # ==========================================
 # 4. Laravel Storage, Sessions, Cache & Keys
 # ==========================================

@@ -133,6 +133,34 @@ body {
   animation: slideInRight 0.35s var(--ease-spring) both;
 }
 
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInSidePanel {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-sheet-up {
+  animation: slideUpSheet 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (min-width: 1024px) {
+  .lg\:animate-panel-left {
+    animation: slideInSidePanel 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
 .animate-pulse-subtle {
   animation: pulseSubtle 3s ease-in-out infinite;
 }

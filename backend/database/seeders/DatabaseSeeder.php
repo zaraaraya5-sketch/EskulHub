@@ -75,7 +75,7 @@ class DatabaseSeeder extends Seeder
                 'id' => 'usr-admin-1',
                 'name' => 'Drs. Bambang Suryono',
                 'email' => 'admin@smkn1ciomas.sch.id',
-                'role' => 'admin',
+                'role' => 'pengurus',
                 'password' => Hash::make('password123'),
                 'phone' => '081234567890',
                 'avatar_url' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',

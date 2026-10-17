@@ -1,8 +1,122 @@
 import { User, UserRole } from '@/types';
 import * as apiService from '@/lib/api';
 
+const DEFAULT_DEMO_USERS: User[] = [
+  {
+    id: 'usr-student-1',
+    name: 'Budi Pratama',
+    email: 'budi@smkn1ciomas.sch.id',
+    role: 'student',
+    password: 'password123',
+    phone: '085712345678',
+    avatar_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
+    is_active: true,
+    nisn: '0067823910',
+    class_name: 'XII RPL 1',
+    gender: 'L',
+    bio: 'Siswa aktif SMKN 1 Ciomas dengan minat tinggi pada olahraga basket dan futsal.',
+    created_at: '2026-10-01T08:00:00Z',
+  },
+  {
+    id: 'usr-student-2',
+    name: 'Dimas Setiawan',
+    email: 'dimas.setiawan@smkn1ciomas.sch.id',
+    role: 'student',
+    password: 'password123',
+    phone: '085711223344',
+    avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150',
+    is_active: true,
+    nisn: '0078912345',
+    class_name: 'X TKJ 1',
+    gender: 'L',
+    created_at: '2026-10-02T09:30:00Z',
+  },
+  {
+    id: 'usr-student-3',
+    name: 'Rafi Alamsyah',
+    email: 'rafi.alamsyah@smkn1ciomas.sch.id',
+    role: 'student',
+    password: 'password123',
+    phone: '085755667788',
+    avatar_url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150',
+    is_active: true,
+    nisn: '0065432198',
+    class_name: 'XI RPL 2',
+    gender: 'L',
+    created_at: '2026-10-03T10:15:00Z',
+  },
+  {
+    id: 'usr-student-4',
+    name: 'Muhammad Fikri',
+    email: 'fikri@smkn1ciomas.sch.id',
+    role: 'student',
+    password: 'password123',
+    phone: '085799881122',
+    avatar_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150',
+    is_active: true,
+    nisn: '0072938491',
+    class_name: 'X RPL 1',
+    gender: 'L',
+    created_at: '2026-10-07T14:20:00Z',
+  },
+  {
+    id: 'usr-pembina-1',
+    name: 'Hendra Wijaya, S.Pd.',
+    email: 'hendra@smkn1ciomas.sch.id',
+    role: 'pembina',
+    password: 'password123',
+    phone: '081234567891',
+    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    is_active: true,
+    nip: '198204152008011007',
+    subject: 'Guru Pendidikan Jasmani & Pembina Ekskul Futsal',
+    created_at: '2025-07-10T08:00:00Z',
+  },
+  {
+    id: 'usr-pengurus-1',
+    name: 'Rizky Ramadhan',
+    email: 'rizky@smkn1ciomas.sch.id',
+    role: 'pengurus',
+    password: 'password123',
+    phone: '085712345679',
+    avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+    is_active: true,
+    nisn: '0067823911',
+    class_name: 'XII RPL 2',
+    gender: 'L',
+    bio: 'Ketua Ekstrakurikuler Futsal periode 2025/2026.',
+    created_at: '2025-07-15T08:00:00Z',
+  },
+  {
+    id: 'usr-admin-1',
+    name: 'Drs. Bambang Suryono',
+    email: 'admin@smkn1ciomas.sch.id',
+    role: 'pengurus',
+    password: 'password123',
+    phone: '081234567890',
+    avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
+    is_active: true,
+    nip: '196803201994031004',
+    subject: 'Wakil Kepala Sekolah Bidang Kesiswaan',
+    created_at: '2025-01-01T08:00:00Z',
+  },
+  {
+    id: 'usr-guru-1',
+    name: 'Dra. Hj. Sri Wahyuni, M.Pd.',
+    email: 'sri.wahyuni@smkn1ciomas.sch.id',
+    role: 'pengurus',
+    password: 'password123',
+    phone: '081320491823',
+    avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+    is_active: true,
+    nip: '197508122002122001',
+    subject: 'Staf Pengurus Kesiswaan & Ekstrakurikuler',
+    created_at: '2025-01-01T08:00:00Z',
+  },
+];
+
 export class UsersModule {
-  private users: User[] = [];
+  private users: User[] = [...DEFAULT_DEMO_USERS];
   private notify: () => void;
 
   constructor(notify: () => void) {
@@ -10,7 +124,17 @@ export class UsersModule {
   }
 
   public setUsers(users: User[]) {
-    this.users = users;
+    if (users && users.length > 0) {
+      const merged = [...users];
+      for (const demo of DEFAULT_DEMO_USERS) {
+        if (!merged.some(u => u.id === demo.id || (u.email && u.email.toLowerCase() === demo.email.toLowerCase()))) {
+          merged.push(demo);
+        }
+      }
+      this.users = merged;
+    } else {
+      this.users = [...DEFAULT_DEMO_USERS];
+    }
   }
 
   public getUsers(): User[] {
@@ -47,6 +171,7 @@ export class UsersModule {
           ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
           : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
       is_active: true,
+      created_at: new Date().toISOString(),
     };
 
     this.users.push(newUser);
@@ -96,6 +221,7 @@ export class UsersModule {
       bio: data.bio,
       nip: data.nip,
       subject: data.subject,
+      created_at: new Date().toISOString(),
     };
 
     this.users.unshift(newUser);
@@ -152,6 +278,7 @@ export class UsersModule {
       bio: data.bio,
       nip: data.nip,
       subject: data.subject,
+      created_at: new Date().toISOString(),
     };
 
     try {
@@ -201,8 +328,8 @@ export class UsersModule {
     if (!user) {
       return { success: false, message: 'Pengguna tidak ditemukan.' };
     }
-    if (user.role === 'admin' && this.users.filter((u) => u.role === 'admin').length <= 1) {
-      return { success: false, message: 'Tidak dapat menghapus akun admin utama terakhir.' };
+    if (user.role === 'pengurus' && this.users.filter((u) => u.role === 'pengurus').length <= 1) {
+      return { success: false, message: 'Tidak dapat menghapus akun pengurus utama terakhir.' };
     }
     this.users = this.users.filter((u) => u.id !== id);
     apiService.deleteUserAPI(id);

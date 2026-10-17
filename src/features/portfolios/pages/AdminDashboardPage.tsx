@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/database';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
-import { School, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react';
+import { School, ExternalLink, AlertCircle, CheckCircle, FileText } from 'lucide-react';
 import { User, Extracurricular, SchoolEvent, PortfolioVerification } from '@/types';
 import { Button } from '@/components/ui/Button';
 
@@ -98,7 +98,6 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
             {activeSection === 'dashboard' && 'Dasbor Monitoring Pengurus'}
             {activeSection === 'students' && 'Monitoring Data Siswa'}
-            {activeSection === 'teachers' && 'Monitoring Guru & Wali Kelas'}
             {activeSection === 'pembina' && 'Monitoring Guru Pembina Ekstrakurikuler'}
             {activeSection === 'ekskul' && 'Monitoring Seluruh Ekstrakurikuler'}
             {activeSection === 'schedule' && 'Monitoring Kalender & Agenda Sekolah'}
@@ -111,6 +110,14 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => onNavigate('/pengurus/rekap')}
+            icon={<FileText className="w-3.5 h-3.5" />}
+          >
+            Rekap Bulanan Sekolah
+          </Button>
           <Button variant="outline" size="sm" onClick={() => onNavigate('/')} icon={<ExternalLink className="w-3.5 h-3.5" />}>
             Halaman Publik
           </Button>
@@ -145,6 +152,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           setIsAddEventModalOpen={() => switchSection('schedule')}
           showNotification={showNotification}
           settings={settings}
+          onNavigate={onNavigate}
         />
       )}
 

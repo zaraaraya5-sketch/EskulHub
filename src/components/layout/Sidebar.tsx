@@ -82,6 +82,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { label: 'Agenda Acara & Lomba', path: '/pembina/schedule', icon: Calendar },
         { label: 'Verifikasi Prestasi Lomba', path: '/pembina/achievements', icon: Trophy },
       ]
+    },
+    {
+      group: 'Laporan & Rekapitulasi',
+      items: [
+        { label: 'Rekap Bulanan Ekskul', path: '/pembina/rekap', icon: FileText },
+      ]
     }
   ];
 
@@ -107,6 +113,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { label: 'Agenda & Kalender Sekolah', path: '/pengurus/schedule', icon: Calendar },
         { label: 'Verifikasi Portofolio', path: '/pengurus/verification', icon: ShieldCheck },
       ]
+    },
+    {
+      group: 'Laporan & Rekapitulasi',
+      items: [
+        { label: 'Rekap Bulanan Sekolah', path: '/pengurus/rekap', icon: FileText },
+      ]
     }
   ];
 
@@ -127,17 +139,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     pembina: {
       label: 'Guru Pembina Ekskul',
-      bgClass: 'bg-[#3B7A82]',
-      textClass: 'text-[#3B7A82]',
-      lightBg: 'bg-[#E8F4F5]',
-      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
+      bgClass: 'bg-[#D15B40]',
+      textClass: 'text-[#D15B40]',
+      lightBg: 'bg-[#FDEDE9]',
+      activeNavClass: 'bg-[#D15B40] text-white shadow-md',
     },
     teacher: {
       label: 'Guru Pembina Ekskul',
-      bgClass: 'bg-[#3B7A82]',
-      textClass: 'text-[#3B7A82]',
-      lightBg: 'bg-[#E8F4F5]',
-      activeNavClass: 'bg-[#3B7A82] text-white shadow-md',
+      bgClass: 'bg-[#D15B40]',
+      textClass: 'text-[#D15B40]',
+      lightBg: 'bg-[#FDEDE9]',
+      activeNavClass: 'bg-[#D15B40] text-white shadow-md',
     },
     pengurus: {
       label: 'Pengurus (Monitoring & Koordinasi)',

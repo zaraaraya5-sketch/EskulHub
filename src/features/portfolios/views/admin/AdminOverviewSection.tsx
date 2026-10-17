@@ -11,6 +11,7 @@ import {
   GraduationCap,
   UserCheck,
   QrCode,
+  FileText,
 } from 'lucide-react';
 
 interface AdminOverviewSectionProps {
@@ -27,6 +28,7 @@ interface AdminOverviewSectionProps {
   setIsAddEventModalOpen: (open: boolean) => void;
   showNotification: (type: 'success' | 'error', message: string) => void;
   settings: any;
+  onNavigate?: (path: string) => void;
 }
 
 export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
@@ -43,6 +45,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
   setIsAddEventModalOpen,
   showNotification,
   settings,
+  onNavigate,
 }) => {
   const handleApproveRegistration = (regId: string) => {
     const res = db.updateRegistrationStatus(regId, 'approved', 'Drs. Bambang Suryono');
@@ -63,6 +66,29 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Fitur Rekapitulasi Bulanan Sekolah Banner */}
+      <div className="bg-gradient-to-r from-[#FDEDE9]/60 via-white to-white border border-[#F2C9C0] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#D15B40] text-white">
+            <FileText className="w-3 h-3" />
+            <span>Fitur Rekap per Bulan • Tingkat Sekolah</span>
+          </div>
+          <h3 className="text-base font-bold text-[#171717]">Laporan Rekapitulasi Bulanan Kesiswaan & Sarana</h3>
+          <p className="text-xs text-[#525049] max-w-xl">
+            Tinjau rekap siswa baru mendaftar website, perolehan anggota setiap ekskul, pemanfaatan lapangan & sarana sekolah, serta perolehan prestasi sebulan penuh. Siap diekspor ke PDF resmi sekolah.
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => onNavigate?.('/pengurus/rekap')}
+          className="shadow-sm shrink-0 font-semibold"
+          icon={<FileText className="w-3.5 h-3.5" />}
+        >
+          Buka Rekap Bulanan Sekolah
+        </Button>
+      </div>
+
       {/* Executive Metrics Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         <div

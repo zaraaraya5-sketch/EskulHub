@@ -113,22 +113,36 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-[#EAE6DC] pb-5">
-        <div className="text-xs font-bold uppercase tracking-wider text-[#3B7A82] mb-1">
-          Panel Guru Pembina • {currentUser?.name || 'Hendra Wijaya, S.Pd.'}
+      <div className="border-b border-[#EAE6DC] pb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="text-xs font-bold uppercase tracking-wider text-[#3B7A82] mb-1">
+            Panel Guru Pembina • {currentUser?.name || 'Hendra Wijaya, S.Pd.'}
+          </div>
+          <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
+            {currentPath.includes('extracurriculars') ? 'Daftar Ekskul Binaan' : 
+             currentPath.includes('members') ? 'Daftar Calon & Anggota Aktif' : 
+             currentPath.includes('attendance') ? 'Rekap Presensi & Kehadiran Latihan' : 
+             currentPath.includes('schedule') ? 'Agenda Acara & Jadwal Lomba' :
+             currentPath.includes('achievements') ? 'Verifikasi Prestasi Lomba Siswa' : 
+             currentPath.includes('activities') ? 'Dokumentasi Kegiatan' : 
+             'Dasbor Guru Pembina'}
+          </h1>
+          <p className="text-xs text-[#525049] mt-0.5">
+            Pantau kehadiran anggota latihan, tinjau pendaftaran anggota baru, atur agenda & jadwal lomba, dan sahkan prestasi lomba siswa binaan.
+          </p>
         </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-[#171717]">
-          {currentPath.includes('extracurriculars') ? 'Daftar Ekskul Binaan' : 
-           currentPath.includes('members') ? 'Daftar Calon & Anggota Aktif' : 
-           currentPath.includes('attendance') ? 'Rekap Presensi & Kehadiran Latihan' : 
-           currentPath.includes('schedule') ? 'Agenda Acara & Jadwal Lomba' :
-           currentPath.includes('achievements') ? 'Verifikasi Prestasi Lomba Siswa' : 
-           currentPath.includes('activities') ? 'Dokumentasi Kegiatan' : 
-           'Dasbor Guru Pembina'}
-        </h1>
-        <p className="text-xs text-[#525049] mt-0.5">
-          Pantau kehadiran anggota latihan, tinjau pendaftaran anggota baru, atur agenda & jadwal lomba, dan sahkan prestasi lomba siswa binaan.
-        </p>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => onNavigate?.('/pembina/rekap')}
+            className="shadow-xs font-semibold shrink-0"
+            icon={<FileText className="w-3.5 h-3.5" />}
+          >
+            Rekap Bulanan Ekskul
+          </Button>
+        </div>
       </div>
 
       {actionNotice && (
@@ -143,6 +157,29 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
       {/* 1. DASBOR KILAT & RINGKASAN TINDAKAN (Dashboard Overview) */}
       {(currentPath === '/pembina/dashboard' || currentPath === '/pembina' || currentPath === '/teacher/dashboard' || currentPath === '/teacher') && (
         <div className="space-y-6">
+          {/* Fitur Khusus: Rekapitulasi Bulanan Ekskul Banner */}
+          <div className="bg-gradient-to-r from-[#FDEDE9]/50 via-white to-white border border-[#F2C9C0] rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#D15B40] text-white">
+                <FileText className="w-3 h-3" />
+                <span>Fitur Rekap per Bulan</span>
+              </div>
+              <h3 className="text-base font-bold text-[#171717]">Rekapitulasi Bulanan Pembinaan Ekstrakurikuler</h3>
+              <p className="text-xs text-[#525049] max-w-xl">
+                Pantau rekap anggota baru, kehadiran sesi latihan bulanan, dan prestasi yang terpisah mandiri untuk masing-masing ekskul binaan Anda. Otomatis terupdate hingga akhir bulan dan siap ekspor PDF resmi.
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onNavigate?.('/pembina/rekap')}
+              className="shadow-sm shrink-0 font-semibold"
+              icon={<FileText className="w-3.5 h-3.5" />}
+            >
+              Buka Rekap Bulanan
+            </Button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/extracurriculars')}>
               <span className="text-xs font-bold text-[#525049] uppercase">Total Binaan</span>
@@ -203,21 +240,28 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
                   <div className="flex items-center gap-2 pt-2 border-t border-[#EAE6DC]">
                     <button
                       onClick={() => onNavigate?.('/pembina/members')}
-                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#3B7A82] text-[#171717] rounded cursor-pointer transition-colors"
+                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#F2C9C0] hover:bg-[#FDEDE9] hover:text-[#D15B40] text-[#171717] rounded cursor-pointer transition-colors"
                     >
                       Anggota & Pendaftar
                     </button>
                     <button
                       onClick={() => onNavigate?.('/pembina/schedule')}
-                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#3B7A82] text-[#171717] rounded cursor-pointer transition-colors"
+                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#F2C9C0] hover:bg-[#FDEDE9] hover:text-[#D15B40] text-[#171717] rounded cursor-pointer transition-colors"
                     >
                       Jadwal & Agenda
                     </button>
                     <button
                       onClick={() => onNavigate?.('/pembina/attendance')}
-                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#3B7A82] text-[#171717] rounded cursor-pointer transition-colors"
+                      className="px-2.5 py-1 text-[11px] font-semibold bg-white border border-[#EAE6DC] hover:border-[#F2C9C0] hover:bg-[#FDEDE9] hover:text-[#D15B40] text-[#171717] rounded cursor-pointer transition-colors"
                     >
                       Presensi Latihan
+                    </button>
+                    <button
+                      onClick={() => onNavigate?.('/pembina/rekap')}
+                      className="px-2.5 py-1 text-[11px] font-semibold bg-[#FDEDE9] border border-[#F2C9C0] hover:bg-[#F9DDD6] text-[#D15B40] rounded cursor-pointer transition-colors flex items-center gap-1"
+                    >
+                      <FileText className="w-3 h-3" />
+                      <span>Rekap Bulanan</span>
                     </button>
                   </div>
                 </div>
@@ -289,7 +333,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
                 onClick={() => setMembersTab('active')}
                 className={`px-3 py-1.5 rounded transition-all cursor-pointer ${
                   membersTab === 'active'
-                    ? 'bg-white text-[#3B7A82] font-bold shadow-xs'
+                    ? 'bg-white text-[#D15B40] font-bold shadow-xs'
                     : 'text-[#68655F] hover:text-[#171717]'
                 }`}
               >
@@ -447,7 +491,7 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
               onClick={() => setScheduleFilter('all')}
               className={`px-3 py-1.5 rounded text-xs font-semibold transition-colors cursor-pointer border ${
                 scheduleFilter === 'all'
-                  ? 'bg-[#3B7A82] text-white border-[#3B7A82]'
+                  ? 'bg-[#D15B40] text-white border-[#D15B40]'
                   : 'bg-white text-[#525049] border-[#EAE6DC] hover:bg-[#F9F8F6]'
               }`}
             >

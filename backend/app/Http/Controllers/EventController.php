@@ -37,29 +37,31 @@ class EventController extends Controller
         $startTime = str_replace('T', ' ', $startTime);
         $endTime = str_replace('T', ' ', $endTime);
 
-        // Auto-heal and sync any events created in school_events
+        // Auto-heal and sync only if school_events has unmerged events
         try {
-            $missingFromEvents = DB::table('school_events')
-                ->whereNotIn('id', DB::table('events')->pluck('id'))
-                ->get();
-            foreach ($missingFromEvents as $se) {
-                $sTime = str_replace('T', ' ', $se->start_datetime ?? '');
-                $eTime = str_replace('T', ' ', $se->end_datetime ?? '');
-                if (strlen($sTime) === 10) $sTime .= ' 08:00:00';
-                if (strlen($eTime) === 10) $eTime .= ' 10:00:00';
-                DB::table('events')->insert([
-                    'id' => $se->id,
-                    'title' => $se->title,
-                    'category' => !empty($se->category) ? $se->category : (!empty($se->event_type) ? $se->event_type : 'school_event'),
-                    'extracurricular_id' => null,
-                    'start_time' => $sTime ?: now()->toDateTimeString(),
-                    'end_time' => $eTime ?: now()->addHours(2)->toDateTimeString(),
-                    'location' => $se->location ?? 'SMKN 1 Ciomas',
-                    'organizer' => $se->organizer ?? 'Pengurus Sekolah',
-                    'description' => $se->description ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            if (DB::table('school_events')->count() > DB::table('events')->count()) {
+                $missingFromEvents = DB::table('school_events')
+                    ->whereNotIn('id', DB::table('events')->pluck('id'))
+                    ->get();
+                foreach ($missingFromEvents as $se) {
+                    $sTime = str_replace('T', ' ', $se->start_datetime ?? '');
+                    $eTime = str_replace('T', ' ', $se->end_datetime ?? '');
+                    if (strlen($sTime) === 10) $sTime .= ' 08:00:00';
+                    if (strlen($eTime) === 10) $eTime .= ' 10:00:00';
+                    DB::table('events')->insert([
+                        'id' => $se->id,
+                        'title' => $se->title,
+                        'category' => !empty($se->category) ? $se->category : (!empty($se->event_type) ? $se->event_type : 'school_event'),
+                        'extracurricular_id' => null,
+                        'start_time' => $sTime ?: now()->toDateTimeString(),
+                        'end_time' => $eTime ?: now()->addHours(2)->toDateTimeString(),
+                        'location' => $se->location ?? 'SMKN 1 Ciomas',
+                        'organizer' => $se->organizer ?? 'Pengurus Sekolah',
+                        'description' => $se->description ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
             }
         } catch (\Throwable $e) {
             // Ignore if already synced
