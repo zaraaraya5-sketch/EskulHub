@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -7,23 +7,24 @@ import { Badge } from '@/components/ui/Badge';
 import {
   ArrowLeft,
   GraduationCap,
-  Mail,
   Phone,
-  Lock,
   User,
-  Hash,
-  BookOpen,
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Info
+  Info,
+  Edit2
 } from 'lucide-react';
 
 interface AdminFormStudentPageProps {
   onNavigate: (path: string) => void;
+  editId?: string;
 }
 
-export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNavigate }) => {
+export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNavigate, editId }) => {
+  const isEditMode = Boolean(editId);
+  const existingUser = editId ? db.getUserById(editId) : null;
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [nisn, setNisn] = useState('');
@@ -32,10 +33,24 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [bio, setBio] = useState('');
+  const [isActive, setIsActive] = useState(true);
 
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (existingUser) {
+      setName(existingUser.name || '');
+      setEmail(existingUser.email || '');
+      setNisn(existingUser.nisn || '');
+      setClassName(existingUser.class_name || 'X PPLG 1');
+      setGender(existingUser.gender === 'P' ? 'P' : 'L');
+      setPhone(existingUser.phone || '');
+      setBio(existingUser.bio || '');
+      setIsActive(existingUser.is_active !== undefined ? existingUser.is_active : true);
+    }
+  }, [existingUser]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,28 +69,57 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
     setIsSubmitting(true);
 
     try {
-      const res = await db.addUserAsync({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        role: 'student',
-        phone: phone.trim() || '081234567890',
-        password: password.trim() || 'password123',
-        nisn: nisn.trim() || undefined,
-        class_name: className.trim(),
-        gender,
-        bio: bio.trim() || undefined,
-        is_active: true,
-      });
+      if (isEditMode && editId) {
+        const updatePayload: any = {
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          nisn: nisn.trim() || undefined,
+          class_name: className.trim(),
+          gender,
+          phone: phone.trim() || '081234567890',
+          bio: bio.trim() || undefined,
+          is_active: isActive,
+        };
 
-      setIsSubmitting(false);
+        if (password.trim()) {
+          updatePayload.password = password.trim();
+        }
 
-      if (res.success) {
-        setFormSuccess(res.message || 'Akun siswa berhasil didaftarkan ke sistem portal!');
-        setTimeout(() => {
-          onNavigate('/pengurus/students');
-        }, 1200);
+        const res = db.updateUser(editId, updatePayload);
+        setIsSubmitting(false);
+
+        if (res.success) {
+          setFormSuccess(`Data siswa ${name} berhasil diperbarui!`);
+          setTimeout(() => {
+            onNavigate('/pengurus/students');
+          }, 1000);
+        } else {
+          setFormError(res.message || 'Gagal memperbarui data siswa.');
+        }
       } else {
-        setFormError(res.message || 'Gagal menambahkan akun siswa.');
+        const res = await db.addUserAsync({
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          role: 'student',
+          phone: phone.trim() || '081234567890',
+          password: password.trim() || 'password123',
+          nisn: nisn.trim() || undefined,
+          class_name: className.trim(),
+          gender,
+          bio: bio.trim() || undefined,
+          is_active: isActive,
+        });
+
+        setIsSubmitting(false);
+
+        if (res.success) {
+          setFormSuccess(res.message || 'Akun siswa berhasil didaftarkan ke sistem portal!');
+          setTimeout(() => {
+            onNavigate('/pengurus/students');
+          }, 1000);
+        } else {
+          setFormError(res.message || 'Gagal menambahkan akun siswa.');
+        }
       }
     } catch (err: any) {
       setIsSubmitting(false);
@@ -102,16 +146,23 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#D15B40] bg-[#D15B40]/10 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
-                <GraduationCap className="w-3 h-3" />
-                Registrasi Siswa Baru
+                {isEditMode ? <Edit2 className="w-3 h-3" /> : <GraduationCap className="w-3 h-3" />}
+                {isEditMode ? 'Edit Data Pengguna' : 'Registrasi Siswa Baru'}
               </span>
               <Badge variant="neutral">Peran: Siswa</Badge>
+              {isEditMode && (
+                <Badge variant={isActive ? 'success' : 'danger'}>
+                  {isActive ? 'Akun Aktif' : 'Non-Aktif'}
+                </Badge>
+              )}
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-[#171717] tracking-tight">
-              Tambah Data Akun Siswa Baru
+              {isEditMode ? `Edit Data Siswa: ${name || 'Siswa'}` : 'Tambah Data Akun Siswa Baru'}
             </h1>
             <p className="text-xs text-[#68655F] max-w-2xl leading-relaxed">
-              Daftarkan akun siswa baru ke dalam sistem database untuk akses pendaftaran ekstrakurikuler, presensi latihan, serta rekam portofolio prestasi resmi sekolah.
+              {isEditMode
+                ? 'Perbarui informasi profil akun siswa, penyesuaian kelas, nomor identitas NISN, dan nomor kontak aktif.'
+                : 'Daftarkan akun siswa baru ke dalam sistem database untuk akses pendaftaran ekstrakurikuler, presensi latihan, serta rekam portofolio prestasi resmi sekolah.'}
             </p>
           </div>
         </div>
@@ -125,7 +176,7 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
             <div className="p-4 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] rounded-xl flex items-center gap-3 animate-in fade-in">
               <CheckCircle2 className="w-5 h-5 shrink-0" />
               <div>
-                <p className="font-bold text-sm">Pendaftaran Berhasil</p>
+                <p className="font-bold text-sm">Berhasil Disimpan</p>
                 <p className="text-xs">{formSuccess}</p>
               </div>
             </div>
@@ -239,17 +290,35 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
 
               <div>
                 <Input
-                  label="Kata Sandi Awal Akun"
+                  label={isEditMode ? 'Ganti Kata Sandi (Opsional)' : 'Kata Sandi Awal Akun'}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Opsional (Default: password123)"
+                  placeholder={isEditMode ? 'Kosongkan jika tidak ingin mengubah' : 'Opsional (Default: password123)'}
                 />
                 <p className="text-[10px] text-[#68655F] mt-1">
-                  Jika dikosongkan, kata sandi awal otomatis diatur ke <strong>password123</strong>.
+                  {isEditMode
+                    ? 'Kosongkan kolom ini jika tidak ingin merubah kata sandi siswa saat ini.'
+                    : 'Jika dikosongkan, kata sandi awal otomatis diatur ke password123.'}
                 </p>
               </div>
             </div>
+
+            {isEditMode && (
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">
+                  Status Keaktifan Akun
+                </label>
+                <select
+                  value={isActive ? 'active' : 'inactive'}
+                  onChange={(e) => setIsActive(e.target.value === 'active')}
+                  className="w-full max-w-xs px-3 py-2.5 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-colors"
+                >
+                  <option value="active">Aktif (Dapat Mengakses Portal)</option>
+                  <option value="inactive">Non-Aktif (Akses Ditangguhkan)</option>
+                </select>
+              </div>
+            )}
 
             <Textarea
               label="Bio / Minat Siswa (Opsional)"
@@ -266,7 +335,7 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
             <div className="text-xs text-[#525049] space-y-1">
               <p className="font-semibold text-[#171717]">Sinkronisasi Otomatis Database</p>
               <p className="text-[11px] leading-relaxed">
-                Akun yang disimpan akan langsung terdaftar di database server lokal SQLite SMKN 1 Ciomas dan siswa dapat langsung masuk menggunakan email serta kata sandi yang telah ditentukan.
+                Data yang disimpan langsung diperbarui secara realtime pada database server portal SMKN 1 Ciomas.
               </p>
             </div>
           </div>
@@ -287,7 +356,11 @@ export const AdminFormStudentPage: React.FC<AdminFormStudentPageProps> = ({ onNa
               disabled={isSubmitting}
               icon={isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
             >
-              {isSubmitting ? 'Menyimpan ke Server...' : 'Simpan Data Siswa'}
+              {isSubmitting
+                ? 'Menyimpan...'
+                : isEditMode
+                ? 'Perbarui Data Siswa'
+                : 'Simpan Data Siswa'}
             </Button>
           </div>
         </form>

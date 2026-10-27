@@ -96,7 +96,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       group: 'Monitoring Utama',
       items: [
         { label: 'Dasbor Monitoring', path: '/pengurus/dashboard', icon: LayoutDashboard },
-        { label: 'Profil Pengurus', path: '/pengurus/profile', icon: UserCog },
       ]
     },
     {
@@ -196,41 +195,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* User profile card */}
-      <div
-        onClick={() => {
-          if (role === 'pengurus') handleNavClick('/pengurus/profile', isMobile);
-        }}
-        className={`p-4 sm:p-5 border-b border-[#EAE6DC] bg-[#F9F8F6] ${
-          role === 'pengurus'
-            ? 'cursor-pointer hover:bg-[#F9F8F6] transition-colors group select-none'
-            : ''
-        }`}
-      >
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="relative shrink-0">
-            <img
-              src={currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
-              alt={currentUser?.name}
-              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#D15B40] transition-colors"
-            />
-            {role === 'pengurus' && (
-              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#D15B40] text-white border-2 border-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
-                ✎
-              </span>
-            )}
-          </div>
-          <div className="overflow-hidden flex-1 min-w-0">
-            <div className="text-sm font-bold text-[#171717] truncate group-hover:text-[#D15B40] transition-colors">
-              {currentUser?.name}
+      {/* User profile card (hidden for Pengurus/Admin per user request) */}
+      {role !== 'pengurus' && (
+        <div
+          className="p-4 sm:p-5 border-b border-[#EAE6DC] bg-[#F9F8F6]"
+        >
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="relative shrink-0">
+              <img
+                src={currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
+                alt={currentUser?.name}
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#D15B40] transition-colors"
+              />
             </div>
-            <div className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${badgeInfo.textClass}`}>
-              {badgeInfo.label}
+            <div className="overflow-hidden flex-1 min-w-0">
+              <div className="text-sm font-bold text-[#171717] truncate group-hover:text-[#D15B40] transition-colors">
+                {currentUser?.name}
+              </div>
+              <div className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${badgeInfo.textClass}`}>
+                {badgeInfo.label}
+              </div>
+              <div className="text-xs text-[#68655F] truncate mt-0.5">{currentUser?.email}</div>
             </div>
-            <div className="text-xs text-[#68655F] truncate mt-0.5">{currentUser?.email}</div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Navigation menu */}
       <div className="flex-1 py-4 sm:py-5 px-3 sm:px-4 space-y-5 sm:space-y-6 overflow-y-auto overscroll-contain">

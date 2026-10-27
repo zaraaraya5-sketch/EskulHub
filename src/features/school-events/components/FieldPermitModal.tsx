@@ -502,7 +502,7 @@ export const FieldPermitModal: React.FC<FieldPermitModalProps> = ({
                   </div>
                 </div>
                 <p className="font-bold underline text-stone-900">
-                  {settings.vice_principal_student_affairs || 'Drs. Bambang Suryono'}
+                  {settings.vice_principal_student_affairs || 'Jamil Husein'}
                 </p>
                 <p className="text-2xs text-stone-500">NIP. 19680320 199403 1 004</p>
               </div>

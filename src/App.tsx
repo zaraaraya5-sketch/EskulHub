@@ -173,6 +173,26 @@ const AppContent: React.FC = () => {
       return <AdminFormEkskulPage onNavigate={navigate} editId={editId} />;
     }
 
+    // 5b. Admin & Pengurus Student Edit route: /admin/students/:id/edit or /pengurus/students/:id/edit
+    if (
+      (currentPath.startsWith('/admin/students/') || currentPath.startsWith('/pengurus/students/')) &&
+      currentPath.endsWith('/edit')
+    ) {
+      const parts = currentPath.split('/');
+      const editId = parts[3];
+      return <AdminFormStudentPage onNavigate={navigate} editId={editId} />;
+    }
+
+    // 5c. Admin & Pengurus Pembina Edit route: /admin/pembina/:id/edit or /pengurus/pembina/:id/edit
+    if (
+      (currentPath.startsWith('/admin/pembina/') || currentPath.startsWith('/pengurus/pembina/')) &&
+      currentPath.endsWith('/edit')
+    ) {
+      const parts = currentPath.split('/');
+      const editId = parts[3];
+      return <AdminFormPembinaPage onNavigate={navigate} editId={editId} />;
+    }
+
     // 6. Exact matching routes
     switch (currentPath) {
       case '/':

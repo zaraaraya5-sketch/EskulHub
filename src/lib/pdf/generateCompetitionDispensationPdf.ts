@@ -244,7 +244,7 @@ export const generateCompetitionDispensationPdf = async (
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9);
-  doc.text(schoolSetting.vice_principal_student_affairs || 'Drs. Bambang Suryono', 125, bottomSignY);
+  doc.text(schoolSetting.vice_principal_student_affairs || 'Jamil Husein', 125, bottomSignY);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.text('NIP. 19680320 199403 1 004', 125, bottomSignY + 4);

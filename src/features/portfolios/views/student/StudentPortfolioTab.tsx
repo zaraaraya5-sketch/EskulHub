@@ -154,7 +154,7 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
           <div>
             <div>Diterbitkan di: Kota Bandung</div>
             <div>Tanggal Pengesahan: 20 September 2026</div>
-            <div className="font-semibold text-[#171717] mt-2">Wakasek Kesiswaan: Drs. Bambang Suryono</div>
+            <div className="font-semibold text-[#171717] mt-2">Wakasek Kesiswaan: Jamil Husein</div>
           </div>
 
           <Button

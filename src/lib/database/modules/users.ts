@@ -89,7 +89,7 @@ const DEFAULT_DEMO_USERS: User[] = [
   },
   {
     id: 'usr-admin-1',
-    name: 'Drs. Bambang Suryono',
+    name: 'Jamil Husein',
     email: 'admin@smkn1ciomas.sch.id',
     role: 'pengurus',
     password: 'password123',

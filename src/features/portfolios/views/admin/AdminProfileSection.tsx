@@ -19,7 +19,7 @@ export const AdminProfileSection: React.FC<AdminProfileSectionProps> = ({
 }) => {
   const { currentUser, updateProfile } = useAuth();
   
-  const [profileName, setProfileName] = useState(currentUser?.name || 'Drs. Bambang Suryono');
+  const [profileName, setProfileName] = useState(currentUser?.name || 'Jamil Husein');
   const [profileEmail, setProfileEmail] = useState(currentUser?.email || 'admin@smkn1ciomas.sch.id');
   const [profilePhone, setProfilePhone] = useState(currentUser?.phone || '081298765432');
   const [profileAvatar, setProfileAvatar] = useState(currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300');
@@ -138,7 +138,7 @@ export const AdminProfileSection: React.FC<AdminProfileSectionProps> = ({
             type="text"
             value={profileName}
             onChange={(e) => setProfileName(e.target.value)}
-            placeholder="Drs. Bambang Suryono, M.Pd."
+            placeholder="Jamil Husein, M.Pd."
             required
           />
 

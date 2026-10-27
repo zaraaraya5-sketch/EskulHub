@@ -1,8 +1,7 @@
 import React from 'react';
 import { db } from '@/lib/database';
-import { Button } from '@/components/ui/Button';
-import { Modal } from '@/components/ui/Modal';
 import { Extracurricular } from '@/types';
+import { ProcessConfirmModal } from '@/components/ui/ProcessConfirmModal';
 
 interface AdminDeleteEkskulModalProps {
   ekskul: Extracurricular | null;
@@ -17,42 +16,30 @@ export const AdminDeleteEkskulModal: React.FC<AdminDeleteEkskulModalProps> = ({
   onSuccess,
   onError,
 }) => {
-  const confirmDeleteEkskul = () => {
+  const handleDelete = async () => {
     if (!ekskul) return;
     const res = db.deleteExtracurricular(ekskul.id);
     if (res.success) {
       onSuccess(res.message);
-      onClose();
+      return true;
     } else {
       onError(res.message);
+      return false;
     }
   };
 
   return (
-    <Modal
+    <ProcessConfirmModal
       isOpen={ekskul !== null}
       onClose={onClose}
       title="Hapus Ekstrakurikuler"
-    >
-      <div className="space-y-4 text-xs">
-        <p className="text-[#68655F]">
-          Apakah Anda yakin ingin menghapus data ekstrakurikuler <strong className="text-[#171717]">{ekskul?.name}</strong>?
-        </p>
-        <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded">
-          Seluruh data jadwal dan keanggotaan terkait ekskul ini tidak akan muncul lagi di katalog resmi.
-        </div>
-        <div className="flex justify-end gap-2.5 pt-2">
-          <Button variant="outline" onClick={onClose}>
-            Batal
-          </Button>
-          <button
-            onClick={confirmDeleteEkskul}
-            className="px-4 py-2 bg-[#A33D35] hover:bg-[#852E27] text-white rounded text-xs font-bold transition-colors cursor-pointer"
-          >
-            Hapus Ekstrakurikuler
-          </button>
-        </div>
-      </div>
-    </Modal>
+      description="Apakah Anda yakin ingin menghapus data ekstrakurikuler"
+      targetName={ekskul?.name}
+      warningNotice="Seluruh data jadwal latihan, presensi, dan keanggotaan terkait ekstrakurikuler ini tidak akan muncul lagi di katalog resmi sekolah."
+      confirmLabel="Hapus Ekstrakurikuler"
+      loadingText="Menghapus data ekstrakurikuler dari sistem..."
+      successText={`Ekstrakurikuler ${ekskul?.name || ''} berhasil dihapus!`}
+      onConfirm={handleDelete}
+    />
   );
 };

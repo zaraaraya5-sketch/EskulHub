@@ -4,11 +4,11 @@ import * as apiService from '@/lib/api';
 export class SettingsModule {
   private settings: SchoolSetting = {
     school_name: 'SMKN 1 Ciomas',
-    npsn: '20231417',
+    npsn: '20254135',
     address: 'Jl. Raya Laladon No. 20, Ciomas, Kec. Ciomas, Kab. Bogor, Jawa Barat 16610',
     academic_year: '2025/2026',
-    principal_name: 'Drs. H. Mulyadi Kartasasmita, M.Pd.',
-    vice_principal_student_affairs: 'Drs. Bambang Suryono',
+    principal_name: 'Januar Ashari',
+    vice_principal_student_affairs: 'Jamil Husein',
   };
 
   private notify: () => void;

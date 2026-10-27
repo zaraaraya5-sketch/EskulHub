@@ -81,6 +81,9 @@ class SQLiteDatabaseClient {
       // Invalidate old study case cache, compound ekskul names, or outdated images
       if (
         (data.settings?.school_name && !data.settings.school_name.includes('Ciomas')) ||
+        data.settings?.npsn !== '20254135' ||
+        data.settings?.principal_name !== 'Januar Ashari' ||
+        data.settings?.vice_principal_student_affairs !== 'Jamil Husein' ||
         (data.ekskuls?.[0]?.name && data.ekskuls[0].name.includes('Ciomas')) ||
         data.ekskuls?.some((e: any) => 
           (e.slug === 'paskibra' && e.profile_image?.includes('photo-1532375810709')) ||
@@ -218,7 +221,7 @@ class SQLiteDatabaseClient {
 
   // Events
   public getSchoolEvents = () => this.events.getSchoolEvents();
-  public addSchoolEvent = (event: any) => this.events.addSchoolEvent(event);
+  public addSchoolEvent = (event: any, force: boolean = false) => this.events.addSchoolEvent(event, force);
   public updateSchoolEvent = (id: string, data: any, userId?: string) =>
     this.events.updateSchoolEvent(id, data, userId);
   public deleteSchoolEvent = (id: string, userId?: string) =>

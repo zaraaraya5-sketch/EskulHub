@@ -410,7 +410,7 @@ export const generateMonthlyReportPdf = async (
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
     doc.setTextColor(23, 23, 23);
-    doc.text('Drs. Bambang Suryono', sigLeftX, y);
+    doc.text('Jamil Husein', sigLeftX, y);
     doc.text(data.pembinaName, sigRightX, y);
     y += 4;
 
@@ -761,7 +761,7 @@ export const generateMonthlyReportPdf = async (
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8.5);
     doc.setTextColor(23, 23, 23);
-    doc.text('Drs. Bambang Suryono', sigLeftX, y);
+    doc.text('Jamil Husein', sigLeftX, y);
     doc.text(data.pengurusName, sigRightX, y);
     y += 4;
 

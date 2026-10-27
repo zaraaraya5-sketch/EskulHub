@@ -26,7 +26,7 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
   // Student verification document
   const studentId = currentUser?.id || 'usr-student-1';
-  const verification = db.generatePortfolioVerification(studentId, 'Drs. Bambang Suryono');
+  const verification = db.generatePortfolioVerification(studentId, 'Jamil Husein');
 
   const handleDownloadPdf = async () => {
     setIsGenerating(true);

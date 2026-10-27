@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
+import { ProcessConfirmModal } from '@/components/ui/ProcessConfirmModal';
 import { Search, Plus, Edit2, Trash2 } from 'lucide-react';
 import { User, UserRole, Extracurricular } from '@/types';
 
@@ -62,14 +61,6 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
 }) => {
   const theme = themes[themeColor];
   const [searchQuery, setSearchQuery] = useState('');
-
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [editUserName, setEditUserName] = useState('');
-  const [editUserEmail, setEditUserEmail] = useState('');
-  const [editUserRole, setEditUserRole] = useState<UserRole>(roleFilters[0]);
-  const [editUserPhone, setEditUserPhone] = useState('');
-  const [editUserStatus, setEditUserStatus] = useState<boolean>(true);
-
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
   const filteredUsers = users
@@ -80,64 +71,46 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
         (u.email || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-  const handleEditSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingUser) return;
-
-    const res = db.updateUser(editingUser.id, {
-      name: editUserName.trim(),
-      email: editUserEmail.trim(),
-      role: editUserRole,
-      phone: editUserPhone.trim(),
-      is_active: editUserStatus,
-    });
-
-    if (res.success) {
-      setUsers([...db.getUsers()]);
-      setEditingUser(null);
-      showNotification('success', res.message);
-    } else {
-      showNotification('error', res.message);
+  const handleEditClick = (u: User) => {
+    if (onNavigate) {
+      if (u.role === 'student') {
+        onNavigate(`/pengurus/students/${u.id}/edit`);
+      } else {
+        onNavigate(`/pengurus/pembina/${u.id}/edit`);
+      }
     }
   };
 
-  const confirmDelete = () => {
-    if (!userToDelete) return;
+  const handleConfirmDelete = async () => {
+    if (!userToDelete) return false;
     const res = db.deleteUser(userToDelete.id);
     if (res.success) {
       setUsers([...db.getUsers()]);
       showNotification('success', res.message);
+      return true;
     } else {
       showNotification('error', res.message);
+      return false;
     }
-    setUserToDelete(null);
-  };
-
-  const openEditModal = (user: User) => {
-    setEditingUser(user);
-    setEditUserName(user.name);
-    setEditUserEmail(user.email);
-    setEditUserRole(user.role);
-    setEditUserPhone(user.phone || '');
-    setEditUserStatus(user.is_active);
   };
 
   return (
-    <div className="bg-white border border-[#EAE6DC] rounded-lg p-5 space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#EAE6DC]">
+    <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 sm:p-6 space-y-4 shadow-2xs">
+      {/* Top Search & Action Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#EAE6DC]">
         <div>
-          <h2 className="text-sm font-bold text-[#171717]">{title}</h2>
-          <p className="text-xs text-[#68655F]">{description}</p>
+          <h2 className="text-base font-bold text-[#171717]">{title}</h2>
+          <p className="text-xs text-[#68655F] mt-0.5">{description}</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Search className={`w-3.5 h-3.5 absolute left-2.5 top-2.5 text-[#68655F]`} />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#68655F]" />
             <input
               type="text"
-              placeholder="Cari pengguna..."
+              placeholder="Cari nama atau email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`pl-8 pr-3 py-1.5 text-xs bg-[#F9F8F6]/50 border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 ${theme.focusRing}`}
+              className="pl-8.5 pr-3 py-1.5 text-xs bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-colors w-48 sm:w-60"
             />
           </div>
           <Button
@@ -159,124 +132,129 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Users Table */}
+      <div className="overflow-x-auto rounded-xl border border-[#EAE6DC]">
         <table className="w-full text-left text-xs border-collapse">
           <thead>
-            <tr className="border-b border-[#EAE6DC] bg-[#F9F8F6]/60 text-[#68655F]">
-              <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Nama Lengkap</th>
-              <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Email Institusi</th>
+            <tr className="border-b border-[#EAE6DC] bg-[#F9F8F6] text-[#68655F]">
+              <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px]">Nama Lengkap</th>
+              <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px]">Email Institusi</th>
               {allEkskuls ? (
-                <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Ekskul yang Dibina</th>
+                <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px]">Ekskul yang Dibina</th>
               ) : (
-                <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">No. Telepon / WA</th>
+                <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px]">Kelas & No. Kontak</th>
               )}
-              <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px]">Status</th>
-              <th className="py-2.5 px-3 font-bold uppercase tracking-wider text-[10px] text-right">Aksi</th>
+              <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px]">Status</th>
+              <th className="py-3 px-4 font-bold uppercase tracking-wider text-[10px] text-right">Aksi</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#D8D4CC]">
-            {filteredUsers.map((u) => {
-              let assignedEkskul: Extracurricular[] = [];
-              if (allEkskuls) {
-                assignedEkskul = allEkskuls.filter((e) => e.supervisor_name.toLowerCase().includes(u.name.toLowerCase()));
-              }
+          <tbody className="divide-y divide-[#EAE6DC]">
+            {filteredUsers.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-xs text-[#68655F]">
+                  Tidak ada data pengguna yang sesuai dengan pencarian.
+                </td>
+              </tr>
+            ) : (
+              filteredUsers.map((u) => {
+                let assignedEkskul: Extracurricular[] = [];
+                if (allEkskuls) {
+                  assignedEkskul = allEkskuls.filter((e) =>
+                    e.supervisor_name.toLowerCase().includes(u.name.toLowerCase())
+                  );
+                }
 
-              return (
-                <tr key={u.id} className="hover:bg-[#F9F8F6]/30 transition-colors">
-                  <td className="py-3 px-3 font-bold text-[#171717] flex items-center gap-2.5">
-                    <div className={`w-7 h-7 rounded-full ${theme.bg} ${theme.text} font-bold flex items-center justify-center text-xs`}>
-                      {u.name.substring(0, 1)}
-                    </div>
-                    <span>{u.name}</span>
-                  </td>
-                  <td className="py-3 px-3 text-[#68655F] font-mono">{u.email}</td>
-                  
-                  {allEkskuls ? (
-                    <td className="py-3 px-3">
-                      {assignedEkskul.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {assignedEkskul.map((e) => (
-                            <Badge key={e.id} variant="neutral">{e.name}</Badge>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-[#68655F] italic">Belum ditugaskan</span>
-                      )}
+                return (
+                  <tr key={u.id} className="hover:bg-[#F9F8F6]/60 transition-colors">
+                    <td className="py-3 px-4 font-bold text-[#171717] flex items-center gap-3">
+                      <div
+                        className={`w-8 h-8 rounded-full ${theme.bg} ${theme.text} font-bold flex items-center justify-center text-xs shrink-0 shadow-2xs`}
+                      >
+                        {u.name.substring(0, 1)}
+                      </div>
+                      <div className="overflow-hidden">
+                        <span className="block truncate">{u.name}</span>
+                        {u.role === 'student' && u.nisn && (
+                          <span className="text-[10px] text-[#68655F] font-mono block">NISN: {u.nisn}</span>
+                        )}
+                        {u.role === 'pembina' && u.nip && (
+                          <span className="text-[10px] text-[#68655F] font-mono block">NIP: {u.nip}</span>
+                        )}
+                      </div>
                     </td>
-                  ) : (
-                    <td className="py-3 px-3 text-[#171717]">{u.phone || '-'}</td>
-                  )}
+                    <td className="py-3 px-4 text-[#525049] font-mono">{u.email}</td>
 
-                  <td className="py-3 px-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${u.is_active ? theme.badgeValid : theme.badgeInvalid}`}>
-                      {u.is_active ? 'Aktif' : 'Non-Aktif'}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 text-right">
-                    <div className="inline-flex items-center gap-1.5">
-                      <button
-                        onClick={() => openEditModal(u)}
-                        className={`p-1.5 text-[#68655F] ${theme.hoverText} ${theme.hoverBg} rounded cursor-pointer transition-colors`}
-                        title="Edit Pengguna"
+                    {allEkskuls ? (
+                      <td className="py-3 px-4">
+                        {assignedEkskul.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {assignedEkskul.map((e) => (
+                              <Badge key={e.id} variant="neutral">
+                                {e.name}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-[#68655F] italic">Belum ditugaskan</span>
+                        )}
+                      </td>
+                    ) : (
+                      <td className="py-3 px-4 text-[#171717]">
+                        <span className="font-semibold block">{u.class_name || 'Umum'}</span>
+                        <span className="text-[11px] text-[#68655F] block font-mono">{u.phone || '-'}</span>
+                      </td>
+                    )}
+
+                    <td className="py-3 px-4">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${
+                          u.is_active ? 'bg-[#E7EFEA] text-[#234B36]' : 'bg-[#F9ECEB] text-[#A33D35]'
+                        }`}
                       >
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => setUserToDelete(u)}
-                        className="p-1.5 text-[#68655F] hover:text-[#A33D35] hover:bg-[#F9ECEB] rounded cursor-pointer transition-colors"
-                        title="Hapus Pengguna"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+                        <span className={`w-1.5 h-1.5 rounded-full ${u.is_active ? 'bg-[#234B36]' : 'bg-[#A33D35]'}`} />
+                        {u.is_active ? 'Aktif' : 'Non-Aktif'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="inline-flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleEditClick(u)}
+                          className="px-2.5 py-1 text-xs font-semibold text-[#525049] hover:text-[#D15B40] hover:bg-[#FDEDE9] border border-[#EAE6DC] hover:border-[#F2C9C0] rounded-lg cursor-pointer transition-all flex items-center gap-1 shadow-2xs"
+                          title="Buka Halaman Edit"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => setUserToDelete(u)}
+                          className="p-1.5 text-[#68655F] hover:text-[#A33D35] hover:bg-[#F9ECEB] border border-transparent hover:border-[#E8BAB5] rounded-lg cursor-pointer transition-colors shadow-2xs"
+                          title="Hapus Akun Pengguna"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* Edit User Modal */}
-      <Modal isOpen={editingUser !== null} onClose={() => setEditingUser(null)} title={`Edit Data Pengguna: ${editingUser?.name}`}>
-        <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
-          <Input label="Nama Lengkap" type="text" value={editUserName} onChange={(e) => setEditUserName(e.target.value)} required />
-          <Input label="Alamat Email" type="email" value={editUserEmail} onChange={(e) => setEditUserEmail(e.target.value)} required />
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">Peran Akun</label>
-              <select value={editUserRole} onChange={(e) => setEditUserRole(e.target.value as UserRole)} className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]">
-                <option value="student">Siswa</option>
-                <option value="pembina">Pembina Ekskul</option>
-                <option value="pengurus">Pengurus Sekolah</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-[#68655F] mb-1">Status Akun</label>
-              <select value={editUserStatus ? 'active' : 'inactive'} onChange={(e) => setEditUserStatus(e.target.value === 'active')} className="w-full px-3 py-2 text-xs bg-white border border-[#EAE6DC] rounded text-[#171717] focus:outline-none focus:ring-1 focus:ring-[#234B36]">
-                <option value="active">Aktif</option>
-                <option value="inactive">Non-Aktif</option>
-              </select>
-            </div>
-          </div>
-          <Input label="Nomor WhatsApp" type="tel" value={editUserPhone} onChange={(e) => setEditUserPhone(e.target.value)} />
-          <div className="flex justify-end gap-2.5 pt-2">
-            <Button type="button" variant="outline" onClick={() => setEditingUser(null)}>Batal</Button>
-            <Button type="submit" variant="primary">Perbarui Data</Button>
-          </div>
-        </form>
-      </Modal>
-
-      <Modal isOpen={userToDelete !== null} onClose={() => setUserToDelete(null)} title="Konfirmasi Hapus Akun">
-        <div className="space-y-4 text-xs">
-          <p className="text-[#68655F]">Apakah Anda yakin ingin menghapus akun <strong className="text-[#171717]">{userToDelete?.name}</strong> ({userToDelete?.email})?</p>
-          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded">Tindakan ini akan mencabut akses masuk pengguna secara permanen.</div>
-          <div className="flex justify-end gap-2.5 pt-2">
-            <Button variant="outline" onClick={() => setUserToDelete(null)}>Batal</Button>
-            <button onClick={confirmDelete} className="px-4 py-2 bg-[#A33D35] hover:bg-[#852E27] text-white rounded text-xs font-bold transition-colors cursor-pointer">Hapus Pengguna</button>
-          </div>
-        </div>
-      </Modal>
+      {/* Delete Confirmation Popup with Process State */}
+      <ProcessConfirmModal
+        isOpen={userToDelete !== null}
+        onClose={() => setUserToDelete(null)}
+        title="Konfirmasi Hapus Akun Pengguna"
+        description="Apakah Anda yakin ingin menghapus akun"
+        targetName={`${userToDelete?.name} (${userToDelete?.email})`}
+        warningNotice="Tindakan ini akan mencabut akses masuk akun pengguna secara permanen dari sistem portal kesiswaan SMKN 1 Ciomas."
+        confirmLabel="Hapus Akun Pengguna"
+        loadingText="Menghapus akun pengguna dari database..."
+        successText={`Akun ${userToDelete?.name || ''} berhasil dihapus!`}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };

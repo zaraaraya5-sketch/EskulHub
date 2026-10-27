@@ -97,8 +97,8 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
 
     setIsSubmitting(true);
 
-    if (isEditMode && ekskulId) {
-      const res = db.updateExtracurricular(ekskulId, {
+    if (isEditMode && targetId) {
+      const res = db.updateExtracurricular(targetId, {
         name: name.trim(),
         category,
         registration_status: registrationStatus,
@@ -117,7 +117,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
 
       if (res.success) {
         setFormSuccess('Perubahan ekstrakurikuler berhasil disimpan!');
-        setTimeout(() => onNavigate('/admin/ekskul'), 1200);
+        setTimeout(() => onNavigate('/pengurus/ekskul'), 1000);
       } else {
         setFormError(res.message);
       }
@@ -141,7 +141,7 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({ ekskul
 
       if (res.success) {
         setFormSuccess('Ekstrakurikuler baru berhasil ditambahkan!');
-        setTimeout(() => onNavigate('/admin/ekskul'), 1200);
+        setTimeout(() => onNavigate('/pengurus/ekskul'), 1000);
       } else {
         setFormError(res.message);
       }

@@ -267,7 +267,7 @@ export const PortfolioSamplePage: React.FC<PortfolioSamplePageProps> = ({ onNavi
             <div className="h-16 flex items-center justify-center text-[#68655F] font-serif italic text-xs">
               [Tanda Tangan Digital & Stempel Kesiswaan]
             </div>
-            <div className="font-bold text-[#171717]">Drs. Bambang Suryono</div>
+            <div className="font-bold text-[#171717]">Jamil Husein</div>
             <div className="text-[10px] text-[#68655F]">NIP. 19680515 199403 1 007</div>
           </div>
         </div>

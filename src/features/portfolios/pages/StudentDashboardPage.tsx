@@ -50,7 +50,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
   const allActivities = db.getActivities();
   const myCertificates = db.getCertificates().filter((c) => c.student_id === studentId);
   const upcomingEvents = db.getSchoolEvents().slice(0, 4);
-  const verification = db.generatePortfolioVerification(studentId, 'Drs. Bambang Suryono');
+  const verification = db.generatePortfolioVerification(studentId, 'Jamil Husein');
 
   const myEkskulIds = new Set(myMemberships.map((m) => m.extracurricular_id));
   const myActivityHistory = allActivities.filter((act) => myEkskulIds.has(act.extracurricular_id));
