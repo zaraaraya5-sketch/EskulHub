@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { Modal } from '@/components/ui/Modal';
 import { ProcessConfirmModal } from '@/components/ui/ProcessConfirmModal';
 import { SchoolEvent } from '@/types';
 import {
@@ -10,20 +8,17 @@ import {
   Trash2,
   Clock,
   MapPin,
-  AlertTriangle,
   ChevronLeft,
   ChevronRight,
   Calendar as CalendarIcon,
   Users,
-  CheckCircle2,
-  Sparkles,
-  Info
 } from 'lucide-react';
 
 interface AdminScheduleSectionProps {
   events: SchoolEvent[];
   setEvents: (data: SchoolEvent[]) => void;
   showNotification: (type: 'success' | 'error', message: string) => void;
+  onNavigate?: (path: string) => void;
   initialOpenAddModal?: boolean;
 }
 
@@ -31,10 +26,8 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
   events,
   setEvents,
   showNotification,
-  initialOpenAddModal = false,
+  onNavigate,
 }) => {
-  const ekskuls = db.getExtracurriculars();
-  const [isAddEventModalOpen, setIsAddEventModalOpen] = useState(initialOpenAddModal);
   const [eventToDelete, setEventToDelete] = useState<SchoolEvent | null>(null);
 
   // Current date setup
@@ -42,18 +35,6 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
     now.getDate()
   ).padStart(2, '0')}`;
-
-  // Form states with smart defaults
-  const [eventTitle, setEventTitle] = useState('');
-  const [eventCategory, setEventCategory] = useState<'practice' | 'competition' | 'ceremony' | 'exhibition'>('practice');
-  const [eventLocation, setEventLocation] = useState('Lapangan Olahraga Utama');
-  const [eventDate, setEventDate] = useState(todayStr);
-  const [eventStartTime, setEventStartTime] = useState('16:00');
-  const [eventEndTime, setEventEndTime] = useState('18:00');
-  const [eventOrganizer, setEventOrganizer] = useState(ekskuls[0]?.name || 'Futsal');
-  const [eventDescription, setEventDescription] = useState('');
-  const [conflictWarning, setConflictWarning] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Carousel scroll ref & state
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -85,61 +66,6 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
     }
   };
 
-  const checkConflict = (loc: string, date: string, start: string, end: string) => {
-    if (!date || !start || !end) return;
-    const startIso = `${date}T${start}:00`;
-    const endIso = `${date}T${end}:00`;
-    const check = db.checkEventConflict(loc, startIso, endIso);
-    if (check.hasConflict && check.conflictingEvent) {
-      setConflictWarning(
-        `Perhatian: Ruangan "${loc}" bentrok dengan agenda "${check.conflictingEvent.title}" (${check.conflictingEvent.start_datetime.substring(11, 16)} - ${check.conflictingEvent.end_datetime.substring(11, 16)})!`
-      );
-    } else {
-      setConflictWarning(null);
-    }
-  };
-
-  const handleAddEventSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!eventTitle.trim()) {
-      showNotification('error', 'Judul kegiatan wajib diisi.');
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    const startIso = `${eventDate}T${eventStartTime}:00`;
-    const endIso = `${eventDate}T${eventEndTime}:00`;
-
-    // Force true to ensure it saves properly even if an advisory conflict exists
-    const res = db.addSchoolEvent(
-      {
-        title: eventTitle.trim(),
-        category: eventCategory,
-        location: eventLocation,
-        start_datetime: startIso,
-        end_datetime: endIso,
-        organizer: eventOrganizer,
-        description: eventDescription.trim() || `Sesi latihan & kegiatan resmi ${eventOrganizer}`,
-        status: 'scheduled',
-      },
-      true
-    );
-
-    setIsSubmitting(false);
-
-    if (res.success) {
-      setEvents([...db.getSchoolEvents()]);
-      setIsAddEventModalOpen(false);
-      setEventTitle('');
-      setEventDescription('');
-      setConflictWarning(null);
-      showNotification('success', `Agenda "${eventTitle.trim()}" berhasil dijadwalkan!`);
-    } else {
-      showNotification('error', res.message || 'Gagal menambahkan jadwal.');
-    }
-  };
-
   const handleDeleteConfirm = async () => {
     if (!eventToDelete) return false;
     const res = db.deleteSchoolEvent(eventToDelete.id);
@@ -149,6 +75,14 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
       return true;
     }
     return false;
+  };
+
+  const handleOpenCreatePage = () => {
+    if (onNavigate) {
+      onNavigate('/pengurus/schedule/create');
+    } else {
+      window.location.href = '/pengurus/schedule/create';
+    }
   };
 
   // Helper date formatter
@@ -194,10 +128,12 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
   const getCategoryBadge = (cat: string) => {
     switch (cat) {
       case 'practice':
+      case 'extracurricular_training':
         return { label: 'Latihan Rutin', color: 'bg-[#E7EFEA] text-[#234B36] border-[#B7D2C2]' };
       case 'competition':
         return { label: 'Kejuaraan / Lomba', color: 'bg-[#F9ECEB] text-[#A33D35] border-[#E8BAB5]' };
       case 'ceremony':
+      case 'school_event':
         return { label: 'Seremoni Resmi', color: 'bg-[#F9F4E5] text-[#8C6819] border-[#E4C783]' };
       case 'exhibition':
         return { label: 'Pameran & Pentas', color: 'bg-[#FDEDE9] text-[#D15B40] border-[#F2C9C0]' };
@@ -218,16 +154,14 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
                 Maksimal 10 Agenda Mendatang
               </span>
             </div>
-            <p className="text-xs text-[#525049] mt-0.5">
-              Menampilkan sesi latihan dan kegiatan penting yang akan datang atau berlangsung hari ini.
+            <p className="text-xs text-[#68655F] mt-1">
+              Jadwal pelaksanaan sesi latihan, pertandingan persahabatan, atau gladi resik persiapan lomba.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Carousel Navigation buttons */}
+          <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 bg-[#F9F8F6] p-1 rounded-xl border border-[#EAE6DC]">
               <button
-                type="button"
                 onClick={() => scrollCarousel('left')}
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-[#525049] hover:text-[#171717] hover:bg-white active:scale-95 transition-all cursor-pointer shadow-2xs"
                 title="Agenda Sebelumnya"
@@ -235,7 +169,6 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
-                type="button"
                 onClick={() => scrollCarousel('right')}
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-[#525049] hover:text-[#171717] hover:bg-white active:scale-95 transition-all cursor-pointer shadow-2xs"
                 title="Agenda Berikutnya"
@@ -247,8 +180,9 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setIsAddEventModalOpen(true)}
+              onClick={handleOpenCreatePage}
               icon={<Plus className="w-3.5 h-3.5" />}
+              className="bg-[#D15B40] hover:bg-[#b84a32] text-white font-bold"
             >
               Jadwalkan Sesi Latihan Baru
             </Button>
@@ -268,8 +202,9 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
             <Button
               variant="primary"
               size="sm"
-              onClick={() => setIsAddEventModalOpen(true)}
+              onClick={handleOpenCreatePage}
               icon={<Plus className="w-3.5 h-3.5" />}
+              className="bg-[#D15B40] hover:bg-[#b84a32] text-white font-bold"
             >
               Jadwalkan Agenda Sekarang
             </Button>
@@ -298,25 +233,28 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
                             <span className="text-[10px] font-bold text-[#D15B40] tracking-wider leading-none">
                               {dateInfo.monthStr}
                             </span>
-                            <span className="text-lg font-black text-[#171717] leading-tight font-mono">
+                            <span className="text-lg font-black text-[#171717] leading-tight">
                               {dateInfo.dayNum}
                             </span>
                           </div>
+
                           <div>
-                            <span className="text-[11px] font-semibold text-[#888681] block">
+                            <span className="text-xs font-bold text-[#171717] block leading-none">
                               {dateInfo.dayName}
                             </span>
                             <span
-                              className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border inline-block ${dateInfo.relativeBadgeClass}`}
+                              className={`inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] uppercase tracking-wider border ${dateInfo.relativeBadgeClass}`}
                             >
                               {dateInfo.relativeLabel}
                             </span>
                           </div>
                         </div>
 
+                        {/* Delete Action button */}
                         <button
+                          type="button"
                           onClick={() => setEventToDelete(ev)}
-                          className="p-1.5 text-[#888681] hover:text-[#A33D35] hover:bg-[#F9ECEB] rounded-lg transition-colors cursor-pointer"
+                          className="w-7 h-7 rounded-lg flex items-center justify-center text-[#A09D96] hover:text-[#A33D35] hover:bg-[#F9ECEB] transition-colors cursor-pointer"
                           title="Hapus Jadwal"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -368,9 +306,9 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
               })}
             </div>
 
-            {/* Dots Indicator */}
+            {/* Indicator Dots */}
             {upcomingEvents.length > 1 && (
-              <div className="flex items-center justify-center gap-1.5 mt-2">
+              <div className="flex items-center justify-center gap-1.5 pt-2">
                 {upcomingEvents.map((_, i) => (
                   <button
                     key={i}
@@ -391,212 +329,6 @@ export const AdminScheduleSection: React.FC<AdminScheduleSectionProps> = ({
           </div>
         )}
       </div>
-
-      {/* MODAL: TAMBAH AGENDA JADWAL LATIHAN BARU (UPGRADED WITH MODERN DESIGN & ZERO BUGS) */}
-      <Modal
-        isOpen={isAddEventModalOpen}
-        onClose={() => setIsAddEventModalOpen(false)}
-        title="Jadwalkan Sesi Latihan & Acara Baru"
-        subtitle="Lengkapi formulir penjadwalan latihan rutin mingguan atau persiapan kejuaraan ekskul."
-        maxWidth="2xl"
-        icon={<CalendarIcon className="w-5 h-5 text-[#D15B40]" />}
-      >
-        <form onSubmit={handleAddEventSubmit} className="space-y-5 font-sans text-xs">
-          {/* Section 1: Detail Agenda */}
-          <div className="p-4 rounded-2xl bg-[#F9F8F6]/60 border border-[#EAE6DC] space-y-3.5">
-            <div className="flex items-center gap-2 pb-1 border-b border-[#EAE6DC]/70">
-              <Sparkles className="w-3.5 h-3.5 text-[#D15B40]" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#171717]">
-                1. Informasi Agenda Kegiatan
-              </span>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                Judul Sesi Kegiatan / Latihan <span className="text-[#A33D35]">*</span>
-              </label>
-              <input
-                type="text"
-                value={eventTitle}
-                onChange={(e) => setEventTitle(e.target.value)}
-                placeholder="Contoh: Latihan Taktik & Pressing Futsal Menjelang Turnamen"
-                className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] placeholder-[#A09D96] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40] transition-colors"
-                required
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Kategori Agenda
-                </label>
-                <select
-                  value={eventCategory}
-                  onChange={(e) => setEventCategory(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40] transition-colors"
-                >
-                  <option value="practice">🟢 Latihan Rutin Mingguan</option>
-                  <option value="competition">🔴 Kejuaraan / Perlombaan</option>
-                  <option value="exhibition">🟡 Pameran Karya / Pentas</option>
-                  <option value="ceremony">🔵 Upacara / Seremoni Resmi</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Ekstrakurikuler Penyelenggara
-                </label>
-                <select
-                  value={eventOrganizer}
-                  onChange={(e) => setEventOrganizer(e.target.value)}
-                  className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40] transition-colors"
-                >
-                  {ekskuls.map((e) => (
-                    <option key={e.id} value={e.name}>
-                      {e.name} ({e.category})
-                    </option>
-                  ))}
-                  <option value="Kesiswaan & OSIS">Kesiswaan & OSIS</option>
-                  <option value="Pihak Luar / Mitra">Pihak Luar / Mitra</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Section 2: Waktu & Lokasi Fasilitas */}
-          <div className="p-4 rounded-2xl bg-[#F9F8F6]/60 border border-[#EAE6DC] space-y-3.5">
-            <div className="flex items-center gap-2 pb-1 border-b border-[#EAE6DC]/70">
-              <MapPin className="w-3.5 h-3.5 text-[#234B36]" />
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#171717]">
-                2. Lokasi Sarana & Jadwal Waktu
-              </span>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                Pilih Fasilitas / Ruangan Sekolah <span className="text-[#A33D35]">*</span>
-              </label>
-              <select
-                value={eventLocation}
-                onChange={(e) => {
-                  setEventLocation(e.target.value);
-                  checkConflict(e.target.value, eventDate, eventStartTime, eventEndTime);
-                }}
-                className="w-full px-3.5 py-2.5 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40] transition-colors"
-              >
-                <option value="Lapangan Olahraga Utama">Lapangan Olahraga Utama</option>
-                <option value="Lapangan Futsal SMKN 1 Ciomas">Lapangan Futsal SMKN 1 Ciomas</option>
-                <option value="Lapangan Basket SMKN 1 Ciomas">Lapangan Basket SMKN 1 Ciomas</option>
-                <option value="Lapangan Voli Outdoor">Lapangan Voli Outdoor</option>
-                <option value="Aula Serbaguna Lantai 3">Aula Serbaguna Lantai 3</option>
-                <option value="Ruang UKS & Area Terbuka">Ruang UKS & Area Terbuka</option>
-                <option value="Masjid Al-Kautsar SMKN 1 Ciomas">Masjid Al-Kautsar SMKN 1 Ciomas</option>
-                <option value="Laboratorium Komputer / Bahasa">Laboratorium Komputer / Bahasa</option>
-              </select>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Tanggal Kegiatan <span className="text-[#A33D35]">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={eventDate}
-                  onChange={(e) => {
-                    setEventDate(e.target.value);
-                    checkConflict(eventLocation, e.target.value, eventStartTime, eventEndTime);
-                  }}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Jam Mulai <span className="text-[#A33D35]">*</span>
-                </label>
-                <input
-                  type="time"
-                  value={eventStartTime}
-                  onChange={(e) => {
-                    setEventStartTime(e.target.value);
-                    checkConflict(eventLocation, eventDate, e.target.value, eventEndTime);
-                  }}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40]"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Jam Selesai <span className="text-[#A33D35]">*</span>
-                </label>
-                <input
-                  type="time"
-                  value={eventEndTime}
-                  onChange={(e) => {
-                    setEventEndTime(e.target.value);
-                    checkConflict(eventLocation, eventDate, eventStartTime, e.target.value);
-                  }}
-                  className="w-full px-3.5 py-2 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40]"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Section 3: Deskripsi */}
-          <div>
-            <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-              Deskripsi Singkat / Materi Kegiatan (Opsional)
-            </label>
-            <textarea
-              value={eventDescription}
-              onChange={(e) => setEventDescription(e.target.value)}
-              placeholder="Jelaskan ringkasan materi latihan atau agenda kegiatan secara singkat..."
-              rows={2}
-              className="w-full px-3.5 py-2 text-xs bg-white border border-[#EAE6DC] rounded-xl text-[#171717] placeholder-[#A09D96] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/25 focus:border-[#D15B40]"
-            />
-          </div>
-
-          {/* Conflict Advisory Notice */}
-          {conflictWarning && (
-            <div className="p-3.5 bg-[#F9F4E5] border border-[#E4C783] rounded-2xl flex items-start gap-2.5">
-              <AlertTriangle className="w-4 h-4 text-[#8C6819] shrink-0 mt-0.5" />
-              <div className="space-y-0.5">
-                <p className="text-xs font-bold text-[#8C6819]">Pemberitahuan Bentrok Ruangan</p>
-                <p className="text-[11px] text-[#8C6819] leading-relaxed">{conflictWarning}</p>
-                <p className="text-[10px] text-[#8C6819]/80 italic">
-                  *Sebagai Pengurus Sekolah, Anda tetap dapat menyimpan jadwal ini jika penggunaan bersama telah disepakati.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#EAE6DC]">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAddEventModalOpen(false)}
-              disabled={isSubmitting}
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              size="sm"
-              disabled={isSubmitting}
-              icon={<CheckCircle2 className="w-3.5 h-3.5" />}
-            >
-              {isSubmitting ? 'Menyimpan...' : 'Simpan & Jadwalkan Sekarang'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
 
       {/* Delete Process Popup Confirmation */}
       <ProcessConfirmModal

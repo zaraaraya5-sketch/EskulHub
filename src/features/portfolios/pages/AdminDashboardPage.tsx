@@ -154,10 +154,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           }}
           openAddUserModal={openAddUserModal}
           setIsAddEkskulModalOpen={() => onNavigate('/pengurus/ekskul/tambah')}
-          setIsAddEventModalOpen={() => {
-            setScheduleAutoOpenAdd(true);
-            switchSection('schedule');
-          }}
+          setIsAddEventModalOpen={() => onNavigate('/pengurus/schedule/create')}
           showNotification={showNotification}
           settings={settings}
           onNavigate={onNavigate}
@@ -207,7 +204,7 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({ currentP
           events={events}
           setEvents={setEvents}
           showNotification={showNotification}
-          initialOpenAddModal={scheduleAutoOpenAdd}
+          onNavigate={onNavigate}
         />
       )}
 

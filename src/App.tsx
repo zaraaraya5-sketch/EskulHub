@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from '@/features/authentication/providers/AuthP
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { PageLoader } from '@/components/ui/PageLoader';
+import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
 import { db } from '@/lib/database';
 import { Menu } from 'lucide-react';
 
@@ -261,6 +262,11 @@ const AppContent: React.FC = () => {
       case '/pengurus/pembina/tambah':
       case '/pengurus/teachers/tambah':
         return <AdminFormPembinaPage onNavigate={navigate} />;
+      case '/pengurus/schedule/create':
+      case '/pengurus/schedule/tambah':
+      case '/dashboard/pengurus/schedule/create':
+      case '/admin/schedule/create':
+        return <CreateEventPage onNavigate={navigate} returnPath="/pengurus/schedule" />;
 
       // Unified Pembina & Teacher routes
       case '/pembina/dashboard':
@@ -333,12 +339,10 @@ const AppContent: React.FC = () => {
             onClick={() => navigate('/')}
             className="flex items-center gap-2.5 cursor-pointer select-none min-w-0"
           >
-            <div className="w-9 h-9 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
-              EH
-            </div>
+            <EskulHubLogo size="sm" />
             <div className="min-w-0">
               <span className="text-sm font-bold text-[#171717] block leading-none truncate">
-                EKSKUL-HUB
+                EskulHub
               </span>
               <span className="text-[10px] text-[#68655F] font-medium uppercase mt-0.5 block truncate">
                 {settings.school_name}

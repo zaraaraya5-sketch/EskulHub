@@ -13,7 +13,6 @@ import {
   Building,
   Users,
   Trophy,
-  Flag,
   ArrowLeft,
   CheckCircle,
   AlertTriangle,
@@ -22,16 +21,21 @@ import {
   Info,
   CalendarCheck,
   Loader2,
-  Pencil
+  Pencil,
 } from 'lucide-react';
 import { EventCategory, Extracurricular, SchoolEvent } from '@/types';
 
 interface CreateEventPageProps {
   onNavigate?: (path: string) => void;
   editEventId?: string;
+  returnPath?: string;
 }
 
-export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, editEventId }) => {
+export const CreateEventPage: React.FC<CreateEventPageProps> = ({
+  onNavigate,
+  editEventId,
+  returnPath,
+}) => {
   const { currentUser, role } = useAuth();
   const ekskuls = useMemo(() => db.getExtracurriculars(), []);
   const isEditMode = Boolean(editEventId);
@@ -39,32 +43,50 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
   // Determine user's assigned extracurricular if Pembina
   const pembinaEkskul = useMemo(() => {
     if (!currentUser) return null;
-    return ekskuls.find(
-      
-      (e) =>
-        e.supervisor_name === currentUser.name ||
-        e.id === currentUser.extracurricular_id ||
-        e.id === (currentUser as any).ekskul_id
-    ) || ekskuls[0];
+    return (
+      ekskuls.find(
+        (e) =>
+          e.supervisor_name === currentUser.name ||
+          e.id === currentUser.extracurricular_id ||
+          e.id === (currentUser as any).ekskul_id
+      ) || ekskuls[0]
+    );
   }, [currentUser, ekskuls]);
 
   const isPengurus = role === 'pengurus';
   const isPembina = role === 'pembina' || role === 'teacher';
 
+  const defaultBackPath = useMemo(() => {
+    if (returnPath) return returnPath;
+    if (typeof window !== 'undefined' && window.location.pathname.includes('/pengurus')) {
+      return '/pengurus/schedule';
+    }
+    return isPengurus ? '/pengurus/schedule' : '/calendar';
+  }, [returnPath, isPengurus]);
+
+  // Smart default datetime for today afternoon
+  const defaultDates = useMemo(() => {
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const ymd = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    return {
+      start: `${ymd}T15:30`,
+      end: `${ymd}T17:30`,
+    };
+  }, []);
+
   // Form State
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<EventCategory>(
-    isPengurus ? 'school_event' : 'extracurricular_training'
-  );
+  const [category, setCategory] = useState<EventCategory>('extracurricular_training');
   const [location, setLocation] = useState('Lapangan Olahraga Utama');
-  const [startDate, setStartDate] = useState('2026-10-15T15:30');
-  const [endDate, setEndDate] = useState('2026-10-15T17:30');
+  const [startDate, setStartDate] = useState(defaultDates.start);
+  const [endDate, setEndDate] = useState(defaultDates.end);
   const [description, setDescription] = useState('');
   const [organizer, setOrganizer] = useState(
-    currentUser?.name || (isPengurus ? 'Pengurus / Kesiswaan' : 'Pembina Ekskul')
+    currentUser?.name || (isPengurus ? 'Kesiswaan & OSIS' : 'Pembina Ekskul')
   );
   const [extracurricularId, setExtracurricularId] = useState<string>(
-    isPembina && pembinaEkskul ? pembinaEkskul.id : ''
+    isPembina && pembinaEkskul ? pembinaEkskul.id : ekskuls[0]?.id || ''
   );
 
   const [existingEvent, setExistingEvent] = useState<SchoolEvent | null>(null);
@@ -74,7 +96,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState('');
 
-  // In edit mode: load existing event and verify creator permission
+  // Pre-fill in edit mode
   useEffect(() => {
     if (!editEventId) return;
 
@@ -92,35 +114,22 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
 
       setExistingEvent(ev);
 
-      // Validate permission: Only creator role (or admin, or same user) can edit
+      // Validate permission: Creator or Pengurus/Admin can edit
       const userRole = (role || '').toLowerCase();
-      const creatorRole = (ev.created_by_role || '').toLowerCase() ||
-        (['extracurricular_training', 'competition'].includes(ev.category as string) ? 'pembina' : 'pengurus');
-
-      const normUser = userRole === 'teacher' ? 'pembina' : userRole;
-      const normCreator = creatorRole === 'teacher' ? 'pembina' : creatorRole;
-
+      const creatorRole = (ev.created_by_role || '').toLowerCase();
       const isOwner = Boolean(ev.created_by_id && currentUser?.id === ev.created_by_id);
-      const isRoleMatch = userRole === 'admin' || normUser === normCreator || isOwner;
+      const isRoleMatch = userRole === 'admin' || userRole === 'pengurus' || isOwner;
 
       if (!isRoleMatch) {
-        const labels: Record<string, string> = {
-          pembina: 'Pembina Ekskul',
-          pengurus: 'Pengurus Sekolah',
-          student: 'Siswa',
-        };
-        const creatorLabel = labels[normCreator] || creatorRole;
-        const userLabel = labels[normUser] || userRole;
-
         setUnauthorizedError(
-          `Akses ditolak: Jadwal ini dibuat oleh ${creatorLabel}. Akun Anda dengan hak akses (${userLabel}) tidak memiliki izin untuk mengedit jadwal tersebut.`
+          `Akses ditolak: Anda tidak memiliki izin untuk mengedit agenda kegiatan ini.`
         );
         return;
       }
 
       // Pre-fill form
       setTitle(ev.title || '');
-      setCategory((ev.category || ev.event_type || 'school_event') as EventCategory);
+      setCategory((ev.category || ev.event_type || 'extracurricular_training') as EventCategory);
       setLocation(ev.location || 'Lapangan Olahraga Utama');
 
       const rawStart = (ev.start_time || ev.start_datetime || '').replace(' ', 'T').slice(0, 16);
@@ -136,23 +145,13 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
     loadEvent();
   }, [editEventId, currentUser?.id, role]);
 
-  // Auto-set category options based on role if restricted in create mode
-  useEffect(() => {
-    if (isEditMode) return;
-    if (isPengurus && !['school_event', 'national_holiday'].includes(category)) {
-      setCategory('school_event');
-    } else if (isPembina && !['extracurricular_training', 'competition'].includes(category)) {
-      setCategory('extracurricular_training');
-    }
-  }, [role, isEditMode, isPengurus, isPembina, category]);
-
   // Real-time conflict detection check
   const checkConflict = (loc: string, start: string, end: string) => {
     if (loc && start && end) {
       const check = db.checkEventConflict(loc, start, end, editEventId);
       if (check.hasConflict && check.conflictingEvent) {
         setConflictWarning(
-          `Peringatan Konflik Ruangan: "${loc}" telah dijadwalkan untuk "${check.conflictingEvent.title}" (${check.conflictingEvent.start_datetime.replace('T', ' ')} s/d ${check.conflictingEvent.end_datetime.replace('T', ' ')})!`
+          `Pemberitahuan: "${loc}" terjadwal untuk kegiatan "${check.conflictingEvent.title}" pada rentang waktu yang sama.`
         );
       } else {
         setConflictWarning(null);
@@ -176,6 +175,10 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
     setEndDate(newEnd);
     checkConflict(location, startDate, newEnd);
   };
+
+  const selectedEkskul = useMemo(() => {
+    return ekskuls.find((e) => e.id === extracurricularId);
+  }, [ekskuls, extracurricularId]);
 
   // Preview date & time formatting
   const previewDateTime = useMemo(() => {
@@ -216,6 +219,12 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
     setSubmitSuccess('');
     setIsSubmitting(true);
 
+    if (!title.trim()) {
+      setSubmitError('Judul agenda atau sesi latihan wajib diisi.');
+      setIsSubmitting(false);
+      return;
+    }
+
     if (new Date(endDate) < new Date(startDate)) {
       setSubmitError('Waktu selesai tidak boleh lebih awal dari waktu mulai.');
       setIsSubmitting(false);
@@ -230,7 +239,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
     const sTime = formatDt(startDate);
     const eTime = formatDt(endDate);
 
-    const payload = {
+    const payload: any = {
       title: title.trim(),
       category: category,
       event_type: category,
@@ -239,45 +248,41 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
       end_time: eTime,
       start_datetime: sTime,
       end_datetime: eTime,
-      description: description.trim(),
+      description: description.trim() || `Sesi latihan & kegiatan resmi ${organizer}`,
       organizer: organizer.trim(),
-      extracurricular_id: isPengurus ? undefined : extracurricularId || undefined,
+      extracurricular_id: extracurricularId || undefined,
+      extracurricular_name: selectedEkskul?.name || organizer.trim(),
+      created_by_id: currentUser?.id,
+      created_by_name: currentUser?.name,
+      created_by_role: role,
+      status: 'scheduled',
     };
 
     try {
       if (isEditMode && editEventId) {
-        // UPDATE MODE
         const res = await updateEventAPI(editEventId, payload, currentUser?.id);
-        if (!res.success) {
-          setSubmitError(res.message || 'Gagal memperbarui agenda kegiatan.');
-          setIsSubmitting(false);
-          return;
-        }
-
         db.updateSchoolEvent(editEventId, payload, currentUser?.id);
-        setSubmitSuccess('Perubahan agenda kegiatan berhasil disimpan!');
+        setSubmitSuccess('Perubahan jadwal kegiatan berhasil disimpan!');
       } else {
-        // CREATE MODE
-        const res = db.addSchoolEvent(payload);
+        const res = db.addSchoolEvent(payload, true);
         if (!res.success) {
           setSubmitError(res.message || 'Gagal menyimpan agenda kegiatan.');
           setIsSubmitting(false);
           return;
         }
-
-        setSubmitSuccess('Agenda kegiatan baru berhasil disimpan ke kalender sekolah!');
+        setSubmitSuccess(`Agenda "${title.trim()}" berhasil dijadwalkan!`);
       }
 
       setTimeout(() => {
         if (onNavigate) {
-          onNavigate('/calendar');
+          onNavigate(defaultBackPath);
         } else {
-          window.location.href = '/calendar';
+          window.location.href = defaultBackPath;
         }
-      }, 1000);
+      }, 700);
     } catch (err: any) {
       console.error('Error saving event:', err);
-      setSubmitError('Terjadi kesalahan saat menyimpan agenda.');
+      setSubmitError(err.message || 'Terjadi kesalahan saat menyimpan agenda.');
     } finally {
       setIsSubmitting(false);
     }
@@ -289,7 +294,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
         return {
           pill: 'bg-rose-100 text-rose-800 border-rose-200',
           dot: 'bg-rose-500',
-          icon: Flag,
+          icon: Clock,
           label: 'Hari Libur Nasional',
         };
       case 'school_event':
@@ -297,7 +302,7 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
           pill: 'bg-blue-100 text-blue-800 border-blue-200',
           dot: 'bg-blue-500',
           icon: Building,
-          label: 'Acara Sekolah',
+          label: 'Acara Resmi Sekolah',
         };
       case 'competition':
         return {
@@ -319,24 +324,23 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
   const currentTheme = getCategoryTheme(category);
   const CategoryIcon = currentTheme.icon;
 
-  // Render unauthorized barrier if user tries to edit another role's schedule
   if (isEditMode && unauthorizedError) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center space-y-4">
         <div className="w-16 h-16 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center mx-auto shadow-sm">
           <ShieldAlert className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-[#171717]">Akses Ditolak: Tidak Memiliki Izin Edit</h2>
+        <h2 className="text-xl font-bold text-[#171717]">Akses Ditolak</h2>
         <p className="text-sm text-[#68655F] max-w-md mx-auto leading-relaxed">
           {unauthorizedError}
         </p>
         <div className="pt-2">
           <Button
             variant="outline"
-            onClick={() => (onNavigate ? onNavigate('/calendar') : (window.location.href = '/calendar'))}
+            onClick={() => (onNavigate ? onNavigate(defaultBackPath) : (window.location.href = defaultBackPath))}
             icon={<ArrowLeft className="w-4 h-4" />}
           >
-            Kembali ke Kalender
+            Kembali ke Daftar Jadwal
           </Button>
         </div>
       </div>
@@ -344,103 +348,95 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 font-sans space-y-6">
       {/* Top Breadcrumb & Header */}
       <div>
         <button
-          onClick={() => (onNavigate ? onNavigate('/calendar') : (window.location.href = '/calendar'))}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#68655F] hover:text-[#D15B40] transition-colors mb-3 cursor-pointer"
+          onClick={() => (onNavigate ? onNavigate(defaultBackPath) : (window.location.href = defaultBackPath))}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#525049] hover:text-[#D15B40] transition-colors mb-3 cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4" /> Kembali ke Kalender Kegiatan
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Kembali ke Agenda Jadwal</span>
         </button>
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D15B40]">
-              {isEditMode ? <Pencil className="w-4 h-4" /> : <CalendarCheck className="w-4 h-4" />}
-              {isEditMode ? 'Form Perubahan Agenda' : 'Form Penjadwalan'}
+        <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#D15B40] mb-1">
+                {isEditMode ? <Pencil className="w-3.5 h-3.5" /> : <CalendarCheck className="w-3.5 h-3.5" />}
+                <span>{isEditMode ? 'Form Perubahan Agenda' : 'Penjadwalan Sesi Latihan & Acara'}</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold text-[#171717] tracking-tight">
+                {isEditMode ? 'Edit Agenda Kegiatan' : 'Jadwalkan Sesi Latihan & Acara Baru'}
+              </h1>
+              <p className="text-xs text-[#68655F] mt-1 max-w-2xl leading-relaxed">
+                {isEditMode
+                  ? 'Perbarui rincian waktu, lokasi sarana, atau instruksi agenda kegiatan yang telah dijadwalkan.'
+                  : 'Lengkapi formulir penjadwalan latihan rutin mingguan, persiapan kejuaraan, atau kegiatan resmi ekstrakurikuler sekolah.'}
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#171717] tracking-tight mt-0.5">
-              {isEditMode ? 'Edit Agenda Kegiatan' : 'Tambah Agenda Kegiatan Baru'}
-            </h1>
-            <p className="text-xs sm:text-sm text-[#525049] mt-1 max-w-2xl">
-              {isEditMode
-                ? 'Perbarui rincian waktu, lokasi, atau deskripsi agenda kegiatan yang telah dijadwalkan.'
-                : 'Jadwalkan agenda resmi sekolah, hari libur nasional, pertemuan rutin, atau kompetisi ekstrakurikuler ke kalender kegiatan sekolah.'}
-            </p>
-          </div>
 
-          {/* User role status pill */}
-          <div className="flex items-center gap-2 self-start md:self-auto px-3.5 py-2 rounded-xl bg-white border border-[#EAE6DC] shadow-2xs">
-            <span className="text-2xs text-[#68655F]">Akses Akun:</span>
-            <span className={`px-2 py-0.5 rounded-md font-bold text-2xs uppercase tracking-wider ${
-              isPengurus
-                ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                : isPembina
-                ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                : 'bg-amber-100 text-amber-800 border border-amber-200'
-            }`}>
-              {isPengurus ? 'Pengurus' : isPembina ? 'Pembina Ekskul' : 'Administrator'}
-            </span>
+            <div className="flex items-center gap-2 self-start md:self-auto px-3 py-1.5 rounded-xl bg-[#F9F8F6] border border-[#EAE6DC] text-xs">
+              <span className="text-[#68655F]">Akses:</span>
+              <span className="font-bold text-[#171717] capitalize">
+                {role === 'pengurus' ? 'Pengurus Sekolah' : role === 'pembina' ? 'Guru Pembina' : role}
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Grid: Form (2 Cols) + Preview (1 Col) */}
+      {/* Main Grid: Form + Live Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Form Column (Left) */}
+        {/* Form Column (Left 2 cols) */}
         <div className="lg:col-span-2 space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* Feedback Notifications */}
+          <form onSubmit={handleSubmit} className="space-y-6 text-xs">
+            {/* Feedback Banners */}
             {conflictWarning && (
-              <div className="p-4 bg-[#FFF9F5] border border-[#F2C9C0] text-[#D15B40] rounded-2xl flex items-start gap-3 shadow-xs">
-                <ShieldAlert className="w-5 h-5 shrink-0 mt-0.5 text-[#D15B40]" />
-                <div>
-                  <strong className="block text-xs font-bold">Peringatan Bentrok Penggunaan Fasilitas</strong>
-                  <span className="text-xs leading-relaxed mt-0.5 block">{conflictWarning}</span>
+              <div className="p-4 bg-[#FFF9F5] border border-[#F2C9C0] text-[#D15B40] rounded-2xl flex items-start gap-3 shadow-2xs">
+                <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5 text-[#D15B40]" />
+                <div className="space-y-0.5">
+                  <strong className="block text-xs font-bold">Catatan Pemakaian Sarana</strong>
+                  <span className="text-xs leading-relaxed">{conflictWarning}</span>
+                  <p className="text-[11px] text-[#A6432D] italic pt-0.5">
+                    *Sebagai pengurus/pembina, Anda tetap dapat menyimpan jadwal ini jika penggunaan bersama telah disetujui.
+                  </p>
                 </div>
               </div>
             )}
 
             {submitError && (
-              <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl flex items-center gap-3 shadow-xs">
-                <AlertTriangle className="w-5 h-5 shrink-0 text-rose-600" />
+              <div className="p-4 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded-2xl flex items-center gap-3 shadow-2xs animate-in fade-in">
+                <AlertTriangle className="w-5 h-5 shrink-0 text-[#A33D35]" />
                 <span className="text-xs font-semibold">{submitError}</span>
               </div>
             )}
 
             {submitSuccess && (
-              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl flex items-center gap-3 shadow-xs">
-                <CheckCircle className="w-5 h-5 shrink-0 text-emerald-600" />
-                <span className="text-xs font-semibold">{submitSuccess}</span>
+              <div className="p-4 bg-[#E7EFEA] border border-[#B7D2C2] text-[#234B36] rounded-2xl flex items-center gap-3 shadow-2xs animate-in fade-in">
+                <CheckCircle className="w-5 h-5 shrink-0 text-[#234B36]" />
+                <span className="text-xs font-bold">{submitSuccess}</span>
               </div>
             )}
 
-            {/* Section 1: Informasi Utama */}
-            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-sm space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-[#EAE6DC]">
-                <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE6DC] flex items-center justify-center text-[#D15B40]">
-                  <Sparkles className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-[#171717]">1. Informasi Utama Agenda</h3>
-                  <p className="text-2xs text-[#68655F]">Tentukan nama kegiatan, kategori, dan pihak penanggung jawab.</p>
-                </div>
+            {/* Section 1: Informasi Agenda */}
+            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 pb-2.5 border-b border-[#EAE6DC]">
+                <Sparkles className="w-4 h-4 text-[#D15B40]" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
+                  1. Informasi Agenda & Penyelenggara
+                </h2>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Judul Kegiatan / Agenda <span className="text-rose-500">*</span>
+                  Judul Sesi Kegiatan / Latihan <span className="text-rose-500">*</span>
                 </label>
                 <Input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Contoh: Latihan Taktik Futsal Garuda Menjelang DBL 2026"
+                  placeholder="Contoh: Latihan Taktik & Pressing Futsal Menjelang Turnamen DBL"
                   required
-                  className="text-xs"
                 />
               </div>
 
@@ -453,82 +449,76 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     value={category}
                     onChange={(e) => setCategory(e.target.value as EventCategory)}
                   >
-                    {isPengurus ? (
-                      <>
-                        <option value="school_event">Acara Sekolah / PORSENI</option>
-                        <option value="national_holiday">Hari Libur Nasional</option>
-                      </>
-                    ) : isPembina ? (
-                      <>
-                        <option value="extracurricular_training">Latihan Rutin Ekskul</option>
-                        <option value="competition">Kompetisi & Pertandingan</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="extracurricular_training">Latihan Rutin Ekskul</option>
-                        <option value="competition">Kompetisi & Pertandingan</option>
-                        <option value="school_event">Acara Sekolah / PORSENI</option>
-                        <option value="national_holiday">Hari Libur Nasional</option>
-                      </>
-                    )}
+                    <option value="extracurricular_training">Latihan Rutin Mingguan</option>
+                    <option value="competition">Kejuaraan & Kompetisi</option>
+                    <option value="school_event">Acara Resmi Sekolah</option>
+                    <option value="national_holiday">Hari Libur Nasional</option>
                   </Select>
-                  <span className="text-2xs text-[#68655F] mt-1 block">
-                    {isPengurus
-                      ? 'Role Pengurus mengelola Acara Sekolah dan Libur Nasional.'
-                      : isPembina
-                      ? 'Role Pembina mengelola Latihan Rutin dan Kompetisi.'
-                      : 'Administrator memiliki akses ke semua kategori.'}
-                  </span>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                    Penyelenggara / Penanggung Jawab <span className="text-rose-500">*</span>
-                  </label>
-                  <Input
-                    value={organizer}
-                    onChange={(e) => setOrganizer(e.target.value)}
-                    placeholder="Contoh: Kesiswaan / Pembina Ekskul Futsal"
-                    required
-                    className="text-xs"
-                  />
-                </div>
-              </div>
-
-              {/* Extracurricular binding dropdown (Hidden if Pengurus / Libur Nasional) */}
-              {category !== 'national_holiday' && !isPengurus && (
-                <div>
-                  <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                    Kaitkan ke Ekstrakurikuler
+                    Ekstrakurikuler Terkait
                   </label>
                   <Select
                     value={extracurricularId}
-                    onChange={(e) => setExtracurricularId(e.target.value)}
+                    onChange={(e) => {
+                      setExtracurricularId(e.target.value);
+                      const ek = ekskuls.find((x) => x.id === e.target.value);
+                      if (ek && !isPembina) setOrganizer(ek.name);
+                    }}
                   >
-                    <option value="">-- Umum / Tanpa Kaitan Ekskul Spesifik --</option>
-                    {ekskuls.map((ekskul) => (
-                      <option key={ekskul.id} value={ekskul.id}>
-                        {ekskul.name} ({ekskul.category})
+                    {ekskuls.map((ek) => (
+                      <option key={ek.id} value={ek.id}>
+                        {ek.name} ({ek.category})
                       </option>
                     ))}
+                    <option value="">Kesiswaan & OSIS (Umum)</option>
                   </Select>
-                  <span className="text-2xs text-[#68655F] mt-1 block">
-                    Agenda latihan dan kompetisi akan otomatis muncul di kalender anggota ekskul terkait.
-                  </span>
                 </div>
-              )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
+                  Penanggung Jawab / Penyelenggara <span className="text-rose-500">*</span>
+                </label>
+                <Input
+                  value={organizer}
+                  onChange={(e) => setOrganizer(e.target.value)}
+                  placeholder="Contoh: Hendra Wijaya, S.Pd. / Kesiswaan"
+                  required
+                />
+              </div>
             </div>
 
-            {/* Section 2: Waktu & Lokasi Fasilitas */}
-            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-sm space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-[#EAE6DC]">
-                <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE6DC] flex items-center justify-center text-[#D15B40]">
-                  <Clock className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-[#171717]">2. Waktu Pelaksanaan & Fasilitas</h3>
-                  <p className="text-2xs text-[#68655F]">Pastikan jadwal tidak bertabrakan dengan kegiatan ekstrakurikuler lain.</p>
-                </div>
+            {/* Section 2: Waktu & Lokasi Sarana */}
+            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 pb-2.5 border-b border-[#EAE6DC]">
+                <Clock className="w-4 h-4 text-[#234B36]" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
+                  2. Lokasi Fasilitas & Jadwal Waktu
+                </h2>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
+                  Pilih Fasilitas / Ruangan Sekolah <span className="text-rose-500">*</span>
+                </label>
+                <Select
+                  value={location}
+                  onChange={(e) => handleLocationChange(e.target.value)}
+                >
+                  <option value="Lapangan Futsal SMKN 1 Ciomas">Lapangan Futsal SMKN 1 Ciomas</option>
+                  <option value="Lapangan Basket Outdoor SMKN 1 Ciomas">Lapangan Basket Outdoor SMKN 1 Ciomas</option>
+                  <option value="Lapangan Voli Outdoor">Lapangan Voli Outdoor</option>
+                  <option value="Lapangan Olahraga Utama">Lapangan Olahraga Utama</option>
+                  <option value="Aula Serbaguna Lantai 3">Aula Serbaguna Lantai 3</option>
+                  <option value="Ruang UKS & Area Terbuka">Ruang UKS & Area Terbuka</option>
+                  <option value="Laboratorium Komputer RPL 1">Laboratorium Komputer RPL 1</option>
+                  <option value="Studio Multimedia & Podcast">Studio Multimedia & Podcast</option>
+                  <option value="Masjid Al-Kautsar SMKN 1 Ciomas">Masjid Al-Kautsar SMKN 1 Ciomas</option>
+                  <option value="Seluruh Area Sekolah">Seluruh Area Sekolah</option>
+                </Select>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -541,7 +531,6 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     value={startDate}
                     onChange={(e) => handleStartDateChange(e.target.value)}
                     required
-                    className="text-xs"
                   />
                 </div>
 
@@ -554,74 +543,49 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     value={endDate}
                     onChange={(e) => handleEndDateChange(e.target.value)}
                     required
-                    className="text-xs"
                   />
                 </div>
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Lokasi / Fasilitas Sekolah <span className="text-rose-500">*</span>
-                </label>
-                <Select
-                  value={location}
-                  onChange={(e) => handleLocationChange(e.target.value)}
-                >
-                  <option value="Lapangan Olahraga Utama">Lapangan Olahraga Utama</option>
-                  <option value="Lapangan Basket Outdoor">Lapangan Basket Outdoor</option>
-                  <option value="Laboratorium Komputer RPL 1">Laboratorium Komputer RPL 1</option>
-                  <option value="Studio Multimedia & Alam Terbuka">Studio Multimedia & Alam Terbuka</option>
-                  <option value="Aula Serbaguna Lantai 3">Aula Serbaguna Lantai 3</option>
-                  <option value="Ruang Redaksi Jurnalistik">Ruang Redaksi Jurnalistik</option>
-                  <option value="Ruang Kedap Suara Musik">Ruang Kedap Suara Musik</option>
-                  <option value="Gedung Olahraga Remaja">Gedung Olahraga Remaja</option>
-                  <option value="Seluruh Area Sekolah">Seluruh Area Sekolah</option>
-                </Select>
-                <span className="text-2xs text-[#68655F] mt-1 block">
-                  Sistem otomatis mendeteksi bentrok jika fasilitas telah dipesan pada jam yang sama.
-                </span>
-              </div>
             </div>
 
-            {/* Section 3: Rincian & Deskripsi */}
-            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-6 shadow-sm space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-[#EAE6DC]">
-                <div className="w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#EAE6DC] flex items-center justify-center text-[#D15B40]">
-                  <Info className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm text-[#171717]">3. Catatan & Instruksi Peserta</h3>
-                  <p className="text-2xs text-[#68655F]">Informasi perlengkapan, tata tertib, atau gladi resik yang perlu diketahui peserta.</p>
-                </div>
+            {/* Section 3: Rincian & Catatan */}
+            <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 pb-2.5 border-b border-[#EAE6DC]">
+                <Info className="w-4 h-4 text-[#8C6819]" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-[#171717]">
+                  3. Deskripsi Singkat & Rincian Materi
+                </h2>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#171717] mb-1.5">
-                  Deskripsi / Rincian Agenda
+                  Deskripsi Kegiatan / Materi Latihan (Opsional)
                 </label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Contoh: Seluruh anggota diharapkan membawa sepatu futsal indoor, jersey tanding cadangan, dan berkumpul 15 menit sebelum sesi pemanasan dimulai..."
-                  rows={4}
-                  className="text-xs leading-relaxed"
+                  placeholder="Jelaskan ringkasan materi latihan, seragam yang dikenakan, atau peralatan wajib..."
+                  rows={3}
                 />
               </div>
             </div>
 
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-end gap-3 pt-2">
+            {/* Form Actions */}
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => (onNavigate ? onNavigate('/calendar') : (window.location.href = '/calendar'))}
+                size="sm"
+                onClick={() => (onNavigate ? onNavigate(defaultBackPath) : (window.location.href = defaultBackPath))}
                 disabled={isSubmitting}
+                className="w-full sm:w-auto"
               >
                 Batal
               </Button>
               <Button
                 type="submit"
                 variant="primary"
+                size="sm"
                 disabled={isSubmitting || !title.trim()}
                 icon={
                   isSubmitting ? (
@@ -630,93 +594,82 @@ export const CreateEventPage: React.FC<CreateEventPageProps> = ({ onNavigate, ed
                     <CalendarCheck className="w-4 h-4" />
                   )
                 }
-                className="bg-[#D15B40] hover:bg-[#b84a32] text-white font-semibold shadow-sm"
+                className="w-full sm:w-auto bg-[#D15B40] hover:bg-[#b84a32] text-white font-bold shadow-xs cursor-pointer"
               >
                 {isSubmitting
                   ? 'Menyimpan...'
                   : isEditMode
                   ? 'Simpan Perubahan Agenda'
-                  : 'Simpan Agenda ke Kalender'}
+                  : 'Simpan & Jadwalkan Sekarang'}
               </Button>
             </div>
-
           </form>
         </div>
 
-        {/* Right Column: Live Card Preview & Guidelines */}
+        {/* Live Preview Column (Right 1 col) */}
         <div className="space-y-6">
-          
-          {/* Live Preview Card */}
-          <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 shadow-sm space-y-4 sticky top-6">
+          <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 shadow-xs space-y-4 sticky top-6">
             <div className="flex items-center justify-between pb-3 border-b border-[#EAE6DC]">
               <span className="text-xs font-bold uppercase tracking-wider text-[#D15B40] flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" /> Pratinjau Kalender
+                <Sparkles className="w-3.5 h-3.5" /> Pratinjau Kartu Agenda
               </span>
-              <span className="text-2xs text-[#68655F]">Live Preview</span>
+              <span className="text-[10px] text-[#68655F]">Live Preview</span>
             </div>
 
             {/* Simulated Event Card */}
-            <div className="rounded-xl border border-[#EAE6DC] bg-[#FAF8F5] p-4 space-y-3 shadow-2xs">
-              
-              {/* Category Pill */}
+            <div className="rounded-2xl border border-[#EAE6DC] bg-[#FAF8F5] p-4.5 space-y-3.5 shadow-2xs">
               <div className="flex items-center justify-between">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-2xs font-bold border ${currentTheme.pill}`}>
-                  <CategoryIcon className="w-3.5 h-3.5" /> {currentTheme.label}
+                <span
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${currentTheme.pill}`}
+                >
+                  <CategoryIcon className="w-3 h-3" /> {currentTheme.label}
                 </span>
-                <span className="text-2xs font-mono text-stone-500">2026</span>
+                <span className="text-[10px] font-mono text-[#8C887B]">TA 2026</span>
               </div>
 
-              {/* Title */}
-              <h4 className="text-base font-bold text-[#171717] leading-snug">
-                {title.trim() || 'Judul Agenda Kegiatan Anda...'}
-              </h4>
+              <h3 className="text-sm font-bold text-[#171717] leading-snug">
+                {title.trim() || 'Judul Agenda Kegiatan / Latihan...'}
+              </h3>
 
-              {/* Date & Time */}
-              <div className="space-y-1 text-2xs text-[#68655F]">
+              <div className="space-y-1.5 text-xs text-[#525049]">
                 <div className="flex items-center gap-2">
                   <CalendarIcon className="w-3.5 h-3.5 text-[#D15B40] shrink-0" />
                   <span className="font-semibold text-[#171717]">{previewDateTime.dateStr}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-                  <span>{previewDateTime.timeStr}</span>
+                  <Clock className="w-3.5 h-3.5 text-[#234B36] shrink-0" />
+                  <span className="font-mono text-[11px]">{previewDateTime.timeStr}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                  <MapPin className="w-3.5 h-3.5 text-[#8C6819] shrink-0" />
                   <span className="truncate">{location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Building className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-                  <span className="truncate">Oleh: {organizer}</span>
+                  <Users className="w-3.5 h-3.5 text-[#5046E5] shrink-0" />
+                  <span className="truncate font-semibold text-[#5046E5]">{organizer}</span>
                 </div>
               </div>
 
-              {/* Description preview */}
               {description.trim() && (
-                <div className="pt-2 border-t border-[#EAE6DC]/60 text-2xs text-[#68655F] line-clamp-3 leading-relaxed italic">
-                  "{description.trim()}"
-                </div>
+                <p className="pt-2 border-t border-[#EAE6DC]/60 text-[11px] text-[#68655F] line-clamp-3 italic">
+                  &quot;{description.trim()}&quot;
+                </p>
               )}
             </div>
 
-            {/* Guidelines Box */}
-            <div className="bg-[#FAF8F5] border border-[#EAE6DC] rounded-xl p-3.5 text-2xs text-[#68655F] space-y-2">
+            {/* Helper Tips */}
+            <div className="bg-[#FAF8F5] border border-[#EAE6DC] rounded-xl p-3.5 text-[11px] text-[#68655F] space-y-1.5">
               <div className="flex items-center gap-1.5 font-bold text-[#171717]">
-                <Info className="w-3.5 h-3.5 text-[#D15B40]" /> Aturan Hak Akses CRUD:
+                <Info className="w-3.5 h-3.5 text-[#D15B40]" /> Panduan Penjadwalan:
               </div>
-              <ul className="list-disc pl-4 space-y-1 leading-relaxed">
-                <li>Agenda hanya dapat diedit atau dihapus oleh role yang membuatnya.</li>
-                <li>Pengurus tidak memiliki akses untuk menghapus jadwal buatan Pembina.</li>
-                <li>Admin sekolah memiliki hak akses pemeliharaan penuh.</li>
+              <ul className="list-disc pl-4 space-y-1">
+                <li>Jadwal yang berhasil disimpan otomatis masuk ke carousel agenda sekolah.</li>
+                <li>Pemberitahuan bentrok sarana bersifat advisori dan tidak menghalangi penyimpanan.</li>
               </ul>
             </div>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 };

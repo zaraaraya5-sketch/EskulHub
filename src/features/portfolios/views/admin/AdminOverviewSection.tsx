@@ -279,7 +279,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
             <span>+ Ekskul Baru</span>
           </button>
           <button
-            onClick={() => setIsAddEventModalOpen(true)}
+            onClick={() => onNavigate ? onNavigate('/pengurus/schedule/create') : switchSection('schedule')}
             className="px-3 py-1.5 rounded-xl bg-[#D15B40] hover:bg-[#b84a32] text-white text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95"
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -406,7 +406,7 @@ export const AdminOverviewSection: React.FC<AdminOverviewSectionProps> = ({
           </div>
 
           <button
-            onClick={() => setIsAddEventModalOpen(true)}
+            onClick={() => onNavigate ? onNavigate('/pengurus/schedule/create') : switchSection('schedule')}
             className="w-full mt-4 py-2 px-3 bg-[#F9F8F6] hover:bg-[#FDEDE9] border border-[#EAE6DC] hover:border-[#F2C9C0] text-[#D15B40] rounded-xl text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5"
           >
             <Calendar className="w-3.5 h-3.5" />

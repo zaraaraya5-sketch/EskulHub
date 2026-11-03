@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
+import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
 import {
   LayoutDashboard,
   BookOpen,
@@ -177,15 +178,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center gap-3 sm:gap-4 cursor-pointer group bg-white hover:bg-[#F9F8F6] transition-colors select-none"
         title="Kembali ke Beranda Publik"
       >
-        <div className="w-10 h-10 bg-gradient-to-br from-[#D15B40] to-[#A6432D] text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm shrink-0">
-          EH
-        </div>
+        <EskulHubLogo size="md" />
         <div className="overflow-hidden min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-base font-bold tracking-tight text-[#171717] group-hover:text-[#D15B40] transition-colors leading-none truncate">
-              EKSKUL-HUB
+            <span className="text-base font-bold tracking-tight text-[#171717] group-hover:text-[#4F46E5] transition-colors leading-none truncate">
+              EskulHub
             </span>
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40] shrink-0">
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#EEF2FF] text-[#4F46E5] shrink-0">
               {settings.academic_year}
             </span>
           </div>

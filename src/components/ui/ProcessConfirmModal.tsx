@@ -51,7 +51,6 @@ export const ProcessConfirmModal: React.FC<ProcessConfirmModalProps> = ({
         setErrorMessage('Gagal memproses penghapusan. Silakan coba kembali.');
         return;
       }
-      // Instant smooth close on success
       setIsSubmitting(false);
       onClose();
     } catch (err: any) {
@@ -72,34 +71,40 @@ export const ProcessConfirmModal: React.FC<ProcessConfirmModalProps> = ({
         <div className="space-y-2">
           <p className="text-[#525049] text-sm leading-relaxed">
             {description}
-            {targetName && (
-              <strong className="block text-[#171717] mt-1 font-bold text-base font-mono">
-                &quot;{targetName}&quot;
-              </strong>
-            )}
           </p>
+          {targetName && (
+            <div className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl">
+              <span className="text-[11px] font-semibold text-[#8C887B] uppercase tracking-wider block mb-0.5">
+                Target Data:
+              </span>
+              <strong className="block text-[#171717] font-bold text-sm font-mono break-all">
+                {targetName}
+              </strong>
+            </div>
+          )}
         </div>
 
         {warningNotice && (
           <div className="p-3.5 bg-[#F9ECEB] border border-[#F2C9C0] text-[#A33D35] rounded-2xl text-xs leading-relaxed flex items-start gap-2.5">
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{warningNotice}</span>
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-[#A33D35]" />
+            <span className="font-medium">{warningNotice}</span>
           </div>
         )}
 
         {errorMessage && (
-          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded-xl text-xs font-medium">
+          <div className="p-3 bg-[#F9ECEB] border border-[#E8BAB5] text-[#A33D35] rounded-xl text-xs font-semibold">
             {errorMessage}
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#EAE6DC]">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 pt-4 border-t border-[#EAE6DC]">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={onClose}
             disabled={isSubmitting}
+            className="w-full sm:w-auto"
           >
             Batal
           </Button>
@@ -108,10 +113,10 @@ export const ProcessConfirmModal: React.FC<ProcessConfirmModalProps> = ({
             type="button"
             onClick={handleExecute}
             disabled={isSubmitting}
-            className={`px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-xs cursor-pointer flex items-center gap-2 ${
+            className={`w-full sm:w-auto px-4 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 ${
               confirmVariant === 'danger'
-                ? 'bg-[#A33D35] hover:bg-[#852E27] active:scale-95 disabled:opacity-60'
-                : 'bg-[#D15B40] hover:bg-[#b84a32] active:scale-95 disabled:opacity-60'
+                ? 'bg-[#A33D35] hover:bg-[#852E27] active:scale-[0.98] disabled:opacity-60'
+                : 'bg-[#D15B40] hover:bg-[#b84a32] active:scale-[0.98] disabled:opacity-60'
             }`}
           >
             {isSubmitting ? (

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -20,6 +21,12 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   maxWidth = 'md',
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -34,7 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const maxWidthStyles = {
     sm: 'max-w-sm',
@@ -45,17 +52,22 @@ export const Modal: React.FC<ModalProps> = ({
     '3xl': 'max-w-3xl',
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/65 backdrop-blur-sm transition-all duration-200">
+  const modalContent = (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto transition-all duration-200"
+      aria-modal="true"
+      role="dialog"
+    >
+      {/* Viewport Backdrop Click Handler */}
       <div
-        className="fixed inset-0 cursor-pointer"
+        className="fixed inset-0 -z-10 cursor-pointer"
         onClick={onClose}
         aria-hidden="true"
       />
+
+      {/* Modal Dialog Container */}
       <div
-        className={`relative w-full ${maxWidthStyles[maxWidth]} bg-white border border-[#EAE6DC] rounded-3xl shadow-2xl z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200`}
-        role="dialog"
-        aria-modal="true"
+        className={`relative w-full ${maxWidthStyles[maxWidth]} my-auto bg-white border border-[#EAE6DC] rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200`}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4.5 border-b border-[#EAE6DC] bg-gradient-to-r from-[#F9F8F6] via-white to-white">
@@ -90,4 +102,6 @@ export const Modal: React.FC<ModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };

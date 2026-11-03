@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
+import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
 import {
   BookOpen,
   Calendar,
@@ -55,15 +56,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           onClick={() => handleNavClick('/')}
           className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none min-w-0"
         >
-          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-base sm:text-lg shadow-xs shrink-0 group-hover:scale-105 transition-transform">
-            EH
-          </div>
+          <EskulHubLogo size="md" />
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-sm sm:text-lg font-bold tracking-tight text-[#171717] group-hover:text-[#D15B40] transition-colors leading-none truncate">
-                EKSKUL-HUB
+              <span className="text-sm sm:text-lg font-bold tracking-tight text-[#171717] group-hover:text-[#4F46E5] transition-colors leading-none truncate">
+                EskulHub
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] shrink-0">
+              <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] shrink-0">
                 {settings.academic_year}
               </span>
             </div>

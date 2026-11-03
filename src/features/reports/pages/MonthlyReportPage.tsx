@@ -31,6 +31,7 @@ import {
   PembinaMonthlyReportData,
   PengurusMonthlyReportData,
 } from '@/lib/pdf/generateMonthlyReportPdf';
+import { getMonthlyReportAggregation } from '@/lib/services/monthlyReportService';
 import {
   AttendanceSessionChart,
   ClubCapacityDonut,
@@ -138,86 +139,20 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
   const activeEkskul = supervisedEkskuls.find((e) => e.id === selectedEkskulId) || supervisedEkskuls[0];
 
   const pembinaData = useMemo(() => {
-    if (!activeEkskul) return null;
-
-    // 1. Members joined in this month
-    const clubMembers = allMembers.filter((m) => m.extracurricular_id === activeEkskul.id);
-    const newMembersThisMonth = clubMembers.filter((m) => {
-      if (!m.joined_at) return false;
-      return m.joined_at.startsWith(monthKey);
-    });
-
-    // 2. Training sessions in this month
-    const sessionsThisMonth = allSessions
-      .filter((s) => s.extracurricular_id === activeEkskul.id && s.session_date.startsWith(monthKey))
-      .sort((a, b) => a.session_date.localeCompare(b.session_date));
-
-    const totalPresent = sessionsThisMonth.reduce((acc, s) => acc + (s.present_count || 0), 0);
-    const totalPossible = sessionsThisMonth.reduce((acc, s) => acc + (s.total_members || 0), 0);
-    const attendancePercentage = totalPossible > 0 ? Math.round((totalPresent / totalPossible) * 100) : 0;
-
-    // 3. Achievements in this month
-    const achievementsThisMonth = allAchievements.filter((a) => {
-      const matchClub =
-        (a.extracurricular_id && a.extracurricular_id === activeEkskul.id) ||
-        (a.extracurricular_name && a.extracurricular_name.toLowerCase() === activeEkskul.name.toLowerCase());
-      return matchClub && a.achievement_date && a.achievement_date.startsWith(monthKey);
-    });
-
-    return {
-      activeEkskul,
-      newMembers: newMembersThisMonth,
-      activeMembersCount: activeEkskul.current_member_count || clubMembers.length,
-      capacity: activeEkskul.member_capacity || 30,
-      sessions: sessionsThisMonth,
-      attendancePercentage,
-      achievements: achievementsThisMonth,
-    };
-  }, [activeEkskul, allMembers, allSessions, allAchievements, monthKey]);
+    return getMonthlyReportAggregation(selectedYear, selectedMonth, 'pembina', {
+      ekskulId: selectedEkskulId,
+      currentUser,
+    }) as any;
+  }, [selectedYear, selectedMonth, selectedEkskulId, currentUser, refreshKey]);
 
   // ==========================================
   // PENGURUS-SPECIFIC LOGIC (SCHOOL-WIDE MACRO)
   // ==========================================
   const pengurusData = useMemo(() => {
-    // 1. Students registered in website platform this month
-    const newStudentsThisMonth = allUsers.filter((u) => {
-      if (u.role !== 'student') return false;
-      const regDate = u.created_at ? u.created_at.split('T')[0] : '';
-      return regDate.startsWith(monthKey);
-    });
-
-    // 2. Extracurricular comparison list
-    const ekskulRecapList = allEkskuls.map((ekskul) => {
-      const clubMembers = allMembers.filter((m) => m.extracurricular_id === ekskul.id);
-      const newMems = clubMembers.filter((m) => m.joined_at && m.joined_at.startsWith(monthKey));
-      const sessions = allSessions.filter((s) => s.extracurricular_id === ekskul.id && s.session_date.startsWith(monthKey));
-
-      return {
-        ekskul,
-        newMembersCount: newMems.length,
-        totalActiveMembers: ekskul.current_member_count || clubMembers.length,
-        capacity: ekskul.member_capacity,
-        sessionCount: sessions.length,
-      };
-    });
-
-    // 3. Facility / training sessions across all clubs in this month
-    const facilityUsageSessions = allSessions
-      .filter((s) => s.session_date && s.session_date.startsWith(monthKey))
-      .sort((a, b) => a.session_date.localeCompare(b.session_date));
-
-    // 4. School-wide achievements this month
-    const schoolAchievementsThisMonth = allAchievements.filter(
-      (a) => a.achievement_date && a.achievement_date.startsWith(monthKey)
-    );
-
-    return {
-      newStudents: newStudentsThisMonth,
-      ekskulRecapList,
-      facilityUsageSessions,
-      achievements: schoolAchievementsThisMonth,
-    };
-  }, [allUsers, allEkskuls, allMembers, allSessions, allAchievements, monthKey]);
+    return getMonthlyReportAggregation(selectedYear, selectedMonth, 'pengurus', {
+      currentUser,
+    }) as any;
+  }, [selectedYear, selectedMonth, currentUser, refreshKey]);
 
   // Export PDF Handler (Uses official institutional tabular format with signatures)
   const [isExporting, setIsExporting] = useState(false);

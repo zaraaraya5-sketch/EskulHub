@@ -3,6 +3,7 @@ import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
 import {
   GraduationCap,
   LogIn,
@@ -190,18 +191,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
       <div className="bg-white border border-[#EAE6DC] rounded-2xl sm:rounded-3xl shadow-sm overflow-hidden p-5 sm:p-8 space-y-5 sm:space-y-6">
         {/* Brand & Page Header */}
         <div className="text-center">
-          <div className="w-12 h-12 sm:w-13 sm:h-13 bg-[#D15B40] text-white rounded-xl flex items-center justify-center font-bold text-2xl mx-auto mb-3 shadow-xs">
-            {mode === 'login' ? (
-              <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-            ) : (
-              <UserPlus className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
-            )}
+          <div className="flex justify-center mb-3">
+            <EskulHubLogo size="lg" />
           </div>
-          <div className="inline-block px-2.5 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] text-[11px] font-bold uppercase tracking-wider mb-2">
+          <div className="inline-block px-2.5 py-0.5 rounded bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] text-[11px] font-bold uppercase tracking-wider mb-2">
             {mode === 'login' ? 'Portal Masuk Terpadu' : 'Registrasi Akun Baru'}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#171717]">
-            {mode === 'login' ? 'Masuk ke Ekskul-Hub' : 'Daftar Akun Siswa'}
+            {mode === 'login' ? 'Masuk ke EskulHub' : 'Daftar Akun Siswa'}
           </h1>
           <p className="text-xs text-[#68655F] mt-1">
             {settings.school_name} • TA {settings.academic_year}
