@@ -139,40 +139,98 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         </div>
       </div>
 
-      {/* Mobile Dropdown Drawer */}
+      {/* Mobile Slide-Over Drawer with Backdrop */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-b border-[#EAE6DC] shadow-lg animate-fade-in">
-          <div className="px-4 py-3 space-y-1.5">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-[#A09D96] px-3 pt-1 pb-1">
-              Navigasi Halaman
-            </div>
-            {navLinks.map((link) => {
-              const isActive = link.path === '/' ? currentPath === '/' : currentPath.startsWith(link.path);
-              return (
-                <button
-                  key={link.path}
-                  onClick={() => handleNavClick(link.path)}
-                  className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 active:scale-[0.99] cursor-pointer text-left ${
-                    isActive
-                      ? 'bg-[#FDEDE9] text-[#D15B40] font-bold'
-                      : 'text-[#171717] hover:bg-[#F9F8F6]'
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  {isActive && <span className="w-2 h-2 rounded-full bg-[#D15B40]" />}
-                </button>
-              );
-            })}
+        <div className="fixed inset-0 z-50 lg:hidden flex justify-end">
+          {/* Backdrop blur overlay */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity animate-fade-in"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
 
-            {/* Quick Questionnaire Shortcut on Mobile */}
-            <button
-              onClick={() => handleNavClick('/student/kuisioner')}
-              className="w-full min-h-[44px] flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#E7EFEA] text-[#234B36] active:scale-[0.99] transition-all cursor-pointer mt-2"
-            >
-              <Compass className="w-4 h-4" />
-              <span>Tes Rekomendasi Minat Bakat (5 Soal)</span>
-            </button>
-          </div>
+          {/* Drawer container */}
+          <aside className="relative w-80 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-in">
+            {/* Drawer Header */}
+            <div className="p-4 border-b border-[#EAE6DC] flex items-center justify-between bg-[#F9F8F6]">
+              <Logo size="sm" withText subtitle="Menu Navigasi" onClick={() => handleNavClick('/')} />
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-10 h-10 flex items-center justify-center rounded-xl text-[#68655F] hover:text-[#171717] hover:bg-[#EAE6DC] active:scale-95 transition-all cursor-pointer"
+                aria-label="Tutup menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="p-4 flex-1 overflow-y-auto space-y-1.5">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-[#A09D96] px-3 pb-1">
+                Menu Utama
+              </div>
+              {navLinks.map((link) => {
+                const isActive = link.path === '/' ? currentPath === '/' : currentPath.startsWith(link.path);
+                return (
+                  <button
+                    key={link.path}
+                    onClick={() => handleNavClick(link.path)}
+                    className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-150 active:scale-[0.98] cursor-pointer text-left ${
+                      isActive
+                        ? 'bg-[#FDEDE9] text-[#D15B40] font-bold border border-[#F2C9C0]/80 shadow-2xs'
+                        : 'text-[#171717] hover:bg-[#F9F8F6] active:bg-[#EAE6DC]'
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                    {isActive && <span className="w-2 h-2 rounded-full bg-[#D15B40]" />}
+                  </button>
+                );
+              })}
+
+              {/* Quick Questionnaire Shortcut */}
+              <div className="pt-3 border-t border-[#EAE6DC]/60 mt-3">
+                <button
+                  onClick={() => handleNavClick('/student/kuisioner')}
+                  className="w-full min-h-[44px] flex items-center gap-2.5 px-3.5 py-3 rounded-xl text-xs font-bold bg-[#E7EFEA] text-[#234B36] active:scale-[0.98] transition-all cursor-pointer border border-[#C6DDD0]"
+                >
+                  <Compass className="w-4 h-4 shrink-0 text-[#234B36]" />
+                  <span>Tes Minat Bakat (5 Soal)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Drawer Footer Actions */}
+            <div className="p-4 border-t border-[#EAE6DC] bg-[#F9F8F6] space-y-2.5">
+              {currentUser ? (
+                <>
+                  <button
+                    onClick={() => handleNavClick(getDashboardPath(role))}
+                    className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 bg-[#D15B40] text-white text-xs font-bold rounded-xl shadow-xs active:scale-[0.98] transition-all cursor-pointer"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Masuk ke Dasbor Saya</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      logout();
+                      handleNavClick('/');
+                    }}
+                    className="w-full min-h-[40px] flex items-center justify-center gap-2 px-3 py-2 text-xs text-[#A33D35] hover:bg-[#FDF6F5] active:scale-[0.98] font-bold rounded-xl border border-transparent hover:border-[#FADBD8] transition-all cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Keluar Sesi</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => handleNavClick('/login')}
+                  className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 bg-[#171717] text-white text-xs font-bold rounded-xl shadow-xs active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Masuk ke Akun</span>
+                </button>
+              )}
+            </div>
+          </aside>
         </div>
       )}
     </header>

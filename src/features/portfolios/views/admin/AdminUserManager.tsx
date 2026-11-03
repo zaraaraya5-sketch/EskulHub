@@ -102,15 +102,15 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
           <h2 className="text-base font-bold text-[#171717]">{title}</h2>
           <p className="text-xs text-[#68655F] mt-0.5">{description}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-none">
             <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#68655F]" />
             <input
               type="text"
               placeholder="Cari nama atau email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8.5 pr-3 py-1.5 text-xs bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-colors w-48 sm:w-60"
+              className="pl-8.5 pr-3 py-1.5 text-xs bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-[#171717] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-colors w-full sm:w-60 min-h-[38px]"
             />
           </div>
           <Button
@@ -126,6 +126,7 @@ export const AdminUserManager: React.FC<AdminUserManagerProps> = ({
               }
             }}
             icon={<Plus className="w-3.5 h-3.5" />}
+            className="w-full sm:w-auto justify-center min-h-[38px]"
           >
             {roleFilters.includes('student') ? 'Tambah Siswa Baru' : 'Tambah Guru Pembina'}
           </Button>

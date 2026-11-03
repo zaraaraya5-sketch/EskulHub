@@ -16,7 +16,9 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 }) => {
   return (
     <div className="bg-white border border-[#EAE6DC] rounded-2xl shadow-sm overflow-hidden">
-      <div className="grid grid-cols-7 border-b border-[#EAE6DC] bg-[#F9F8F6]">
+      <div className="overflow-x-auto">
+        <div className="min-w-[620px] sm:min-w-0">
+          <div className="grid grid-cols-7 border-b border-[#EAE6DC] bg-[#F9F8F6]">
         {DAY_NAMES_HEADER.map((name, i) => (
           <div
             key={i}
@@ -114,7 +116,9 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
             </div>
           );
         })}
+        </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

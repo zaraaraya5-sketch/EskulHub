@@ -117,7 +117,58 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
         </div>
 
         {/* Attendance Table */}
-        <div className="overflow-x-auto border border-[#EAE6DC] rounded-xl">
+        {/* Mobile Card List (< md) */}
+        <div className="block md:hidden space-y-3">
+          {filteredAttendance.map((rec) => (
+            <div
+              key={rec.id}
+              className="p-4 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6]/60 space-y-2 text-xs"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="text-[11px] font-mono text-[#8C887B]">{rec.session_date}</div>
+                  <h4 className="text-sm font-bold text-[#171717] mt-0.5">{rec.extracurricular_name}</h4>
+                </div>
+                <span
+                  className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                    rec.status === 'present'
+                      ? 'bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]'
+                      : rec.status === 'late'
+                      ? 'bg-[#FEF9EE] text-[#B58A32] border border-[#F5E6C4]'
+                      : rec.status === 'excused'
+                      ? 'bg-[#F0F5F6] text-[#3B7A82] border border-[#CDE0E3]'
+                      : 'bg-[#FBEAE8] text-[#A33D35] border border-[#F5C6C2]'
+                  }`}
+                >
+                  {rec.status === 'present'
+                    ? 'Hadir'
+                    : rec.status === 'late'
+                    ? 'Terlambat'
+                    : rec.status === 'excused'
+                    ? 'Izin'
+                    : 'Alpa'}
+                </span>
+              </div>
+
+              <div className="bg-white p-3 rounded-lg border border-[#EAE6DC] space-y-1">
+                <span className="text-[10px] font-semibold text-[#8C887B] uppercase tracking-wider block">Materi / Sesi:</span>
+                <p className="text-[#171717] font-medium">{rec.session_title}</p>
+                {rec.notes && (
+                  <p className="text-[#68655F] italic text-[11px] pt-1 border-t border-[#EAE6DC]/60 mt-1.5">{rec.notes}</p>
+                )}
+              </div>
+            </div>
+          ))}
+
+          {filteredAttendance.length === 0 && (
+            <div className="py-8 text-center text-[#68655F] bg-[#F9F8F6] rounded-xl border border-dashed border-[#EAE6DC]">
+              Tidak ada riwayat presensi yang sesuai dengan filter yang dipilih.
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Attendance Table (>= md) */}
+        <div className="hidden md:block overflow-x-auto border border-[#EAE6DC] rounded-xl">
           <table className="w-full text-xs text-left">
             <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
               <tr>

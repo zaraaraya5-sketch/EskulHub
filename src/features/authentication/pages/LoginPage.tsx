@@ -175,7 +175,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-3.5 sm:px-4 py-4 sm:py-8">
+    <div className="w-full max-w-md mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Top Back Navigation */}
       <div className="mb-4 sm:mb-5 flex justify-start">
         <button
@@ -388,11 +388,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+            <div className="flex sm:grid sm:grid-cols-3 gap-2.5 overflow-x-auto sm:overflow-visible pb-2 sm:pb-0 no-scrollbar snap-x">
               <button
                 type="button"
                 onClick={() => fillCredentials('student')}
-                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#D15B40]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
+                className="min-w-[150px] sm:min-w-0 flex-1 snap-start min-h-[58px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#D15B40]/40 hover:shadow-xs active:scale-[0.98] transition-all duration-200 cursor-pointer group select-none shrink-0"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#D15B40]">
                   <GraduationCap className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
@@ -405,7 +405,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pembina')}
-                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
+                className="min-w-[150px] sm:min-w-0 flex-1 snap-start min-h-[58px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#3B7A82]/40 hover:shadow-xs active:scale-[0.98] transition-all duration-200 cursor-pointer group select-none shrink-0"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B7A82]">
                   <BookOpen className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />
@@ -418,7 +418,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
               <button
                 type="button"
                 onClick={() => fillCredentials('pengurus')}
-                className="min-h-[56px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#2A2926]/40 hover:shadow-xs active:scale-[0.97] transition-all duration-200 ease-out cursor-pointer group select-none"
+                className="min-w-[150px] sm:min-w-0 flex-1 snap-start min-h-[58px] p-3 text-left border border-[#EAE6DC] rounded-xl bg-[#F9F8F6] hover:bg-white hover:border-[#2A2926]/40 hover:shadow-xs active:scale-[0.98] transition-all duration-200 cursor-pointer group select-none shrink-0"
               >
                 <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#2A2926]">
                   <ShieldCheck className="w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110" />

@@ -145,7 +145,7 @@ export const PengurusAttendancePage: React.FC = () => {
               <span className="text-[#68655F] block text-[10px] uppercase font-semibold">Izin / Sakit</span>
               <span className="text-base font-bold text-[#68655F]">{activeSession.excused_count}</span>
             </div>
-            <div className="py-1">
+            <div className="py-1 col-span-2 sm:col-span-1">
               <span className="text-[#68655F] block text-[10px] uppercase font-semibold">Alpa</span>
               <span className="text-base font-bold text-[#A33D35]">{activeSession.absent_count}</span>
             </div>

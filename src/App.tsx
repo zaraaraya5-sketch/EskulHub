@@ -334,7 +334,7 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col lg:flex-row bg-[#F9F8F6] text-[#171717]">
         {/* Mobile Dashboard Header (< lg) */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-4 h-15 flex items-center justify-between shadow-2xs">
+        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-3.5 sm:px-4 h-14 sm:h-15 flex items-center justify-between shadow-2xs">
           <Logo
             size="sm"
             withText
@@ -343,14 +343,27 @@ const AppContent: React.FC = () => {
             title="Kembali ke Beranda"
           />
 
-          <button
-            onClick={() => setMobileSidebarOpen(true)}
-            className="min-h-[40px] px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-colors"
-            aria-label="Buka navigasi dasbor"
-          >
-            <Menu className="w-4 h-4 text-[#D15B40]" />
-            <span className="uppercase tracking-wider text-[11px]">Menu</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {currentUser && (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs">
+                <span className="w-6 h-6 rounded-lg bg-[#D15B40] text-white flex items-center justify-center font-bold text-[11px] shrink-0 shadow-2xs">
+                  {currentUser.name.charAt(0)}
+                </span>
+                <span className="font-bold text-[#171717] max-w-[85px] sm:max-w-[120px] truncate text-[11px]">
+                  {currentUser.name.split(' ')[0]}
+                </span>
+              </div>
+            )}
+
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="min-h-[38px] px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] active:scale-95 text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-all shadow-2xs"
+              aria-label="Buka navigasi dasbor"
+            >
+              <Menu className="w-4 h-4 text-[#D15B40]" />
+              <span className="uppercase tracking-wider text-[11px]">Menu</span>
+            </button>
+          </div>
         </header>
 
         {/* Sidebar Component (Handles both desktop sticky aside and mobile slide drawer) */}
@@ -386,17 +399,17 @@ const AppContent: React.FC = () => {
       </main>
 
       {/* Institutional Editorial Footer */}
-      <footer className="bg-white border-t border-[#EAE6DC] py-8 text-xs text-[#68655F]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
+      <footer className="bg-white border-t border-[#EAE6DC] py-6 sm:py-8 text-xs text-[#68655F]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
             <span className="font-bold text-[#171717]">Ekskul-Hub</span> — Sistem Informasi Ekstrakurikuler & Portofolio Siswa.
-            <div className="text-[11px] mt-0.5">Dikembangkan untuk Satuan Pendidikan Indonesia. Berbasis Standar Kearsipan Nasional.</div>
+            <div className="text-[11px] text-[#8C887B]">Dikembangkan untuk Satuan Pendidikan Indonesia. Berbasis Standar Kearsipan Nasional.</div>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <button onClick={() => navigate('/')} className="hover:text-[#234B36] cursor-pointer">Beranda</button>
-            <button onClick={() => navigate('/ekskul')} className="hover:text-[#234B36] cursor-pointer">Katalog</button>
-            <button onClick={() => navigate('/calendar')} className="hover:text-[#234B36] cursor-pointer">Kalender</button>
-            <button onClick={() => navigate('/verify')} className="hover:text-[#234B36] cursor-pointer">Verifikasi Portofolio</button>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] font-medium">
+            <button onClick={() => navigate('/')} className="hover:text-[#D15B40] transition-colors cursor-pointer min-h-[36px] flex items-center">Beranda</button>
+            <button onClick={() => navigate('/ekskul')} className="hover:text-[#D15B40] transition-colors cursor-pointer min-h-[36px] flex items-center">Katalog</button>
+            <button onClick={() => navigate('/calendar')} className="hover:text-[#D15B40] transition-colors cursor-pointer min-h-[36px] flex items-center">Kalender</button>
+            <button onClick={() => navigate('/verify')} className="hover:text-[#D15B40] transition-colors cursor-pointer min-h-[36px] flex items-center">Verifikasi Portofolio</button>
           </div>
         </div>
       </footer>

@@ -180,33 +180,33 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/extracurriculars')}>
-              <span className="text-xs font-bold text-[#525049] uppercase">Total Binaan</span>
-              <span className="text-2xl font-black text-[#171717]">{ekskuls.length} Ekskul</span>
-              <div className="text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1 mt-1">
-                <span>Lihat Detail Ekskul</span> <ArrowRight className="w-3 h-3" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/extracurriculars')}>
+              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Total Binaan</span>
+              <span className="text-xl sm:text-2xl font-black text-[#171717] my-1">{ekskuls.length} Ekskul</span>
+              <div className="text-[10px] sm:text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1">
+                <span className="truncate">Detail Ekskul</span> <ArrowRight className="w-3 h-3 shrink-0" />
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/members')}>
-              <span className="text-xs font-bold text-[#525049] uppercase">Pendaftar Baru</span>
-              <span className="text-2xl font-black text-[#D15B40]">{relevantRegistrations.filter(r => r.status === 'pending').length} Siswa</span>
-              <div className="text-[11px] text-[#D15B40] font-semibold flex items-center gap-1 mt-1">
-                <span>Tinjau Pendaftar</span> <ArrowRight className="w-3 h-3" />
+            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/members')}>
+              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Pendaftar Baru</span>
+              <span className="text-xl sm:text-2xl font-black text-[#D15B40] my-1">{relevantRegistrations.filter(r => r.status === 'pending').length} Siswa</span>
+              <div className="text-[10px] sm:text-[11px] text-[#D15B40] font-semibold flex items-center gap-1">
+                <span className="truncate">Tinjau</span> <ArrowRight className="w-3 h-3 shrink-0" />
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/schedule')}>
-              <span className="text-xs font-bold text-[#525049] uppercase">Agenda & Lomba</span>
-              <span className="text-2xl font-black text-[#3B7A82]">{events.length} Agenda</span>
-              <div className="text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1 mt-1">
-                <span>Atur Jadwal</span> <ArrowRight className="w-3 h-3" />
+            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/schedule')}>
+              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Agenda & Lomba</span>
+              <span className="text-xl sm:text-2xl font-black text-[#3B7A82] my-1">{events.length} Agenda</span>
+              <div className="text-[10px] sm:text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1">
+                <span className="truncate">Atur Jadwal</span> <ArrowRight className="w-3 h-3 shrink-0" />
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-lg flex flex-col gap-2 hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/achievements')}>
-              <span className="text-xs font-bold text-[#525049] uppercase">Validasi Prestasi</span>
-              <span className="text-2xl font-black text-[#8C6819]">{achievements.filter(a => !a.is_verified).length} Prestasi</span>
-              <div className="text-[11px] text-[#8C6819] font-semibold flex items-center gap-1 mt-1">
-                <span>Sahkan Sekarang</span> <ArrowRight className="w-3 h-3" />
+            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/achievements')}>
+              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Validasi Prestasi</span>
+              <span className="text-xl sm:text-2xl font-black text-[#8C6819] my-1">{achievements.filter(a => !a.is_verified).length} Prestasi</span>
+              <div className="text-[10px] sm:text-[11px] text-[#8C6819] font-semibold flex items-center gap-1">
+                <span className="truncate">Sahkan</span> <ArrowRight className="w-3 h-3 shrink-0" />
               </div>
             </div>
           </div>

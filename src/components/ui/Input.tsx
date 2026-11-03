@@ -32,7 +32,7 @@ export const Input: React.FC<InputProps> = ({
         <input
           id={inputId}
           type={inputType}
-          className={`w-full px-3.5 py-2.5 text-sm bg-white border rounded-xl text-[#171717] placeholder-[#A39F97] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all duration-200 ease-out ${
+          className={`w-full min-h-[44px] px-3.5 py-2.5 text-base sm:text-sm bg-white border rounded-xl text-[#171717] placeholder-[#A39F97] focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all duration-200 ease-out ${
             error ? 'border-[#A33D35] focus:ring-[#A33D35]/20 focus:border-[#A33D35]' : 'border-[#EAE6DC]'
           } ${isPassword ? 'pr-10' : ''} ${className}`}
           {...props}

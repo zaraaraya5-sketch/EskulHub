@@ -67,7 +67,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     <div className="bg-white min-h-screen font-sans">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#F9F8F6] via-white to-white pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-[#EAE6DC]">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#F9F8F6] via-white to-white pt-16 pb-12 sm:pt-24 sm:pb-20 lg:pt-32 lg:pb-28 border-b border-[#EAE6DC]">
         {/* Ambient WebGL Gradient Waves matching website palette */}
         <div className="absolute inset-0 z-0 pointer-events-auto">
           <React.Suspense fallback={<div className="absolute inset-0 bg-[#F9F8F6]/50" />}>
@@ -100,10 +100,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#F9F8F6]/30 via-white/50 to-white pointer-events-none z-[1]" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <Badge variant="success" className="mb-6 mx-auto inline-flex shadow-sm bg-[#FDEDE9] text-[#D15B40] border-[#F2C9C0]">
+          <Badge variant="success" className="mb-4 sm:mb-6 mx-auto inline-flex shadow-sm bg-[#FDEDE9] text-[#D15B40] border-[#F2C9C0]">
             Tahun Ajaran {settings.academic_year}
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-extrabold text-[#171717] tracking-tight mb-6 max-w-4xl mx-auto leading-tight">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#171717] tracking-tight mb-4 sm:mb-6 max-w-4xl mx-auto leading-snug sm:leading-tight">
             <FoldText
               text="Kembangkan Bakat dan Catat Prestasimu di"
               splitBy="word"
@@ -131,14 +131,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               />
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-[#525049] mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base md:text-xl text-[#525049] mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed">
             Daftar ekskul pilihanmu, pantau kehadiran latihan rutin, dan unduh portofolio resmi ber-QR untuk beasiswa maupun lamaran kerja.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" onClick={() => onNavigate('/login')} icon={<LogIn className="w-5 h-5" />} className="w-full sm:w-auto shadow-md">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full sm:w-auto">
+            <Button size="lg" onClick={() => onNavigate('/login')} icon={<LogIn className="w-5 h-5" />} className="w-full sm:w-auto shadow-md min-h-[44px]">
               Masuk ke Portal
             </Button>
-            <Button variant="outline" size="lg" onClick={() => onNavigate('/ekskul')} icon={<Compass className="w-5 h-5" />} className="w-full sm:w-auto bg-white">
+            <Button variant="outline" size="lg" onClick={() => onNavigate('/ekskul')} icon={<Compass className="w-5 h-5" />} className="w-full sm:w-auto bg-white min-h-[44px]">
               Jelajahi Katalog Ekskul
             </Button>
           </div>
@@ -146,27 +146,27 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Quick Verify Tool */}
-      <section className="py-0 relative z-10 max-w-4xl mx-auto px-4 -mt-12">
-        <div className="bg-white border border-[#EAE6DC] p-6 sm:p-7 rounded-2xl shadow-xl space-y-5">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+      <section className="py-0 relative z-10 max-w-4xl mx-auto px-3.5 sm:px-4 -mt-6 sm:-mt-12">
+        <div className="bg-white border border-[#EAE6DC] p-5 sm:p-7 rounded-2xl shadow-xl space-y-4 sm:space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-5">
             <div className="flex-1">
-              <h2 className="font-bold text-lg text-[#171717] flex items-center gap-2 mb-1">
+              <h2 className="font-bold text-base sm:text-lg text-[#171717] flex items-center gap-2 mb-1">
                 <ShieldCheck className="w-5 h-5 text-[#D15B40]" /> Cek Keaslian Portofolio & Piagam
               </h2>
-              <p className="text-sm text-[#525049] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[#525049] leading-relaxed">
                 Kampus, penyedia beasiswa, atau perusahaan dapat memastikan keaslian dokumen siswa langsung dari data sekolah.
               </p>
             </div>
-            <form onSubmit={handleVerifySubmit} className="flex-1 flex w-full gap-2.5">
+            <form onSubmit={handleVerifySubmit} className="flex-1 flex flex-col sm:flex-row w-full gap-2.5">
               <input 
                 type="text" 
                 aria-label="Nomor verifikasi dokumen"
                 placeholder="Contoh: EKH-2026-000184" 
                 value={searchVerifyId} 
                 onChange={(e) => setSearchVerifyId(e.target.value)} 
-                className="flex-1 px-4 py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-sm font-medium text-[#171717] placeholder:text-[#78746B] focus:outline-none focus:border-[#D15B40] focus:ring-2 focus:ring-[#D15B40]/20 transition-all" 
+                className="flex-1 min-h-[44px] px-4 py-2.5 sm:py-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-base sm:text-sm font-medium text-[#171717] placeholder:text-[#78746B] focus:outline-none focus:border-[#D15B40] focus:ring-2 focus:ring-[#D15B40]/20 transition-all" 
               />
-              <Button type="submit" size="lg" className="rounded-xl shrink-0">Cek Dokumen</Button>
+              <Button type="submit" size="lg" className="rounded-xl shrink-0 w-full sm:w-auto min-h-[44px]">Cek Dokumen</Button>
             </form>
           </div>
 
@@ -189,12 +189,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Extracurricular Gallery Section */}
-      <section className="py-24 bg-[#F9F8F6] border-b border-[#EAE6DC]">
+      <section className="py-16 sm:py-24 bg-[#F9F8F6] border-b border-[#EAE6DC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-4 sm:gap-6">
             <div>
-              <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Pilihan Ekstrakurikuler</h2>
-              <p className="text-[#525049] mt-3 text-lg max-w-2xl">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#171717] tracking-tight">Pilihan Ekstrakurikuler</h2>
+              <p className="text-[#525049] mt-2 sm:mt-3 text-sm sm:text-base md:text-lg max-w-2xl">
                 Temukan kegiatan yang pas buat asah kemampuan, bangun jejaring pertemanan, dan raih prestasi.
               </p>
             </div>
@@ -202,6 +202,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
               variant="outline" 
               onClick={() => onNavigate('/ekskul')} 
               icon={<ArrowRight className="w-4 h-4" />}
+              className="w-full sm:w-auto min-h-[44px]"
             >
               Lihat Semua Ekskul
             </Button>
@@ -220,25 +221,25 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       </section>
 
       {/* System Features Workflow */}
-      <section className="py-24 bg-white">
+      <section className="py-16 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-[#171717] tracking-tight">Bagaimana Cara Kerjanya?</h2>
-            <p className="text-[#525049] mt-4 text-lg">Empat langkah mudah dari pertama kali daftar sampai jadi portofolio siap pakai.</p>
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#171717] tracking-tight">Bagaimana Cara Kerjanya?</h2>
+            <p className="text-[#525049] mt-2 sm:mt-4 text-sm sm:text-base md:text-lg">Empat langkah mudah dari pertama kali daftar sampai jadi portofolio siap pakai.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
               { title: 'Pilih Ekskul Favorit', desc: 'Cari ekskul yang kamu minati, cek jadwal latihannya, lalu daftar langsung secara mandiri.', icon: UserCheck },
               { title: 'Ikuti Latihan & Absen', desc: 'Kehadiranmu dicatat tiap sesi latihan oleh pengurus ekskul dan langsung terekap rapi di sistem.', icon: CheckCircle },
               { title: 'Kumpulkan Prestasi', desc: 'Catat partisipasi lomba, juara, hingga peran di kepanitiaan untuk diverifikasi pembina.', icon: Trophy },
               { title: 'Unduh Portofolio Resmi', desc: 'Dapatkan transkrip bertanda tangan digital dan kode QR resmi yang siap dilampirkan ke kampus atau dunia kerja.', icon: FileText }
             ].map((step, i) => (
-              <div key={i} className="bg-[#F9F8F6] p-8 rounded-2xl border border-[#EAE6DC] hover:shadow-md transition-shadow hover:border-[#D8D4CC] group">
-                <div className="w-14 h-14 bg-white border border-[#EAE6DC] rounded-xl flex items-center justify-center text-[#D15B40] mb-6 group-hover:scale-110 transition-transform">
-                  <step.icon className="w-6 h-6" />
+              <div key={i} className="bg-[#F9F8F6] p-5 sm:p-7 rounded-2xl border border-[#EAE6DC] hover:shadow-md transition-all hover:border-[#D8D4CC] group">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white border border-[#EAE6DC] rounded-xl flex items-center justify-center text-[#D15B40] mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                  <step.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
-                <h3 className="font-bold text-lg mb-3 text-[#171717]">{step.title}</h3>
-                <p className="text-sm text-[#525049] leading-relaxed">{step.desc}</p>
+                <h3 className="font-bold text-base sm:text-lg mb-2 sm:mb-3 text-[#171717]">{step.title}</h3>
+                <p className="text-xs sm:text-sm text-[#525049] leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>

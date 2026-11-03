@@ -308,7 +308,48 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
               </Button>
             </div>
 
-            <div className="overflow-x-auto border border-[#EAE6DC] rounded-xl">
+            {/* Mobile Card List (< md) */}
+            <div className="block md:hidden space-y-2.5">
+              {myAttendanceRecords.slice(0, 5).map((rec) => (
+                <div
+                  key={rec.id}
+                  className="p-3 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl flex items-center justify-between gap-3 text-xs"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] font-mono text-[#8C887B]">{rec.session_date}</div>
+                    <div className="font-bold text-[#171717] truncate">{rec.extracurricular_name}</div>
+                    <div className="text-[#525049] text-[11px] truncate mt-0.5">{rec.session_title}</div>
+                  </div>
+                  <span
+                    className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                      rec.status === 'present'
+                        ? 'bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]'
+                        : rec.status === 'late'
+                        ? 'bg-[#FEF9EE] text-[#B58A32] border border-[#F5E6C4]'
+                        : rec.status === 'excused'
+                        ? 'bg-[#F0F5F6] text-[#3B7A82] border border-[#CDE0E3]'
+                        : 'bg-[#FBEAE8] text-[#A33D35] border border-[#F5C6C2]'
+                    }`}
+                  >
+                    {rec.status === 'present'
+                      ? 'Hadir'
+                      : rec.status === 'late'
+                      ? 'Terlambat'
+                      : rec.status === 'excused'
+                      ? 'Izin'
+                      : 'Alpa'}
+                  </span>
+                </div>
+              ))}
+              {myAttendanceRecords.length === 0 && (
+                <div className="py-6 text-center text-[#68655F] bg-[#F9F8F6] rounded-xl border border-dashed border-[#EAE6DC] text-xs">
+                  Belum ada riwayat catatan presensi latihan untuk akun Anda.
+                </div>
+              )}
+            </div>
+
+            {/* Desktop Table (>= md) */}
+            <div className="hidden md:block overflow-x-auto border border-[#EAE6DC] rounded-xl">
               <table className="w-full text-xs text-left">
                 <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
                   <tr>
