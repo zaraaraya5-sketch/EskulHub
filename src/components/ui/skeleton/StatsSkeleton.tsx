@@ -23,3 +23,4 @@ export const StatsSkeleton: React.FC<StatsSkeletonProps> = ({ count = 4 }) => {
     </div>
   );
 };
+

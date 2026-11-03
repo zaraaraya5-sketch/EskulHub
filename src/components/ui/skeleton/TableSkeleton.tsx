@@ -36,3 +36,4 @@ export const TableSkeleton: React.FC<TableSkeletonProps> = ({ rows = 5, cols = 4
     </div>
   );
 };
+

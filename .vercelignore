@@ -1,12 +1,13 @@
 # Ignore backend and local dev folders for Vercel Frontend SPA deployment
 backend/
-/images/
 New folder/
 scratch/
 .agent/
 .git/
 *.log
 
-# Explicitly ensure public assets are always included
+# Explicitly ensure public and dist assets are included
 !public/
 !public/**
+!dist/
+!dist/**

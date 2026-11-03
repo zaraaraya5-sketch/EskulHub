@@ -44,3 +44,4 @@ export const CardSkeleton: React.FC<CardSkeletonProps> = ({ count = 3, aspect = 
     </div>
   );
 };
+
