@@ -1,8 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { ExtracurricularRegistration } from '@/types';
-import { Plus, FileCheck } from 'lucide-react';
+import { Plus, FileCheck, CheckCircle2, Clock, XCircle, Info } from 'lucide-react';
 
 interface StudentRegistrationsTabProps {
   myRegistrations: ExtracurricularRegistration[];
@@ -16,12 +15,17 @@ export const StudentRegistrationsTab: React.FC<StudentRegistrationsTabProps> = (
   setActiveTab,
 }) => {
   return (
-    <div className="space-y-5">
-      <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-6">
+      {/* Page Header Card */}
+      <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-base font-bold text-[#171717]">Status Pendaftaran Ekstrakurikuler</h2>
-          <p className="text-xs text-[#68655F]">
-            Pantau pengajuan bergabung ekstrakurikuler Anda yang sedang ditinjau oleh guru pembina.
+          <div className="text-[11px] font-bold uppercase tracking-wider text-[#D15B40] flex items-center gap-1.5 mb-1">
+            <FileCheck className="w-3.5 h-3.5" />
+            <span>Administrasi Keanggotaan</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#171717] tracking-tight">Status Pendaftaran Ekstrakurikuler</h2>
+          <p className="text-xs text-[#68655F] mt-0.5">
+            Pantau pengajuan bergabung ekstrakurikuler yang sedang ditinjau oleh guru pembina kesiswaan.
           </p>
         </div>
         <Button
@@ -29,63 +33,76 @@ export const StudentRegistrationsTab: React.FC<StudentRegistrationsTabProps> = (
           size="sm"
           onClick={handleOpenRegisterModal}
           icon={<Plus className="w-3.5 h-3.5" />}
+          className="self-start sm:self-auto cursor-pointer shadow-xs"
         >
           Ajukan Pendaftaran Baru
         </Button>
       </div>
 
-      <div className="bg-white border border-[#EAE6DC] rounded-xl p-5 shadow-xs space-y-4">
+      {/* Main Table Card */}
+      <div className="bg-white border border-[#EAE6DC] rounded-2xl p-5 sm:p-6 shadow-xs space-y-5">
         {myRegistrations.length === 0 ? (
           <div className="text-center py-12 text-xs text-[#68655F] space-y-3">
-            <FileCheck className="w-10 h-10 text-[#68655F]/40 mx-auto" />
-            <p>Belum ada pengajuan pendaftaran ekstrakurikuler yang tercatat.</p>
-            <Button variant="primary" size="sm" onClick={() => setActiveTab('browse')}>
+            <FileCheck className="w-10 h-10 text-[#A39F97]/40 mx-auto" />
+            <p>Belum ada pengajuan pendaftaran ekstrakurikuler yang tercatat untuk akun Anda.</p>
+            <Button variant="primary" size="sm" onClick={() => setActiveTab('browse')} className="cursor-pointer">
               Buka Katalog Ekskul
             </Button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs text-left border border-[#EAE6DC]">
+          <div className="overflow-x-auto border border-[#EAE6DC] rounded-xl">
+            <table className="w-full text-xs text-left">
               <thead className="bg-[#F9F8F6] border-b border-[#EAE6DC] text-[#171717]">
                 <tr>
-                  <th className="py-2.5 px-3 font-semibold">No</th>
-                  <th className="py-2.5 px-3 font-semibold">Ekstrakurikuler</th>
-                  <th className="py-2.5 px-3 font-semibold">Tanggal Daftar</th>
-                  <th className="py-2.5 px-3 font-semibold">Alasan / Motivasi</th>
-                  <th className="py-2.5 px-3 font-semibold">Catatan Reviewer</th>
-                  <th className="py-2.5 px-3 font-semibold">Status Pendaftaran</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px] w-12 text-center">No</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px]">Ekstrakurikuler</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px]">Tanggal Daftar</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px]">Alasan / Motivasi</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px]">Catatan Reviewer</th>
+                  <th className="py-3.5 px-4 font-bold uppercase tracking-wider text-[11px] text-center">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#D8D4CC]">
+              <tbody className="divide-y divide-[#EAE6DC]">
                 {myRegistrations.map((reg, idx) => (
-                  <tr key={reg.id} className="hover:bg-[#F9F8F6]/40">
-                    <td className="py-2.5 px-3 font-mono text-[#68655F]">{idx + 1}</td>
-                    <td className="py-2.5 px-3 font-bold text-[#171717]">
+                  <tr key={reg.id} className="hover:bg-[#F9F8F6]/60 transition-colors">
+                    <td className="py-3.5 px-4 font-mono text-[#68655F] text-center">{idx + 1}</td>
+                    <td className="py-3.5 px-4 font-bold text-[#171717] whitespace-nowrap">
                       {reg.extracurricular_name}
                     </td>
-                    <td className="py-2.5 px-3 font-mono text-[#68655F]">
+                    <td className="py-3.5 px-4 font-mono text-[#68655F] whitespace-nowrap">
                       {reg.registration_date.split('T')[0]}
                     </td>
-                    <td className="py-2.5 px-3 text-[#171717] max-w-xs">{reg.reason}</td>
-                    <td className="py-2.5 px-3 text-[#68655F] italic">
-                      {reg.notes || (reg.status === 'pending' ? 'Sedang menunggu kuota & jadwal seleksi berkas.' : '-')}
+                    <td className="py-3.5 px-4 text-[#525049] max-w-xs leading-relaxed">{reg.reason}</td>
+                    <td className="py-3.5 px-4 text-[#68655F] italic leading-relaxed">
+                      {reg.notes || (reg.status === 'pending' ? 'Sedang menunggu seleksi berkas & kuota anggota.' : '-')}
                     </td>
-                    <td className="py-2.5 px-3">
-                      <Badge
-                        variant={
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                           reg.status === 'approved'
-                            ? 'success'
+                            ? 'bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]'
                             : reg.status === 'rejected'
-                            ? 'danger'
-                            : 'warning'
-                        }
+                            ? 'bg-[#FBEAE8] text-[#A33D35] border border-[#F5C6C2]'
+                            : 'bg-[#FEF9EE] text-[#B58A32] border border-[#F5E6C4]'
+                        }`}
                       >
-                        {reg.status === 'approved'
-                          ? 'Diterima'
-                          : reg.status === 'rejected'
-                          ? 'Ditolak'
-                          : 'Menunggu Persetujuan'}
-                      </Badge>
+                        {reg.status === 'approved' ? (
+                          <>
+                            <CheckCircle2 className="w-3 h-3" />
+                            <span>Diterima</span>
+                          </>
+                        ) : reg.status === 'rejected' ? (
+                          <>
+                            <XCircle className="w-3 h-3" />
+                            <span>Ditolak</span>
+                          </>
+                        ) : (
+                          <>
+                            <Clock className="w-3 h-3" />
+                            <span>Menunggu Review</span>
+                          </>
+                        )}
+                      </span>
                     </td>
                   </tr>
                 ))}
@@ -94,12 +111,13 @@ export const StudentRegistrationsTab: React.FC<StudentRegistrationsTabProps> = (
           </div>
         )}
 
-        {/* Note on workflow */}
-        <div className="p-3.5 bg-[#F9F8F6]/60 border border-[#EAE6DC] rounded-lg text-xs text-[#68655F] space-y-1">
-          <strong className="text-[#171717]">Alur Pendaftaran:</strong>
-          <p>
-            Setiap pendaftaran yang diajukan akan diverifikasi oleh Pembina Kesiswaan berdasarkan kapasitas ruang latihan dan kriteria anggota. Setelah status berubah menjadi <strong>Diterima</strong>, data Anda otomatis masuk ke dalam rekap absensi dan portofolio resmi.
-          </p>
+        {/* Informative Guidance Footer */}
+        <div className="p-4 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl flex items-start gap-3 text-xs text-[#68655F]">
+          <Info className="w-4 h-4 text-[#D15B40] shrink-0 mt-0.5" />
+          <div className="leading-relaxed">
+            <strong className="text-[#171717] block mb-0.5">Alur Verifikasi Pendaftaran:</strong>
+            Setiap pendaftaran ditinjau langsung oleh Guru Pembina berdasarkan kapasitas ruangan dan jadwal latihan. Setelah status berubah menjadi <span className="font-bold text-[#D15B40]">Diterima</span>, akun Anda otomatis terhubung ke sistem presensi digital dan portofolio kelulusan.
+          </div>
         </div>
       </div>
     </div>

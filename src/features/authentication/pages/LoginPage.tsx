@@ -3,7 +3,7 @@ import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
+import { Logo } from '@/components/ui/Logo';
 import {
   GraduationCap,
   LogIn,
@@ -192,9 +192,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
         {/* Brand & Page Header */}
         <div className="text-center">
           <div className="flex justify-center mb-3">
-            <EskulHubLogo size="lg" />
+            <Logo size="lg" />
           </div>
-          <div className="inline-block px-2.5 py-0.5 rounded bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] text-[11px] font-bold uppercase tracking-wider mb-2">
+          <div className="inline-block px-2.5 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] text-[11px] font-bold uppercase tracking-wider mb-2">
             {mode === 'login' ? 'Portal Masuk Terpadu' : 'Registrasi Akun Baru'}
           </div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#171717]">

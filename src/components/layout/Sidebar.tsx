@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
-import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
+import { Logo } from '@/components/ui/Logo';
 import {
   LayoutDashboard,
   BookOpen,
@@ -173,55 +173,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const renderSidebarContent = (isMobile: boolean = false) => (
     <>
       {/* Brand Header */}
-      <div
-        onClick={() => handleNavClick('/', isMobile)}
-        className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center gap-3 sm:gap-4 cursor-pointer group bg-white hover:bg-[#F9F8F6] transition-colors select-none"
-        title="Kembali ke Beranda Publik"
-      >
-        <EskulHubLogo size="md" />
-        <div className="overflow-hidden min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-base font-bold tracking-tight text-[#171717] group-hover:text-[#4F46E5] transition-colors leading-none truncate">
-              EskulHub
-            </span>
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#EEF2FF] text-[#4F46E5] shrink-0">
-              {settings.academic_year}
-            </span>
-          </div>
-          <div className="text-xs text-[#68655F] font-medium mt-1 truncate">
-            {settings.school_name}
-          </div>
-        </div>
+      <div className="px-5 py-4 border-b border-[#EAE6DC] bg-white hover:bg-[#F9F8F6] transition-colors select-none">
+        <Logo
+          size="md"
+          withText
+          badgeText={settings.academic_year}
+          subtitle={settings.school_name}
+          onClick={() => handleNavClick('/', isMobile)}
+          title="Kembali ke Beranda Publik"
+        />
       </div>
 
-      {/* User profile card (hidden for Pengurus/Admin per user request) */}
-      {role !== 'pengurus' && (
-        <div
-          className="p-4 sm:p-5 border-b border-[#EAE6DC] bg-[#F9F8F6]"
-        >
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="relative shrink-0">
-              <img
-                src={currentUser?.avatar_url || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100'}
-                alt={currentUser?.name}
-                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-sm border border-white group-hover:border-[#D15B40] transition-colors"
-              />
-            </div>
-            <div className="overflow-hidden flex-1 min-w-0">
-              <div className="text-sm font-bold text-[#171717] truncate group-hover:text-[#D15B40] transition-colors">
-                {currentUser?.name}
-              </div>
-              <div className={`text-[11px] font-bold uppercase tracking-wider mt-0.5 ${badgeInfo.textClass}`}>
-                {badgeInfo.label}
-              </div>
-              <div className="text-xs text-[#68655F] truncate mt-0.5">{currentUser?.email}</div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Navigation menu */}
-      <div className="flex-1 py-4 sm:py-5 px-3 sm:px-4 space-y-5 sm:space-y-6 overflow-y-auto overscroll-contain">
+      <div className="flex-1 py-4 px-3 sm:px-4 space-y-5 overflow-y-auto overscroll-contain">
         {currentMenu.map((group, idx) => (
           <div key={idx} className="space-y-1.5">
             <div className="px-3 pb-1 text-[11px] font-bold uppercase tracking-wider text-[#A09D96]">
@@ -260,13 +224,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ))}
       </div>
 
-      {/* Footer controls */}
+      {/* Footer controls with user info */}
       <div className="p-3.5 sm:p-4 border-t border-[#EAE6DC] bg-white space-y-2 shrink-0">
+        {currentUser && (
+          <div className="flex items-center gap-2.5 px-2.5 py-2 mb-1 bg-[#F9F8F6] rounded-xl border border-[#EAE6DC]/60">
+            <div className="w-7 h-7 rounded-lg bg-[#D15B40] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+              {currentUser.name.charAt(0)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-xs font-bold text-[#171717] truncate">{currentUser.name}</div>
+              <div className="text-[10px] text-[#D15B40] font-semibold uppercase tracking-wider">{badgeInfo.label}</div>
+            </div>
+          </div>
+        )}
+
         <button
           onClick={() => handleNavClick('/', isMobile)}
-          className="w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 text-xs sm:text-sm text-[#D15B40] font-semibold hover:bg-[#F9F8F6] active:bg-[#F0EDE6] rounded-xl transition-colors cursor-pointer border border-[#EAE6DC] select-none"
+          className="w-full min-h-[40px] flex items-center gap-2.5 px-3 py-2 text-xs text-[#525049] hover:text-[#171717] hover:bg-[#F9F8F6] active:bg-[#F0EDE6] font-medium rounded-xl transition-colors cursor-pointer border border-[#EAE6DC] select-none"
         >
-          <ExternalLink className="w-4 h-4 shrink-0" />
+          <ExternalLink className="w-3.5 h-3.5 shrink-0 text-[#D15B40]" />
           <span>Ke Halaman Publik</span>
         </button>
 
@@ -275,9 +251,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
             logout();
             handleNavClick('/login', isMobile);
           }}
-          className="w-full min-h-[44px] flex items-center gap-3 px-3.5 py-2.5 text-xs sm:text-sm text-[#A33D35] hover:bg-[#FDF6F5] active:bg-[#FDECEB] font-semibold rounded-xl transition-colors cursor-pointer border border-transparent hover:border-[#FADBD8] select-none"
+          className="w-full min-h-[40px] flex items-center gap-2.5 px-3 py-2 text-xs text-[#A33D35] hover:bg-[#FDF6F5] active:bg-[#FDECEB] font-semibold rounded-xl transition-colors cursor-pointer border border-transparent hover:border-[#FADBD8] select-none"
         >
-          <LogOut className="w-4 h-4 shrink-0" />
+          <LogOut className="w-3.5 h-3.5 shrink-0" />
           <span>Keluar Sesi</span>
         </button>
       </div>

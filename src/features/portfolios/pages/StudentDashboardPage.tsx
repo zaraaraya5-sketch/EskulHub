@@ -153,35 +153,36 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   return (
     <div className="space-y-6">
-      <StudentProfileHeader
-        studentName={studentName}
-        regClass={regClass}
-        regNisn={regNisn}
-        academicYear={settings.academic_year}
-        schoolName={settings.school_name}
-        isGeneratingPdf={isGeneratingPdf}
-        onOpenRegisterModal={() => handleOpenRegister()}
-        onOpenUploadModal={handleOpenUpload}
-        onDownloadPdf={handleDownloadPdf}
-      />
-
       {activeTab === 'overview' && (
-        <StudentOverviewTab
-          myRegistrations={myRegistrations}
-          attendanceRate={attendanceRate}
-          presentCount={presentCount}
-          totalSessions={totalSessions}
-          myAchievements={myAchievements}
-          myCertificates={myCertificates}
-          myMemberships={myMemberships}
-          myAttendanceRecords={myAttendanceRecords}
-          upcomingEvents={upcomingEvents}
-          isGeneratingPdf={isGeneratingPdf}
-          setActiveTab={handleTabChange}
-          setSelectedEkskulDetail={handleSelectEkskul}
-          handleDownloadPdf={handleDownloadPdf}
-          onNavigate={onNavigate}
-        />
+        <>
+          <StudentProfileHeader
+            studentName={studentName}
+            regClass={regClass}
+            regNisn={regNisn}
+            academicYear={settings.academic_year}
+            schoolName={settings.school_name}
+            isGeneratingPdf={isGeneratingPdf}
+            onOpenRegisterModal={() => handleOpenRegister()}
+            onOpenUploadModal={handleOpenUpload}
+            onDownloadPdf={handleDownloadPdf}
+          />
+          <StudentOverviewTab
+            myRegistrations={myRegistrations}
+            attendanceRate={attendanceRate}
+            presentCount={presentCount}
+            totalSessions={totalSessions}
+            myAchievements={myAchievements}
+            myCertificates={myCertificates}
+            myMemberships={myMemberships}
+            myAttendanceRecords={myAttendanceRecords}
+            upcomingEvents={upcomingEvents}
+            isGeneratingPdf={isGeneratingPdf}
+            setActiveTab={handleTabChange}
+            setSelectedEkskulDetail={handleSelectEkskul}
+            handleDownloadPdf={handleDownloadPdf}
+            onNavigate={onNavigate}
+          />
+        </>
       )}
 
       {activeTab === 'browse' && (

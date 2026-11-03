@@ -3,7 +3,7 @@ import { AuthProvider, useAuth } from '@/features/authentication/providers/AuthP
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { PageLoader } from '@/components/ui/PageLoader';
-import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
+import { Logo } from '@/components/ui/Logo';
 import { db } from '@/lib/database';
 import { Menu } from 'lucide-react';
 
@@ -335,20 +335,13 @@ const AppContent: React.FC = () => {
       <div className="min-h-screen flex flex-col lg:flex-row bg-[#F9F8F6] text-[#171717]">
         {/* Mobile Dashboard Header (< lg) */}
         <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-4 h-15 flex items-center justify-between shadow-2xs">
-          <div
+          <Logo
+            size="sm"
+            withText
+            subtitle={settings.school_name}
             onClick={() => navigate('/')}
-            className="flex items-center gap-2.5 cursor-pointer select-none min-w-0"
-          >
-            <EskulHubLogo size="sm" />
-            <div className="min-w-0">
-              <span className="text-sm font-bold text-[#171717] block leading-none truncate">
-                EskulHub
-              </span>
-              <span className="text-[10px] text-[#68655F] font-medium uppercase mt-0.5 block truncate">
-                {settings.school_name}
-              </span>
-            </div>
-          </div>
+            title="Kembali ke Beranda"
+          />
 
           <button
             onClick={() => setMobileSidebarOpen(true)}

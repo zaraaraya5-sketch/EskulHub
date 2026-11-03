@@ -8,7 +8,7 @@ import {
   User,
   SchoolSetting,
 } from '@/types';
-import { SMKN1_CIOMAS_LOGO_BASE64 } from './schoolLogoBase64';
+import { SMKN1_CIOMAS_LOGO_BASE64, TUGU_KUJANG_LOGO_BASE64 } from './schoolLogoBase64';
 
 export interface PembinaMonthlyReportData {
   mode: 'pembina';
@@ -52,19 +52,26 @@ export type MonthlyReportData = PembinaMonthlyReportData | PengurusMonthlyReport
 
 // Draw official institutional letterhead with school logo on top-left and centered text
 const drawSchoolLetterhead = (doc: jsPDF, schoolSetting: SchoolSetting, pageWidth: number): number => {
-  const logoX = 16;
+  const leftLogoX = 16;
+  const logoW = 18;
+  const logoH = 22;
+  const rightLogoX = pageWidth - 16 - logoW;
   const logoY = 9;
-  const logoW = 20;
-  const logoH = 24;
 
   try {
-    doc.addImage(SMKN1_CIOMAS_LOGO_BASE64, 'JPEG', logoX, logoY, logoW, logoH);
+    doc.addImage(SMKN1_CIOMAS_LOGO_BASE64, 'PNG', leftLogoX, logoY, logoW, logoH);
   } catch (err) {
     console.warn('Failed to render school logo in PDF letterhead:', err);
   }
 
-  // Institution text centered between logo margin and right margin
-  const textCenterX = (pageWidth + logoW + 2) / 2;
+  try {
+    doc.addImage(TUGU_KUJANG_LOGO_BASE64, 'PNG', rightLogoX, logoY, logoW, logoH);
+  } catch (err) {
+    console.warn('Failed to render Tugu Kujang logo in PDF letterhead:', err);
+  }
+
+  // Institution text centered symmetrically on the page
+  const textCenterX = pageWidth / 2;
 
   doc.setFont('times', 'bold');
   doc.setFontSize(10.5);

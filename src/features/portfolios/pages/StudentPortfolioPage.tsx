@@ -95,20 +95,46 @@ export const StudentPortfolioPage: React.FC<StudentPortfolioPageProps> = ({ onNa
 
       {/* Document Simulation Sheet (Official School Editorial Style) */}
       <div className="bg-white border border-[#EAE6DC] rounded-lg p-6 sm:p-10 shadow-xs space-y-6 max-w-4xl mx-auto">
-        {/* Kop Surat Resmi */}
-        <div className="text-center border-b-2 border-[#D15B40] pb-4 space-y-0.5">
-          <div className="text-xs font-bold text-[#171717] tracking-wider uppercase">
-            PEMERINTAH DAERAH PROVINSI JAWA BARAT
+        {/* Kop Surat Resmi dengan Logo Sekolah (Kiri) dan Logo Tugu Kujang (Kanan) */}
+        <div className="pb-4">
+          <div className="flex items-center justify-between gap-3 sm:gap-6">
+            {/* Left: Logo SMKN 1 Ciomas (Transparent) */}
+            <div className="w-14 h-16 sm:w-18 sm:h-22 flex items-center justify-center shrink-0">
+              <img
+                src="/images/logo-smkn1ciomas.png"
+                alt="Logo SMKN 1 Ciomas"
+                className="w-full h-full object-contain filter drop-shadow-2xs select-none"
+              />
+            </div>
+
+            {/* Center: Kop Teks Instansi */}
+            <div className="text-center flex-1 min-w-0">
+              <div className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#68655F]">
+                PEMERINTAH DAERAH PROVINSI JAWA BARAT • DINAS PENDIDIKAN
+              </div>
+              <div className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-[#525049] mt-0.5">
+                CABANG DINAS PENDIDIKAN WILAYAH I KABUPATEN BOGOR
+              </div>
+              <div className="text-sm sm:text-lg font-black text-[#171717] uppercase tracking-wide mt-0.5">
+                {settings.school_name}
+              </div>
+              <div className="text-[10px] sm:text-[11px] text-[#68655F] mt-0.5">
+                {settings.address} • NPSN: {settings.npsn || '20254135'}
+              </div>
+            </div>
+
+            {/* Right: Logo Tugu Kujang (Transparent) */}
+            <div className="w-14 h-16 sm:w-18 sm:h-22 flex items-center justify-center shrink-0">
+              <img
+                src="/images/logo-tugu-kujang.png"
+                alt="Logo Tugu Kujang Bogor"
+                className="w-full h-full object-contain filter drop-shadow-2xs select-none"
+              />
+            </div>
           </div>
-          <div className="text-xs font-semibold text-[#68655F] uppercase">
-            DINAS PENDIDIKAN & KEBUDAYAAN
-          </div>
-          <div className="text-lg font-bold text-[#D15B40] uppercase tracking-wide">
-            {settings.school_name}
-          </div>
-          <div className="text-[11px] text-[#68655F]">
-            {settings.address} • NPSN: {settings.npsn}
-          </div>
+
+          {/* Formal Double Line Divider */}
+          <div className="border-t-2 border-b border-[#171717] py-0.5 my-3.5 mx-auto w-full" />
         </div>
 
         {/* Title */}

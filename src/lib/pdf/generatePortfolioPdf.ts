@@ -1,6 +1,7 @@
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import { PortfolioVerification, SchoolSetting } from '@/types';
+import { SMKN1_CIOMAS_LOGO_BASE64, TUGU_KUJANG_LOGO_BASE64 } from './schoolLogoBase64';
 
 export const generatePortfolioPdf = async (
   verification: PortfolioVerification,
@@ -24,28 +25,54 @@ export const generatePortfolioPdf = async (
   });
 
   // Page 1 Setup (A4 is 210mm x 297mm)
-  // Header: Kop Resmi Sekolah
-  doc.setDrawColor(35, 75, 54); // #D15B40 Deep Forest
-  doc.setLineWidth(1.2);
+  // Header: Kop Resmi Sekolah (Logo SMKN 1 Ciomas di kiri, Logo Tugu Kujang di kanan)
+  const leftLogoX = 16;
+  const rightLogoX = 176;
+  const logoY = 9;
+  const logoW = 18;
+  const logoH = 22;
+
+  try {
+    doc.addImage(SMKN1_CIOMAS_LOGO_BASE64, 'PNG', leftLogoX, logoY, logoW, logoH);
+  } catch (err) {
+    console.warn('Failed to render SMKN 1 Ciomas logo in PDF:', err);
+  }
+
+  try {
+    doc.addImage(TUGU_KUJANG_LOGO_BASE64, 'PNG', rightLogoX, logoY, logoW, logoH);
+  } catch (err) {
+    console.warn('Failed to render Tugu Kujang logo in PDF:', err);
+  }
+
+  // Official Double Border Separator
+  doc.setDrawColor(23, 23, 23);
+  doc.setLineWidth(1.1);
   doc.line(15, 34, 195, 34);
-  doc.setLineWidth(0.4);
+  doc.setLineWidth(0.35);
   doc.line(15, 35.5, 195, 35.5);
 
-  // School identity
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.setTextColor(23, 23, 23);
-  doc.text('PEMERINTAH DAERAH PROVINSI JAWA BARAT', 105, 15, { align: 'center' });
-  doc.text('DINAS PENDIDIKAN & KEBUDAYAAN', 105, 20, { align: 'center' });
-  
-  doc.setFontSize(15);
-  doc.setTextColor(35, 75, 54);
-  doc.text(schoolSetting.school_name.toUpperCase(), 105, 26, { align: 'center' });
+  // Institution text centered at 105mm (exact middle between margins 15mm and 195mm)
+  doc.setFont('times', 'bold');
+  doc.setFontSize(10.5);
+  doc.setTextColor(20, 20, 20);
+  doc.text('PEMERINTAH DAERAH PROVINSI JAWA BARAT', 105, 13.5, { align: 'center' });
 
-  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text('DINAS PENDIDIKAN', 105, 18, { align: 'center' });
+
+  doc.setFont('times', 'normal');
   doc.setFontSize(8.5);
-  doc.setTextColor(104, 101, 95);
-  doc.text(`${schoolSetting.address} | NPSN: ${schoolSetting.npsn}`, 105, 30.5, { align: 'center' });
+  doc.text('CABANG DINAS PENDIDIKAN WILAYAH I KABUPATEN BOGOR', 105, 22, { align: 'center' });
+
+  doc.setFont('times', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(23, 23, 23);
+  doc.text(schoolSetting.school_name.toUpperCase(), 105, 27, { align: 'center' });
+
+  doc.setFont('times', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(80, 80, 80);
+  doc.text(`${schoolSetting.address} | Telp: (0251) 8638148 | NPSN: ${schoolSetting.npsn || '20254135'}`, 105, 31, { align: 'center' });
 
   // Document Title
   doc.setFont('helvetica', 'bold');

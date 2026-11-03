@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { db } from '@/lib/database';
-import { EskulHubLogo } from '@/components/ui/EskulHubLogo';
+import { Logo } from '@/components/ui/Logo';
 import {
   BookOpen,
   Calendar,
@@ -52,25 +52,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
     <header className="sticky top-0 z-40 bg-white border-b border-[#EAE6DC] shadow-xs">
       <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
         {/* School Brand Identity */}
-        <div
+        <Logo
+          size="md"
+          withText
+          badgeText={settings.academic_year}
+          subtitle={settings.school_name}
           onClick={() => handleNavClick('/')}
-          className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group select-none min-w-0"
-        >
-          <EskulHubLogo size="md" />
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-sm sm:text-lg font-bold tracking-tight text-[#171717] group-hover:text-[#4F46E5] transition-colors leading-none truncate">
-                EskulHub
-              </span>
-              <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold bg-[#EEF2FF] text-[#4F46E5] border border-[#C7D2FE] shrink-0">
-                {settings.academic_year}
-              </span>
-            </div>
-            <div className="text-[10px] sm:text-[11px] text-[#68655F] font-medium tracking-wide uppercase mt-0.5 sm:mt-1 truncate">
-              {settings.school_name}
-            </div>
-          </div>
-        </div>
+          title="Kembali ke Beranda"
+        />
 
         {/* Public Navigation Links (Desktop) */}
         <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-[#68655F]">
