@@ -13,14 +13,28 @@ import {
   SchoolSetting,
 } from '@/types';
 
-// Axios instance pointing to the Laravel backend running PostgreSQL
+// Determine backend API URL:
+// 1. If VITE_API_URL is configured in environment (e.g. Vercel dashboard), use it.
+// 2. In local development (import.meta.env.DEV), default to local Laravel server (http://127.0.0.1:8000/api).
+// 3. Otherwise in production, fallback to relative '/api'.
+const getBaseApiUrl = (): string => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (import.meta.env.DEV) {
+    return 'http://127.0.0.1:8000/api';
+  }
+  return '/api';
+};
+
+// Axios instance pointing to backend API with automatic cloud/dev environment detection
 export const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: getBaseApiUrl(),
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  timeout: 5000,
+  timeout: 8000,
 });
 
 // Attach Authorization Bearer token and User ID to all requests if present in localStorage

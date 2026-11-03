@@ -1,0 +1,9 @@
+# Ignore backend and local files for Vercel Frontend SPA deployment
+backend/
+images/
+New folder/
+scratch/
+.agent/
+.git/
+*.log
+
