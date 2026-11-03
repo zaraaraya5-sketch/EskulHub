@@ -163,6 +163,10 @@ export const StudentAchievementsTab: React.FC<StudentAchievementsTabProps> = ({
                 <img
                   src={act.documentation_urls[0]}
                   alt={act.title}
+                  width={144}
+                  height={96}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full sm:w-36 h-24 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                 />
               )}

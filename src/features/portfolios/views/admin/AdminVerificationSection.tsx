@@ -290,6 +290,10 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
                       <img
                         src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://eskulhub.smkn1ciomas.sch.id/verify/${ver.verification_id}`}
                         alt="QR Code"
+                        width={56}
+                        height={56}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain"
                       />
                     </div>
@@ -378,6 +382,9 @@ export const AdminVerificationSection: React.FC<AdminVerificationSectionProps> =
               <img
                 src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://eskulhub.smkn1ciomas.sch.id/verify/${selectedQrVerification.verification_id}`}
                 alt="QR Code Portofolio"
+                width={192}
+                height={192}
+                decoding="async"
                 className="w-full h-full object-contain"
               />
             </div>

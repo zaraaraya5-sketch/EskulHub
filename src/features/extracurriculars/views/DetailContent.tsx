@@ -84,6 +84,10 @@ export const DetailContent: React.FC<DetailContentProps> = ({
                     <img
                       src={act.documentation_urls[0]}
                       alt={act.title}
+                      width={600}
+                      height={160}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                   </div>

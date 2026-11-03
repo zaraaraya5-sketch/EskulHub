@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import * as XLSX from 'xlsx';
 import {
   UploadCloud,
   Download,
@@ -151,6 +150,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
       ];
     }
 
+    const XLSX = await import('xlsx');
     const worksheet = XLSX.utils.json_to_sheet(sampleData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Jadwal_Template');
@@ -179,8 +179,9 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
 
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
+        const XLSX = await import('xlsx');
         const buffer = e.target?.result as ArrayBuffer;
         const workbook = XLSX.read(buffer, { type: 'array' });
         const sheetName = workbook.SheetNames[0];

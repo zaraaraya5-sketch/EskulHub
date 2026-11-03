@@ -298,13 +298,14 @@ export const GradientWaves: React.FC<GradientWavesProps> = ({
     if (!container) return;
 
     let renderer: Renderer;
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     try {
       renderer = new Renderer({
         webgl: 2,
         alpha: true,
         premultipliedAlpha: true,
         antialias: false,
-        dpr: Math.min(window.devicePixelRatio || 1, 2)
+        dpr: isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)
       });
     } catch (e) {
       console.warn('WebGL initialization failed:', e);
@@ -343,7 +344,7 @@ export const GradientWaves: React.FC<GradientWavesProps> = ({
           uZoom: { value: 1.0 },
           uHeight: { value: 5.5 },
           uFogDepth: { value: 15 },
-          uSteps: { value: 70.0 },
+          uSteps: { value: isMobile ? 35.0 : detailToSteps(detail) },
           uBrightness: { value: 1.0 },
           uOpacity: { value: 1.0 },
           uGrain: { value: 1.0 },

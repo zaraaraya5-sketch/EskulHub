@@ -300,7 +300,8 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
                   src={item.image || FALLBACK_IMAGE}
                   alt={item.alt || item.label || ''}
                   draggable="false"
-                  loading="eager"
+                  loading={i === 0 || isActive ? 'eager' : 'lazy'}
+                  decoding="async"
                   onError={(e) => {
                     const target = e.currentTarget;
                     if (target.src !== FALLBACK_IMAGE) {

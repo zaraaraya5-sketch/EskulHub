@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import { PortfolioVerification, SchoolSetting } from '@/types';
-import { SMKN1_CIOMAS_LOGO_BASE64, TUGU_KUJANG_LOGO_BASE64 } from './schoolLogoBase64';
+import { getSchoolLogos } from './schoolLogoBase64';
 
 export const generatePortfolioPdf = async (
   verification: PortfolioVerification,
@@ -12,6 +12,9 @@ export const generatePortfolioPdf = async (
     unit: 'mm',
     format: 'a4',
   });
+
+  // Load school logos dynamically on demand without bloating initial JS chunk
+  const { schoolLogo, kujangLogo } = await getSchoolLogos();
 
   // Generate QR Code as DataURL
   const verifyUrl = `${window.location.origin}/verify/${verification.verification_id}`;
@@ -32,16 +35,20 @@ export const generatePortfolioPdf = async (
   const logoW = 18;
   const logoH = 22;
 
-  try {
-    doc.addImage(SMKN1_CIOMAS_LOGO_BASE64, 'PNG', leftLogoX, logoY, logoW, logoH);
-  } catch (err) {
-    console.warn('Failed to render SMKN 1 Ciomas logo in PDF:', err);
+  if (schoolLogo) {
+    try {
+      doc.addImage(schoolLogo, 'PNG', leftLogoX, logoY, logoW, logoH);
+    } catch (err) {
+      console.warn('Failed to render SMKN 1 Ciomas logo in PDF:', err);
+    }
   }
 
-  try {
-    doc.addImage(TUGU_KUJANG_LOGO_BASE64, 'PNG', rightLogoX, logoY, logoW, logoH);
-  } catch (err) {
-    console.warn('Failed to render Tugu Kujang logo in PDF:', err);
+  if (kujangLogo) {
+    try {
+      doc.addImage(kujangLogo, 'PNG', rightLogoX, logoY, logoW, logoH);
+    } catch (err) {
+      console.warn('Failed to render Tugu Kujang logo in PDF:', err);
+    }
   }
 
   // Official Double Border Separator

@@ -97,6 +97,9 @@ export const AdminProfileSection: React.FC<AdminProfileSectionProps> = ({
                 <img
                   src={profileAvatar}
                   alt={profileName}
+                  width={112}
+                  height={112}
+                  decoding="async"
                   className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#234B36] shadow-sm bg-white"
                 />
                 <label

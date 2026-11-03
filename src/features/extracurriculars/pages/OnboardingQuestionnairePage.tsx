@@ -722,6 +722,10 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                     <img
                       src={top.ekskul.profile_image}
                       alt={top.ekskul.name}
+                      width={400}
+                      height={300}
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const target = e.currentTarget;
                         if (!target.dataset.fallback) {
@@ -817,6 +821,10 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       <img
                         src={alt.ekskul.profile_image}
                         alt={alt.ekskul.name}
+                        width={48}
+                        height={48}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (!target.dataset.fallback) {

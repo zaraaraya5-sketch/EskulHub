@@ -23,6 +23,9 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
         <img
           src={ekskul.profile_image}
           alt={ekskul.name}
+          width={1200}
+          height={320}
+          decoding="async"
           onError={(e) => {
             const target = e.currentTarget;
             if (!target.dataset.fallback) {

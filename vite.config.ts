@@ -56,7 +56,7 @@ export default defineConfig({
     include: ['react', 'react-dom', 'lucide-react', 'axios'],
   },
   build: {
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 750,
     rollupOptions: {
       output: {
         manualChunks(id) {

@@ -42,25 +42,62 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  const allEkskuls = db.getExtracurriculars();
-  const myMemberships = db.getMembers().filter((m) => m.student_id === studentId && m.status === 'active');
-  const myRegistrations = db.getRegistrations().filter((r) => r.student_id === studentId);
-  const myAttendanceRecords = db.getAttendanceRecords().filter((r) => r.student_id === studentId);
-  const myAchievements = db.getAchievements().filter((a) => a.student_id === studentId);
-  const allActivities = db.getActivities();
-  const myCertificates = db.getCertificates().filter((c) => c.student_id === studentId);
-  const upcomingEvents = db.getSchoolEvents().slice(0, 4);
-  const verification = db.generatePortfolioVerification(studentId, 'Jamil Husein');
+  // Memoize core student collections to prevent heavy array filtering on keystroke updates
+  const {
+    allEkskuls,
+    myMemberships,
+    myRegistrations,
+    myAttendanceRecords,
+    myAchievements,
+    myCertificates,
+    upcomingEvents,
+    verification,
+    myActivityHistory,
+    totalSessions,
+    presentCount,
+    lateCount,
+    excusedCount,
+    absentCount,
+    attendanceRate,
+  } = useMemo(() => {
+    const ekskuls = db.getExtracurriculars();
+    const memberships = db.getMembers().filter((m) => m.student_id === studentId && m.status === 'active');
+    const registrations = db.getRegistrations().filter((r) => r.student_id === studentId);
+    const attendanceRecords = db.getAttendanceRecords().filter((r) => r.student_id === studentId);
+    const achievements = db.getAchievements().filter((a) => a.student_id === studentId);
+    const activities = db.getActivities();
+    const certificates = db.getCertificates().filter((c) => c.student_id === studentId);
+    const events = db.getSchoolEvents().slice(0, 4);
+    const veri = db.generatePortfolioVerification(studentId, 'Jamil Husein');
 
-  const myEkskulIds = new Set(myMemberships.map((m) => m.extracurricular_id));
-  const myActivityHistory = allActivities.filter((act) => myEkskulIds.has(act.extracurricular_id));
+    const ekskulIds = new Set(memberships.map((m) => m.extracurricular_id));
+    const activityHistory = activities.filter((act) => ekskulIds.has(act.extracurricular_id));
 
-  const totalSessions = myAttendanceRecords.length;
-  const presentCount = myAttendanceRecords.filter((r) => r.status === 'present').length;
-  const lateCount = myAttendanceRecords.filter((r) => r.status === 'late').length;
-  const excusedCount = myAttendanceRecords.filter((r) => r.status === 'excused').length;
-  const absentCount = myAttendanceRecords.filter((r) => r.status === 'absent').length;
-  const attendanceRate = totalSessions > 0 ? Math.round(((presentCount + lateCount) / totalSessions) * 100) : 100;
+    const total = attendanceRecords.length;
+    const present = attendanceRecords.filter((r) => r.status === 'present').length;
+    const late = attendanceRecords.filter((r) => r.status === 'late').length;
+    const excused = attendanceRecords.filter((r) => r.status === 'excused').length;
+    const absent = attendanceRecords.filter((r) => r.status === 'absent').length;
+    const rate = total > 0 ? Math.round(((present + late) / total) * 100) : 100;
+
+    return {
+      allEkskuls: ekskuls,
+      myMemberships: memberships,
+      myRegistrations: registrations,
+      myAttendanceRecords: attendanceRecords,
+      myAchievements: achievements,
+      myCertificates: certificates,
+      upcomingEvents: events,
+      verification: veri,
+      myActivityHistory: activityHistory,
+      totalSessions: total,
+      presentCount: present,
+      lateCount: late,
+      excusedCount: excused,
+      absentCount: absent,
+      attendanceRate: rate,
+    };
+  }, [studentId]);
 
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 

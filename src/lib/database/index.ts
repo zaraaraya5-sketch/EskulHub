@@ -128,6 +128,15 @@ class SQLiteDatabaseClient {
     try {
       const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('ekskul_auth_token');
 
+      // Helper to safely swallow network failures without rejecting the entire batch
+      const safe = async <T>(promise: Promise<T>, fallback: T): Promise<T> => {
+        try {
+          return await promise;
+        } catch {
+          return fallback;
+        }
+      };
+
       const [
         settings,
         users,
@@ -141,36 +150,38 @@ class SQLiteDatabaseClient {
         certificates,
         verifications,
       ] = await Promise.all([
-        apiService.getSettingsAPI(),
-        apiService.getUsersAPI(),
-        apiService.getEkskulsAPI(),
-        apiService.getAllMembersAPI(),
-        hasToken ? apiService.getRegistrationsAPI() : Promise.resolve([]),
-        hasToken ? apiService.getAttendanceSessionsAPI() : Promise.resolve([]),
-        hasToken ? apiService.getAttendanceRecordsAPI() : Promise.resolve([]),
-        apiService.getEventsAPI(),
-        apiService.getAchievementsAPI(),
-        hasToken ? apiService.getCertificatesAPI() : Promise.resolve([]),
-        hasToken ? apiService.getVerificationsAPI() : Promise.resolve([]),
+        safe(apiService.getSettingsAPI(), null),
+        safe(apiService.getUsersAPI(), []),
+        safe(apiService.getEkskulsAPI(), []),
+        safe(apiService.getAllMembersAPI(), []),
+        hasToken ? safe(apiService.getRegistrationsAPI(), []) : Promise.resolve([]),
+        hasToken ? safe(apiService.getAttendanceSessionsAPI(), []) : Promise.resolve([]),
+        hasToken ? safe(apiService.getAttendanceRecordsAPI(), []) : Promise.resolve([]),
+        safe(apiService.getEventsAPI(), []),
+        safe(apiService.getAchievementsAPI(), []),
+        hasToken ? safe(apiService.getCertificatesAPI(), []) : Promise.resolve([]),
+        hasToken ? safe(apiService.getVerificationsAPI(), []) : Promise.resolve([]),
       ]);
 
+      let hasUpdates = false;
+      if (settings) { this.settings.setSettings(settings); hasUpdates = true; }
+      if (users && users.length > 0) { this.users.setUsers(users); hasUpdates = true; }
+      if (ekskuls && ekskuls.length > 0) { this.extracurriculars.setExtracurriculars(ekskuls); hasUpdates = true; }
+      if (members && members.length > 0) { this.extracurriculars.setMembers(members); hasUpdates = true; }
+      if (registrations && registrations.length > 0) { this.registrations.setRegistrations(registrations); hasUpdates = true; }
+      if (sessions && sessions.length > 0) { this.attendance.setSessions(sessions); hasUpdates = true; }
+      if (records && records.length > 0) { this.attendance.setRecords(records); hasUpdates = true; }
+      if (events && events.length > 0) { this.events.setEvents(events); hasUpdates = true; }
+      if (achievements && achievements.length > 0) { this.achievements.setAchievements(achievements); hasUpdates = true; }
+      if (certificates && certificates.length > 0) { this.achievements.setCertificates(certificates); hasUpdates = true; }
+      if (verifications && verifications.length > 0) { this.verifications.setVerifications(verifications); hasUpdates = true; }
 
-      if (settings) this.settings.setSettings(settings);
-      if (users && users.length > 0) this.users.setUsers(users);
-      if (ekskuls && ekskuls.length > 0) this.extracurriculars.setExtracurriculars(ekskuls);
-      if (members && members.length > 0) this.extracurriculars.setMembers(members);
-      if (registrations && registrations.length > 0) this.registrations.setRegistrations(registrations);
-      if (sessions && sessions.length > 0) this.attendance.setSessions(sessions);
-      if (records && records.length > 0) this.attendance.setRecords(records);
-      if (events && events.length > 0) this.events.setEvents(events);
-      if (achievements && achievements.length > 0) this.achievements.setAchievements(achievements);
-      if (certificates && certificates.length > 0) this.achievements.setCertificates(certificates);
-      if (verifications && verifications.length > 0) this.verifications.setVerifications(verifications);
-
-      this.saveToCache();
-      this.notify();
+      if (hasUpdates) {
+        this.saveToCache();
+        this.notify();
+      }
     } catch (err) {
-      console.error('Gagal mengambil data dari database lokal SQLite:', err);
+      console.warn('Sinkronisasi database dengan backend ditangguhkan:', err);
     } finally {
       this.isSyncing = false;
     }

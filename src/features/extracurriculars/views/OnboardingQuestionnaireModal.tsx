@@ -648,6 +648,10 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                       <img
                         src={top.ekskul.profile_image}
                         alt={top.ekskul.name}
+                        width={112}
+                        height={112}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (!target.dataset.fallback) {
@@ -717,6 +721,10 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     <img
                       src={rankedResults[1].ekskul.profile_image}
                       alt={rankedResults[1].ekskul.name}
+                      width={44}
+                      height={44}
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         const target = e.currentTarget;
                         if (!target.dataset.fallback) {

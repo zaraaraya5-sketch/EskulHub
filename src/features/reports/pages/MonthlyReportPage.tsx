@@ -26,8 +26,7 @@ import {
   ChevronUp,
   FileCheck,
 } from 'lucide-react';
-import {
-  generateMonthlyReportPdf,
+import type {
   PembinaMonthlyReportData,
   PengurusMonthlyReportData,
 } from '@/lib/pdf/generateMonthlyReportPdf';
@@ -160,6 +159,7 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
   const handleExportPdf = async (mode: 'save' | 'print' = 'save') => {
     try {
       setIsExporting(true);
+      const { generateMonthlyReportPdf } = await import('@/lib/pdf/generateMonthlyReportPdf');
       if (role === 'pembina' && pembinaData && activeEkskul) {
         const payload: PembinaMonthlyReportData = {
           mode: 'pembina',

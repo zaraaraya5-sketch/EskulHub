@@ -389,6 +389,9 @@ export const AdminFormEkskulPage: React.FC<AdminFormEkskulPageProps> = ({
                   <img
                     src={imageUrl}
                     alt="Pratinjau Foto"
+                    width={400}
+                    height={144}
+                    decoding="async"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';

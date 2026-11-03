@@ -97,7 +97,10 @@ export const StudentBrowseTab: React.FC<StudentBrowseTabProps> = ({
                   <img
                     src={ekskul.profile_image}
                     alt={ekskul.name}
+                    width={400}
+                    height={176}
                     loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       const target = e.currentTarget;
                       if (!target.dataset.fallback) {

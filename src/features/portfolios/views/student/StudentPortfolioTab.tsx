@@ -74,6 +74,10 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
               <img
                 src="/images/logo-smkn1ciomas.png"
                 alt="Logo SMKN 1 Ciomas"
+                width={72}
+                height={88}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain filter drop-shadow-2xs select-none"
               />
             </div>
@@ -102,6 +106,10 @@ export const StudentPortfolioTab: React.FC<StudentPortfolioTabProps> = ({
               <img
                 src="/images/logo-tugu-kujang.png"
                 alt="Logo Tugu Kujang Bogor"
+                width={72}
+                height={88}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-contain filter drop-shadow-2xs select-none"
               />
             </div>

@@ -187,7 +187,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
               <img
                 src={item.profile_image}
                 alt={item.name}
+                width={480}
+                height={300}
                 loading="lazy"
+                decoding="async"
                 onError={(e) => {
                   const target = e.currentTarget;
                   if (!target.dataset.fallback) {

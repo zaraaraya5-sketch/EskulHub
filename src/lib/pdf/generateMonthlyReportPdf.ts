@@ -8,7 +8,7 @@ import {
   User,
   SchoolSetting,
 } from '@/types';
-import { SMKN1_CIOMAS_LOGO_BASE64, TUGU_KUJANG_LOGO_BASE64 } from './schoolLogoBase64';
+import { getSchoolLogos } from './schoolLogoBase64';
 
 export interface PembinaMonthlyReportData {
   mode: 'pembina';
@@ -51,23 +51,32 @@ export interface PengurusMonthlyReportData {
 export type MonthlyReportData = PembinaMonthlyReportData | PengurusMonthlyReportData;
 
 // Draw official institutional letterhead with school logo on top-left and centered text
-const drawSchoolLetterhead = (doc: jsPDF, schoolSetting: SchoolSetting, pageWidth: number): number => {
+const drawSchoolLetterhead = (
+  doc: jsPDF,
+  schoolSetting: SchoolSetting,
+  pageWidth: number,
+  logos?: { schoolLogo: string; kujangLogo: string }
+): number => {
   const leftLogoX = 16;
   const logoW = 18;
   const logoH = 22;
   const rightLogoX = pageWidth - 16 - logoW;
   const logoY = 9;
 
-  try {
-    doc.addImage(SMKN1_CIOMAS_LOGO_BASE64, 'PNG', leftLogoX, logoY, logoW, logoH);
-  } catch (err) {
-    console.warn('Failed to render school logo in PDF letterhead:', err);
+  if (logos?.schoolLogo) {
+    try {
+      doc.addImage(logos.schoolLogo, 'PNG', leftLogoX, logoY, logoW, logoH);
+    } catch (err) {
+      console.warn('Failed to render school logo in PDF letterhead:', err);
+    }
   }
 
-  try {
-    doc.addImage(TUGU_KUJANG_LOGO_BASE64, 'PNG', rightLogoX, logoY, logoW, logoH);
-  } catch (err) {
-    console.warn('Failed to render Tugu Kujang logo in PDF letterhead:', err);
+  if (logos?.kujangLogo) {
+    try {
+      doc.addImage(logos.kujangLogo, 'PNG', rightLogoX, logoY, logoW, logoH);
+    } catch (err) {
+      console.warn('Failed to render Tugu Kujang logo in PDF letterhead:', err);
+    }
   }
 
   // Institution text centered symmetrically on the page
@@ -131,7 +140,9 @@ export const generateMonthlyReportPdf = async (
   const marginX = 15;
   const contentWidth = 180;
 
-  let y = drawSchoolLetterhead(doc, data.schoolSetting, pageWidth);
+  // Dynamically load logos on demand
+  const logos = await getSchoolLogos();
+  let y = drawSchoolLetterhead(doc, data.schoolSetting, pageWidth, logos);
 
   const checkPageOverflow = (requiredHeight: number) => {
     if (y + requiredHeight > pageHeight - 25) {

@@ -214,6 +214,9 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
                 <img
                   src={imgError ? 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800' : (ekskul.profile_image || 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800')}
                   alt={ekskul.name}
+                  width={400}
+                  height={160}
+                  decoding="async"
                   onError={() => setImgError(true)}
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />

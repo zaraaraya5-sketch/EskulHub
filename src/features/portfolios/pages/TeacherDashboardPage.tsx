@@ -33,18 +33,23 @@ interface TeacherDashboardPageProps {
 export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ currentPath = '/pembina/dashboard', onNavigate }) => {
   const { currentUser } = useAuth();
   
-  // Filter clubs matching the logged-in Pembina
-  const allEkskuls = db.getExtracurriculars();
-  const myEkskuls = currentUser
-    ? allEkskuls.filter(e =>
-        (e.supervisor_id && e.supervisor_id === currentUser.id) ||
-        (currentUser.name && e.supervisor_name.toLowerCase().includes(currentUser.name.toLowerCase().split(' ')[0])) ||
-        (currentUser.email && currentUser.email.toLowerCase().includes('hendra') && (e.id === 'eks-1' || e.name.toLowerCase().includes('futsal')))
-      )
-    : [];
-  const ekskuls = myEkskuls.length > 0 ? myEkskuls : allEkskuls.slice(0, 2);
-  const supervisedEkskulIds = ekskuls.map(e => e.id);
-  const supervisedEkskulNames = ekskuls.map(e => e.name);
+  // Memoize filtered clubs for the current supervisor to avoid unnecessary re-filtering
+  const { ekskuls, supervisedEkskulIds, supervisedEkskulNames } = React.useMemo(() => {
+    const allEkskuls = db.getExtracurriculars();
+    const myEkskuls = currentUser
+      ? allEkskuls.filter(e =>
+          (e.supervisor_id && e.supervisor_id === currentUser.id) ||
+          (currentUser.name && e.supervisor_name.toLowerCase().includes(currentUser.name.toLowerCase().split(' ')[0])) ||
+          (currentUser.email && currentUser.email.toLowerCase().includes('hendra') && (e.id === 'eks-1' || e.name.toLowerCase().includes('futsal')))
+        )
+      : [];
+    const active = myEkskuls.length > 0 ? myEkskuls : allEkskuls.slice(0, 2);
+    return {
+      ekskuls: active,
+      supervisedEkskulIds: active.map(e => e.id),
+      supervisedEkskulNames: active.map(e => e.name),
+    };
+  }, [currentUser?.id, currentUser?.name, currentUser?.email]);
 
   // Registrations & members
   const [registrations, setRegistrations] = useState<ExtracurricularRegistration[]>(() => db.getRegistrations());

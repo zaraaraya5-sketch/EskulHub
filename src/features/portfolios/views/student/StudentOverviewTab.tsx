@@ -244,6 +244,10 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
                         <img
                           src={ekskul?.profile_image || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150'}
                           alt={ekskul?.name}
+                          width={64}
+                          height={64}
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => {
                             const target = e.currentTarget;
                             if (!target.dataset.fallback) {
