@@ -187,6 +187,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
               <img
                 src={item.profile_image}
                 alt={item.name}
+                loading="lazy"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.dataset.fallback) {
+                    target.dataset.fallback = 'true';
+                    target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                  }
+                }}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />
 

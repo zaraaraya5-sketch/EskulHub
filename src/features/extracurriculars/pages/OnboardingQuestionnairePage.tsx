@@ -722,6 +722,13 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                     <img
                       src={top.ekskul.profile_image}
                       alt={top.ekskul.name}
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.dataset.fallback) {
+                          target.dataset.fallback = 'true';
+                          target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                        }
+                      }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-3 left-3">
@@ -810,6 +817,13 @@ export const OnboardingQuestionnairePage: React.FC<OnboardingQuestionnairePagePr
                       <img
                         src={alt.ekskul.profile_image}
                         alt={alt.ekskul.name}
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallback) {
+                            target.dataset.fallback = 'true';
+                            target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                          }
+                        }}
                         className="w-12 h-12 rounded-xl object-cover border border-[#EAE6DC] shrink-0"
                       />
                       <div className="min-w-0 flex-1">

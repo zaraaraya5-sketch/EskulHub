@@ -97,6 +97,14 @@ export const StudentBrowseTab: React.FC<StudentBrowseTabProps> = ({
                   <img
                     src={ekskul.profile_image}
                     alt={ekskul.name}
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.dataset.fallback) {
+                        target.dataset.fallback = 'true';
+                        target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                      }
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-3 left-3">

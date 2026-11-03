@@ -23,6 +23,13 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
         <img
           src={ekskul.profile_image}
           alt={ekskul.name}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.dataset.fallback) {
+              target.dataset.fallback = 'true';
+              target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+            }
+          }}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />

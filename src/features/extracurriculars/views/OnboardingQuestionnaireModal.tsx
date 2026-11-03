@@ -648,6 +648,13 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                       <img
                         src={top.ekskul.profile_image}
                         alt={top.ekskul.name}
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallback) {
+                            target.dataset.fallback = 'true';
+                            target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                          }
+                        }}
                         className="w-full sm:w-28 h-36 sm:h-28 object-cover rounded-xl border border-[#EAE6DC] shrink-0"
                       />
                       <div className="space-y-2 flex-1 text-center sm:text-left min-w-0">
@@ -710,6 +717,13 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                     <img
                       src={rankedResults[1].ekskul.profile_image}
                       alt={rankedResults[1].ekskul.name}
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.dataset.fallback) {
+                          target.dataset.fallback = 'true';
+                          target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
+                        }
+                      }}
                       className="w-11 h-11 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                     />
                     <div className="min-w-0 flex-1">
