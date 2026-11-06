@@ -84,7 +84,7 @@ export const ImportExcelModal: React.FC<ImportExcelModalProps> = ({
   };
 
   // 1. Download dynamic template tailored to the user's role
-  const handleDownloadTemplate = () => {
+  const handleDownloadTemplate = async () => {
     let sampleData: Record<string, any>[] = [];
 
     if (isPengurus) {

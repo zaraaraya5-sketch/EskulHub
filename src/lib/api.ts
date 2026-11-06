@@ -53,7 +53,12 @@ api.interceptors.request.use((config) => {
 // Guard against SPA fallback: if server returned an HTML page (like index.html on Vercel), reject immediately
 api.interceptors.response.use(
   (response) => {
-    const contentType = response.headers?.['content-type'] || '';
+    const rawHeader = response.headers?.['content-type'];
+    const contentType = typeof rawHeader === 'string' 
+      ? rawHeader 
+      : Array.isArray(rawHeader) 
+        ? rawHeader.join(' ') 
+        : '';
     if (
       typeof response.data === 'string' &&
       (contentType.includes('text/html') ||
