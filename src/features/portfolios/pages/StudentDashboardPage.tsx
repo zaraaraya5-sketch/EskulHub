@@ -109,6 +109,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   const [attendanceEkskulFilter, setAttendanceEkskulFilter] = useState('Semua');
   const [attendanceStatusFilter, setAttendanceStatusFilter] = useState('Semua');
+  const [attendanceDateFilter, setAttendanceDateFilter] = useState('');
 
   const categories = ['Semua', 'Olahraga', 'Seni & Budaya', 'Sains & Teknologi', 'Kepemimpinan', 'Bahasa & Literasi'];
 
@@ -127,9 +128,10 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
     return myAttendanceRecords.filter((rec) => {
       const matchEkskul = attendanceEkskulFilter === 'Semua' || rec.extracurricular_name === attendanceEkskulFilter;
       const matchStatus = attendanceStatusFilter === 'Semua' || rec.status === attendanceStatusFilter;
-      return matchEkskul && matchStatus;
+      const matchDate = !attendanceDateFilter || rec.session_date === attendanceDateFilter;
+      return matchEkskul && matchStatus && matchDate;
     });
-  }, [myAttendanceRecords, attendanceEkskulFilter, attendanceStatusFilter]);
+  }, [myAttendanceRecords, attendanceEkskulFilter, attendanceStatusFilter, attendanceDateFilter]);
 
   const handleDownloadPdf = async () => {
     setIsGeneratingPdf(true);
@@ -257,6 +259,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           setAttendanceEkskulFilter={setAttendanceEkskulFilter}
           attendanceStatusFilter={attendanceStatusFilter}
           setAttendanceStatusFilter={setAttendanceStatusFilter}
+          attendanceDateFilter={attendanceDateFilter}
+          setAttendanceDateFilter={setAttendanceDateFilter}
           myMemberships={myMemberships}
           filteredAttendance={filteredAttendance}
         />

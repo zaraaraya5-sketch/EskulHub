@@ -1,7 +1,8 @@
 import React from 'react';
 import { AttendanceRecord, ExtracurricularMember } from '@/types';
 import { db } from '@/lib/database';
-import { CheckSquare, Calendar, Filter, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { CheckSquare, Calendar, Filter, AlertCircle, CheckCircle2, RotateCcw } from 'lucide-react';
+import { DatePickerPopover } from '@/components/ui/DatePickerPopover';
 
 interface StudentAttendanceTabProps {
   attendanceRate: number;
@@ -14,6 +15,8 @@ interface StudentAttendanceTabProps {
   setAttendanceEkskulFilter: (filter: string) => void;
   attendanceStatusFilter: string;
   setAttendanceStatusFilter: (filter: string) => void;
+  attendanceDateFilter?: string;
+  setAttendanceDateFilter?: (date: string) => void;
   myMemberships: ExtracurricularMember[];
   filteredAttendance: AttendanceRecord[];
 }
@@ -29,6 +32,8 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
   setAttendanceEkskulFilter,
   attendanceStatusFilter,
   setAttendanceStatusFilter,
+  attendanceDateFilter = '',
+  setAttendanceDateFilter,
   myMemberships,
   filteredAttendance,
 }) => {
@@ -86,7 +91,7 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
             <select
               value={attendanceEkskulFilter}
               onChange={(e) => setAttendanceEkskulFilter(e.target.value)}
-              className="px-3 py-1.5 border border-[#EAE6DC] rounded-xl text-xs bg-white text-[#171717] font-medium focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all shadow-2xs"
+              className="px-3 py-1.5 border border-[#EAE6DC] rounded-xl text-xs bg-white text-[#171717] font-medium focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all shadow-2xs cursor-pointer"
             >
               <option value="Semua">Semua Ekskul</option>
               {myMemberships.map((m) => {
@@ -105,7 +110,7 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
             <select
               value={attendanceStatusFilter}
               onChange={(e) => setAttendanceStatusFilter(e.target.value)}
-              className="px-3 py-1.5 border border-[#EAE6DC] rounded-xl text-xs bg-white text-[#171717] font-medium focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all shadow-2xs"
+              className="px-3 py-1.5 border border-[#EAE6DC] rounded-xl text-xs bg-white text-[#171717] font-medium focus:outline-none focus:ring-2 focus:ring-[#D15B40]/20 focus:border-[#D15B40] transition-all shadow-2xs cursor-pointer"
             >
               <option value="Semua">Semua Status</option>
               <option value="present">Hadir</option>
@@ -114,56 +119,84 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
               <option value="absent">Alpa</option>
             </select>
           </div>
+
+          <div className="flex items-center gap-2 text-xs">
+            <span className="font-semibold text-[#171717]">Pilih Tanggal:</span>
+            <DatePickerPopover
+              value={attendanceDateFilter}
+              onChange={(date) => setAttendanceDateFilter?.(date)}
+            />
+          </div>
+
+          {/* Quick Active Filter Indicator */}
+          {(attendanceEkskulFilter !== 'Semua' || attendanceStatusFilter !== 'Semua' || !!attendanceDateFilter) && (
+            <button
+              type="button"
+              onClick={() => {
+                setAttendanceEkskulFilter('Semua');
+                setAttendanceStatusFilter('Semua');
+                setAttendanceDateFilter?.('');
+              }}
+              className="ml-auto inline-flex items-center gap-1 text-[11px] font-semibold text-[#D15B40] hover:text-[#B94931] bg-[#FDEDE9] hover:bg-[#FCD8D0] px-2.5 py-1 rounded-lg border border-[#F2C9C0] transition-all active:scale-95 cursor-pointer"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Reset Filter</span>
+            </button>
+          )}
         </div>
 
         {/* Attendance Table */}
         {/* Mobile Card List (< md) */}
         <div className="block md:hidden space-y-3">
-          {filteredAttendance.map((rec) => (
-            <div
-              key={rec.id}
-              className="p-4 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6]/60 space-y-2 text-xs"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <div className="text-[11px] font-mono text-[#8C887B]">{rec.session_date}</div>
-                  <h4 className="text-sm font-bold text-[#171717] mt-0.5">{rec.extracurricular_name}</h4>
-                </div>
-                <span
-                  className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${
-                    rec.status === 'present'
-                      ? 'bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]'
+          {filteredAttendance.length === 0 ? (
+            <div className="p-8 text-center bg-[#F9F8F6] border border-dashed border-[#EAE6DC] rounded-xl space-y-2">
+              <Calendar className="w-7 h-7 text-slate-300 mx-auto" />
+              <p className="text-xs font-semibold text-slate-700">Tidak ada riwayat presensi yang sesuai</p>
+              <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
+                Coba sesuaikan pilihan filter ekstrakurikuler, status kehadiran, atau tanggal di atas.
+              </p>
+            </div>
+          ) : (
+            filteredAttendance.map((rec) => (
+              <div
+                key={rec.id}
+                className="p-4 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6]/60 space-y-2 text-xs"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-[11px] font-mono text-[#8C887B]">{rec.session_date}</div>
+                    <h4 className="text-sm font-bold text-[#171717] mt-0.5">{rec.extracurricular_name}</h4>
+                  </div>
+                  <span
+                    className={`inline-block px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                      rec.status === 'present'
+                        ? 'bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]'
+                        : rec.status === 'late'
+                        ? 'bg-[#FEF9EE] text-[#B58A32] border border-[#F5E6C4]'
+                        : rec.status === 'excused'
+                        ? 'bg-[#F0F5F6] text-[#3B7A82] border border-[#CDE0E3]'
+                        : 'bg-[#FBEAE8] text-[#A33D35] border border-[#F5C6C2]'
+                    }`}
+                  >
+                    {rec.status === 'present'
+                      ? 'Hadir'
                       : rec.status === 'late'
-                      ? 'bg-[#FEF9EE] text-[#B58A32] border border-[#F5E6C4]'
+                      ? 'Terlambat'
                       : rec.status === 'excused'
-                      ? 'bg-[#F0F5F6] text-[#3B7A82] border border-[#CDE0E3]'
-                      : 'bg-[#FBEAE8] text-[#A33D35] border border-[#F5C6C2]'
-                  }`}
-                >
-                  {rec.status === 'present'
-                    ? 'Hadir'
-                    : rec.status === 'late'
-                    ? 'Terlambat'
-                    : rec.status === 'excused'
-                    ? 'Izin'
-                    : 'Alpa'}
-                </span>
-              </div>
+                      ? 'Izin'
+                      : 'Alpa'}
+                  </span>
+                </div>
 
-              <div className="bg-white p-3 rounded-lg border border-[#EAE6DC] space-y-1">
-                <span className="text-[10px] font-semibold text-[#8C887B] uppercase tracking-wider block">Materi / Sesi:</span>
-                <p className="text-[#171717] font-medium">{rec.session_title}</p>
-                {rec.notes && (
-                  <p className="text-[#68655F] italic text-[11px] pt-1 border-t border-[#EAE6DC]/60 mt-1.5">{rec.notes}</p>
-                )}
+                <div className="bg-white p-3 rounded-lg border border-[#EAE6DC] space-y-1">
+                  <span className="text-[10px] font-semibold text-[#8C887B] uppercase tracking-wider block">Materi / Sesi:</span>
+                  <p className="text-[#171717] font-medium">{rec.session_title}</p>
+                  {rec.notes && (
+                    <p className="text-[#68655F] italic text-[11px] pt-1 border-t border-[#EAE6DC]/60 mt-1.5">{rec.notes}</p>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-
-          {filteredAttendance.length === 0 && (
-            <div className="py-8 text-center text-[#68655F] bg-[#F9F8F6] rounded-xl border border-dashed border-[#EAE6DC]">
-              Tidak ada riwayat presensi yang sesuai dengan filter yang dipilih.
-            </div>
+            ))
           )}
         </div>
 
@@ -213,8 +246,16 @@ export const StudentAttendanceTab: React.FC<StudentAttendanceTabProps> = ({
               ))}
               {filteredAttendance.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-10 text-center text-[#68655F]">
-                    Tidak ada riwayat presensi yang sesuai dengan filter yang dipilih.
+                  <td colSpan={5} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-2">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <Calendar className="w-5 h-5" />
+                      </div>
+                      <p className="text-xs font-semibold text-slate-700">Tidak ada riwayat presensi yang sesuai</p>
+                      <p className="text-[11px] text-slate-400 max-w-sm">
+                        Coba sesuaikan filter ekstrakurikuler, status kehadiran, atau filter tanggal di atas.
+                      </p>
+                    </div>
                   </td>
                 </tr>
               )}

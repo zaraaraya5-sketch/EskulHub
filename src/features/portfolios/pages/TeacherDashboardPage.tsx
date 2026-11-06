@@ -185,33 +185,88 @@ export const TeacherDashboardPage: React.FC<TeacherDashboardPageProps> = ({ curr
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/extracurriculars')}>
-              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Total Binaan</span>
-              <span className="text-xl sm:text-2xl font-black text-[#171717] my-1">{ekskuls.length} Ekskul</span>
-              <div className="text-[10px] sm:text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1">
-                <span className="truncate">Detail Ekskul</span> <ArrowRight className="w-3 h-3 shrink-0" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div
+              className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+              onClick={() => onNavigate?.('/pembina/extracurriculars')}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Total Binaan</span>
+                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <BookOpen className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {ekskuls.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Ekskul</span>
+                </div>
+                <div className="text-xs text-[#3B7A82] font-semibold flex items-center gap-1 mt-1.5">
+                  <span>Kelola Detail</span> <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/members')}>
-              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Pendaftar Baru</span>
-              <span className="text-xl sm:text-2xl font-black text-[#D15B40] my-1">{relevantRegistrations.filter(r => r.status === 'pending').length} Siswa</span>
-              <div className="text-[10px] sm:text-[11px] text-[#D15B40] font-semibold flex items-center gap-1">
-                <span className="truncate">Tinjau</span> <ArrowRight className="w-3 h-3 shrink-0" />
+
+            <div
+              className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+              onClick={() => onNavigate?.('/pembina/members')}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Pendaftar Baru</span>
+                <div className="w-9 h-9 rounded-xl bg-teal-50 text-[#3B7A82] flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <UserPlus className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-[#D15B40] tracking-tight">
+                  {relevantRegistrations.filter(r => r.status === 'pending').length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Siswa</span>
+                </div>
+                <div className="text-xs text-[#D15B40] font-semibold flex items-center gap-1 mt-1.5">
+                  <span>Tinjau Berkas</span> <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/schedule')}>
-              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Agenda & Lomba</span>
-              <span className="text-xl sm:text-2xl font-black text-[#3B7A82] my-1">{events.length} Agenda</span>
-              <div className="text-[10px] sm:text-[11px] text-[#3B7A82] font-semibold flex items-center gap-1">
-                <span className="truncate">Atur Jadwal</span> <ArrowRight className="w-3 h-3 shrink-0" />
+
+            <div
+              className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+              onClick={() => onNavigate?.('/pembina/schedule')}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Agenda & Lomba</span>
+                <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Calendar className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {events.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Agenda</span>
+                </div>
+                <div className="text-xs text-[#3B7A82] font-semibold flex items-center gap-1 mt-1.5">
+                  <span>Atur Jadwal</span> <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </div>
             </div>
-            <div className="bg-white border border-[#EAE6DC] p-3.5 sm:p-5 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer" onClick={() => onNavigate?.('/pembina/achievements')}>
-              <span className="text-[11px] font-bold text-[#525049] uppercase truncate">Validasi Prestasi</span>
-              <span className="text-xl sm:text-2xl font-black text-[#8C6819] my-1">{achievements.filter(a => !a.is_verified).length} Prestasi</span>
-              <div className="text-[10px] sm:text-[11px] text-[#8C6819] font-semibold flex items-center gap-1">
-                <span className="truncate">Sahkan</span> <ArrowRight className="w-3 h-3 shrink-0" />
+
+            <div
+              className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+              onClick={() => onNavigate?.('/pembina/achievements')}
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Validasi Prestasi</span>
+                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Trophy className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {achievements.filter(a => !a.is_verified).length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Prestasi</span>
+                </div>
+                <div className="text-xs text-amber-700 font-semibold flex items-center gap-1 mt-1.5">
+                  <span>Sahkan Piagam</span> <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </div>
               </div>
             </div>
           </div>

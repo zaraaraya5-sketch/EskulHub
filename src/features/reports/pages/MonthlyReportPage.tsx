@@ -25,6 +25,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileCheck,
+  AlertCircle,
 } from 'lucide-react';
 import type {
   PembinaMonthlyReportData,
@@ -83,6 +84,10 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
 
   // UI View Mode: 'visual' (Charts/Graphs) vs 'table' (Tabular Full Data)
   const [viewMode, setViewMode] = useState<'visual' | 'table'>('visual');
+
+  // Active sub-tab state when in table mode
+  const [pembinaTab, setPembinaTab] = useState<'newMembers' | 'sessions' | 'achievements'>('newMembers');
+  const [pengurusTab, setPengurusTab] = useState<'newStudents' | 'clubGrowth' | 'facilityUsage' | 'schoolAchievements'>('newStudents');
 
   // Collapsible detail tables inside visual mode
   const [showMembersTable, setShowMembersTable] = useState(false);
@@ -397,9 +402,12 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
                 );
               })}
             </div>
-            <p className="text-[11px] text-[#8C6819] mt-2 bg-[#FDF8EA] p-2 rounded border border-[#EFE2B8]">
-              Perhatian: Anda membina lebih dari 1 ekstrakurikuler. Sesuai ketentuan, data rekapitulasi grafik dan file cetak PDF dipisahkan mandiri untuk setiap ekskul binaan.
-            </p>
+            <div className="flex items-center gap-2.5 px-3.5 py-2.5 bg-amber-50/90 border border-amber-200/80 rounded-xl text-amber-900 mt-2.5">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+              <p className="text-xs font-medium leading-relaxed">
+                Anda membina lebih dari 1 ekstrakurikuler. Data rekapitulasi grafik dan file cetak PDF dipisahkan per ekskul binaan.
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -411,56 +419,76 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
         <div className="space-y-6">
           {/* Key Metric Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Anggota Baru</span>
-                <Users className="w-4 h-4 text-[#D15B40]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Anggota Baru</span>
+                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                +{pembinaData.newMembers.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Siswa</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  +{pembinaData.newMembers.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Siswa</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">
+                  Disahkan pada {monthName} {selectedYear}
+                </p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Disahkan pada {monthName} {selectedYear}</p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Total Anggota Aktif</span>
-                <CheckCircle2 className="w-4 h-4 text-[#3B7A82]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Total Anggota Aktif</span>
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#3B7A82] flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                {pembinaData.activeMembersCount}{' '}
-                <span className="text-xs font-normal text-[#68655F]">/ {pembinaData.capacity} Kapasitas</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {pembinaData.activeMembersCount}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">/ {pembinaData.capacity}</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">
+                  Keterisian Kuota: {Math.round((pembinaData.activeMembersCount / pembinaData.capacity) * 100)}%
+                </p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">
-                Keterisian Kuota: {Math.round((pembinaData.activeMembersCount / pembinaData.capacity) * 100)}%
-              </p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Sesi Latihan Bulan Ini</span>
-                <Clock className="w-4 h-4 text-[#D15B40]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Sesi Latihan Bulan Ini</span>
+                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+                  <Clock className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                {pembinaData.sessions.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Pertemuan</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {pembinaData.sessions.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Pertemuan</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">
+                  Tingkat Kehadiran: <strong className="text-[#D15B40] font-bold">{pembinaData.attendancePercentage}%</strong>
+                </p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">
-                Tingkat Kehadiran: <strong className="text-[#D15B40]">{pembinaData.attendancePercentage}%</strong>
-              </p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Prestasi Diraih</span>
-                <Award className="w-4 h-4 text-[#8C6819]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Prestasi Diraih</span>
+                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                {pembinaData.achievements.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Penghargaan</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {pembinaData.achievements.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Penghargaan</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">
+                  Kejuaraan resmi terverifikasi
+                </p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Kejuaraan resmi terverifikasi</p>
             </div>
           </div>
 
@@ -638,203 +666,284 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
             </div>
           )}
 
-          {/* TABULAR FULL DATA MODE (When user toggles 'Tampilan Rincian Tabel') */}
+          {/* TABULAR FULL DATA MODE (Sub-tabs for cleaner view) */}
           {viewMode === 'table' && (
-            <div className="space-y-6">
-              {/* Section 1: Tabel Anggota Baru Masuk */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <Users className="w-4 h-4 text-[#D15B40]" />
-                      <span>I. Rekapitulasi Anggota Baru Masuk ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar siswa yang resmi bergabung dan disetujui menjadi anggota ekstrakurikuler {activeEkskul.name} pada bulan terpilih.
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
-                    {pembinaData.newMembers.length} Siswa
-                  </span>
+            <div className="space-y-4">
+              {/* Horizontal Sub-tabs Navigation */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                  <button
+                    onClick={() => setPembinaTab('newMembers')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pembinaTab === 'newMembers'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <Users className="w-3.5 h-3.5" />
+                    <span>I. Anggota Baru</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pembinaTab === 'newMembers' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pembinaData.newMembers.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setPembinaTab('sessions')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pembinaTab === 'sessions'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>II. Sesi & Presensi</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pembinaTab === 'sessions' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pembinaData.sessions.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setPembinaTab('achievements')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pembinaTab === 'achievements'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <Award className="w-3.5 h-3.5" />
+                    <span>III. Prestasi & Kejuaraan</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pembinaTab === 'achievements' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pembinaData.achievements.length}
+                    </span>
+                  </button>
                 </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Nama Lengkap Siswa</th>
-                        <th className="py-3 px-4">NISN</th>
-                        <th className="py-3 px-4">Kelas</th>
-                        <th className="py-3 px-4">Tanggal Bergabung</th>
-                        <th className="py-3 px-4">Peran / Jabatan</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pembinaData.newMembers.length === 0 ? (
-                        <tr>
-                          <td colSpan={6} className="py-8 text-center text-[#68655F] italic">
-                            Tidak ada penambahan anggota baru yang disahkan pada bulan {monthName} {selectedYear}.
-                          </td>
-                        </tr>
-                      ) : (
-                        pembinaData.newMembers.map((m, idx) => (
-                          <tr key={m.id || idx} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 font-bold text-[#171717]">{m.student_name}</td>
-                            <td className="py-3 px-4 text-[#525049]">{m.student_nisn || '-'}</td>
-                            <td className="py-3 px-4 text-[#525049]">{m.student_class}</td>
-                            <td className="py-3 px-4 text-[#525049]">{m.joined_at}</td>
-                            <td className="py-3 px-4">
-                              <span className="px-2 py-0.5 text-[11px] font-semibold rounded bg-[#E8F4F5] text-[#3B7A82]">
-                                {m.role || 'Anggota'}
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                <div className="text-[11px] font-medium text-slate-500 px-2 hidden md:block">
+                  Menampilkan data ekskul: <strong className="text-slate-800">{activeEkskul.name}</strong>
                 </div>
               </div>
 
-              {/* Section 2: Tabel Pelaksanaan Sesi Latihan & Presensi */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-[#3B7A82]" />
-                      <span>II. Rekapitulasi Pelaksanaan Sesi Latihan & Kehadiran ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar seluruh agenda latihan rutin, materi pembahasan, serta catatan kehadiran anggota per pertemuan.
-                    </p>
+              {/* Section 1: Tabel Anggota Baru Masuk */}
+              {pembinaTab === 'newMembers' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#D15B40]" />
+                        <span>Rekapitulasi Anggota Baru Masuk ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar siswa yang resmi bergabung dan disetujui menjadi anggota ekstrakurikuler {activeEkskul.name} pada bulan terpilih.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-orange-50 text-[#D15B40] border border-orange-200/60">
+                      {pembinaData.newMembers.length} Siswa
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#E8F4F5] text-[#3B7A82]">
-                    {pembinaData.sessions.length} Sesi
-                  </span>
-                </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Tanggal & Waktu</th>
-                        <th className="py-3 px-4">Materi / Topik Latihan</th>
-                        <th className="py-3 px-4">Lokasi</th>
-                        <th className="py-3 px-4 text-center">Hadir</th>
-                        <th className="py-3 px-4 text-center">Izin / Sakit</th>
-                        <th className="py-3 px-4 text-center">Alpa</th>
-                        <th className="py-3 px-4 text-center">% Hadir</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pembinaData.sessions.length === 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
                         <tr>
-                          <td colSpan={8} className="py-8 text-center text-[#68655F] italic">
-                            Belum ada sesi latihan yang tercatat dalam sistem pada bulan {monthName} {selectedYear}.
-                          </td>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Nama Lengkap Siswa</th>
+                          <th className="py-3 px-4">NISN</th>
+                          <th className="py-3 px-4">Kelas</th>
+                          <th className="py-3 px-4">Tanggal Bergabung</th>
+                          <th className="py-3 px-4">Peran / Jabatan</th>
                         </tr>
-                      ) : (
-                        pembinaData.sessions.map((s, idx) => {
-                          const present = s.present_count || 0;
-                          const excused = (s.excused_count || 0) + (s.late_count || 0);
-                          const absent = s.absent_count || 0;
-                          const total = s.total_members || present + excused + absent || 1;
-                          const pct = Math.round((present / total) * 100);
-
-                          return (
-                            <tr key={s.id} className="hover:bg-[#F9F8F6]/50">
-                              <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                              <td className="py-3 px-4 text-[#171717] font-medium">
-                                <div>{s.session_date}</div>
-                                <div className="text-[11px] text-[#68655F]">{s.start_time} - {s.end_time} WIB</div>
-                              </td>
-                              <td className="py-3 px-4">
-                                <div className="font-bold text-[#171717]">{s.title}</div>
-                                {s.notes && <div className="text-[11px] text-[#68655F] line-clamp-1">{s.notes}</div>}
-                              </td>
-                              <td className="py-3 px-4 text-[#525049]">
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="w-3 h-3 text-[#A8A29E]" />
-                                  <span>{s.location}</span>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pembinaData.newMembers.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <Users className="w-6 h-6" />
                                 </div>
-                              </td>
-                              <td className="py-3 px-4 text-center font-bold text-[#D15B40]">{present}</td>
-                              <td className="py-3 px-4 text-center text-[#8C6819]">{excused}</td>
-                              <td className="py-3 px-4 text-center text-[#A33D35]">{absent}</td>
-                              <td className="py-3 px-4 text-center">
-                                <span className="font-bold text-[#D15B40]">{pct}%</span>
+                                <p className="text-sm font-semibold text-slate-700">Tidak ada anggota baru</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Belum ada penambahan anggota yang disahkan pada bulan {monthName} {selectedYear}.</p>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          pembinaData.newMembers.map((m, idx) => (
+                            <tr key={m.id || idx} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 font-bold text-slate-900">{m.student_name}</td>
+                              <td className="py-3.5 px-4 text-slate-600 font-mono text-[11px]">{m.student_nisn || '-'}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{m.student_class}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{m.joined_at}</td>
+                              <td className="py-3.5 px-4">
+                                <span className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                                  {m.role || 'Anggota'}
+                                </span>
                               </td>
                             </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Section 2: Tabel Pelaksanaan Sesi Latihan & Presensi */}
+              {pembinaTab === 'sessions' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-[#3B7A82]" />
+                        <span>Rekapitulasi Pelaksanaan Sesi Latihan & Kehadiran ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar seluruh agenda latihan rutin, materi pembahasan, serta catatan kehadiran anggota per pertemuan.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-teal-50 text-[#3B7A82] border border-teal-200/60">
+                      {pembinaData.sessions.length} Sesi
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
+                        <tr>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Tanggal & Waktu</th>
+                          <th className="py-3 px-4">Materi / Topik Latihan</th>
+                          <th className="py-3 px-4">Lokasi</th>
+                          <th className="py-3 px-4 text-center">Hadir</th>
+                          <th className="py-3 px-4 text-center">Izin / Sakit</th>
+                          <th className="py-3 px-4 text-center">Alpa</th>
+                          <th className="py-3 px-4 text-center">% Hadir</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pembinaData.sessions.length === 0 ? (
+                          <tr>
+                            <td colSpan={8} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <Clock className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-700">Belum ada sesi latihan</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Tidak ada jadwal atau rekaman presensi pada bulan {monthName} {selectedYear}.</p>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          pembinaData.sessions.map((s, idx) => {
+                            const present = s.present_count || 0;
+                            const excused = (s.excused_count || 0) + (s.late_count || 0);
+                            const absent = s.absent_count || 0;
+                            const total = s.total_members || present + excused + absent || 1;
+                            const pct = Math.round((present / total) * 100);
+
+                            return (
+                              <tr key={s.id} className="hover:bg-slate-50/70 transition-colors">
+                                <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                                <td className="py-3.5 px-4 text-slate-900 font-medium">
+                                  <div className="font-semibold">{s.session_date}</div>
+                                  <div className="text-[11px] text-slate-500">{s.start_time} - {s.end_time} WIB</div>
+                                </td>
+                                <td className="py-3.5 px-4">
+                                  <div className="font-bold text-slate-900">{s.title}</div>
+                                  {s.notes && <div className="text-[11px] text-slate-500 line-clamp-1">{s.notes}</div>}
+                                </td>
+                                <td className="py-3.5 px-4 text-slate-600">
+                                  <div className="flex items-center gap-1.5">
+                                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                                    <span>{s.location}</span>
+                                  </div>
+                                </td>
+                                <td className="py-3.5 px-4 text-center font-bold text-[#D15B40]">{present}</td>
+                                <td className="py-3.5 px-4 text-center text-amber-700 font-medium">{excused}</td>
+                                <td className="py-3.5 px-4 text-center text-rose-600 font-medium">{absent}</td>
+                                <td className="py-3.5 px-4 text-center">
+                                  <span className="font-extrabold text-[#D15B40] px-2 py-0.5 rounded-md bg-orange-50 border border-orange-200/60">{pct}%</span>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
               {/* Section 3: Tabel Prestasi & Kejuaraan */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#8C6819]" />
-                      <span>III. Rekapitulasi Prestasi & Kejuaraan ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar torehan medali, piagam penghargaan, dan prestasi lomba yang diraih anggota {activeEkskul.name} bulan ini.
-                    </p>
+              {pembinaTab === 'achievements' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Award className="w-4 h-4 text-amber-600" />
+                        <span>Rekapitulasi Prestasi & Kejuaraan ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar torehan medali, piagam penghargaan, dan prestasi lomba yang diraih anggota {activeEkskul.name} bulan ini.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200/60">
+                      {pembinaData.achievements.length} Prestasi
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#FDF8EA] text-[#8C6819]">
-                    {pembinaData.achievements.length} Prestasi
-                  </span>
-                </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Tanggal Prestasi</th>
-                        <th className="py-3 px-4">Nama Kejuaraan / Turnamen</th>
-                        <th className="py-3 px-4">Tingkat</th>
-                        <th className="py-3 px-4">Peringkat / Juara</th>
-                        <th className="py-3 px-4">Siswa Peraih</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pembinaData.achievements.length === 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
                         <tr>
-                          <td colSpan={6} className="py-8 text-center text-[#68655F] italic">
-                            Tidak ada catatan kejuaraan / turnamen pada bulan {monthName} {selectedYear}.
-                          </td>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Tanggal Prestasi</th>
+                          <th className="py-3 px-4">Nama Kejuaraan / Turnamen</th>
+                          <th className="py-3 px-4">Tingkat</th>
+                          <th className="py-3 px-4">Peringkat / Juara</th>
+                          <th className="py-3 px-4">Siswa Peraih</th>
                         </tr>
-                      ) : (
-                        pembinaData.achievements.map((a, idx) => (
-                          <tr key={a.id} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 text-[#525049]">{a.achievement_date}</td>
-                            <td className="py-3 px-4">
-                              <div className="font-bold text-[#171717]">{a.competition_name}</div>
-                              <div className="text-[11px] text-[#68655F]">{a.title}</div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pembinaData.achievements.length === 0 ? (
+                          <tr>
+                            <td colSpan={6} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <Award className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-700">Belum ada torehan prestasi</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Tidak ada catatan kejuaraan / turnamen pada bulan {monthName} {selectedYear}.</p>
+                              </div>
                             </td>
-                            <td className="py-3 px-4">
-                              <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-[#F9F8F6] text-[#525049] border border-[#EAE6DC]">
-                                {a.level}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4 font-bold text-[#8C6819]">{a.rank}</td>
-                            <td className="py-3 px-4 text-[#171717] font-medium">{a.student_name}</td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                        ) : (
+                          pembinaData.achievements.map((a, idx) => (
+                            <tr key={a.id} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{a.achievement_date}</td>
+                              <td className="py-3.5 px-4">
+                                <div className="font-bold text-slate-900">{a.competition_name}</div>
+                                <div className="text-[11px] text-slate-500">{a.title}</div>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className="px-2.5 py-0.5 text-[10px] font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                                  {a.level}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4 font-bold text-amber-700">{a.rank}</td>
+                              <td className="py-3.5 px-4 text-slate-900 font-medium">{a.student_name}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
@@ -847,52 +956,68 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
         <div className="space-y-6">
           {/* Key Metric Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Akun Siswa Baru</span>
-                <Users className="w-4 h-4 text-[#D15B40]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Akun Siswa Baru</span>
+                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+                  <Users className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                +{pengurusData.newStudents.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Akun</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  +{pengurusData.newStudents.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Akun</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">Daftar website bulan {monthName}</p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Daftar website bulan {monthName}</p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Anggota Baru Ekskul</span>
-                <CheckCircle2 className="w-4 h-4 text-[#3B7A82]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Anggota Baru Ekskul</span>
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#3B7A82] flex items-center justify-center">
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                +{pengurusData.ekskulRecapList.reduce((acc, curr) => acc + curr.newMembersCount, 0)}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Siswa</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  +{pengurusData.ekskulRecapList.reduce((acc, curr) => acc + curr.newMembersCount, 0)}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Siswa</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">Penambahan seluruh cabang ekskul</p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Penambahan seluruh cabang ekskul</p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Penggunaan Sarana</span>
-                <Clock className="w-4 h-4 text-[#D15B40]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Penggunaan Sarana</span>
+                <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+                  <Clock className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                {pengurusData.facilityUsageSessions.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Sesi Latihan</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {pengurusData.facilityUsageSessions.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Sesi</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">Log pemanfaatan lapangan sekolah</p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Log pemanfaatan lapangan sekolah</p>
             </div>
 
-            <div className="bg-white border border-[#EAE6DC] p-5 rounded-xl shadow-2xs">
-              <div className="flex items-center justify-between text-xs font-bold text-[#68655F] uppercase">
-                <span>Prestasi Sekolah</span>
-                <Award className="w-4 h-4 text-[#8C6819]" />
+            <div className="bg-white border border-slate-200/90 p-5 rounded-2xl shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Prestasi Sekolah</span>
+                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+                  <Award className="w-4 h-4" />
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-black text-[#171717]">
-                {pengurusData.achievements.length}{' '}
-                <span className="text-xs font-normal text-[#68655F]">Penghargaan</span>
+              <div className="mt-3">
+                <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+                  {pengurusData.achievements.length}
+                  <span className="text-sm font-semibold text-slate-500 ml-1.5">Penghargaan</span>
+                </div>
+                <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">Torehan prestasi bulan {monthName}</p>
               </div>
-              <p className="text-[11px] text-[#525049] mt-1">Torehan prestasi bulan {monthName}</p>
             </div>
           </div>
 
@@ -1092,252 +1217,348 @@ export const MonthlyReportPage: React.FC<MonthlyReportPageProps> = ({ onNavigate
             </div>
           )}
 
-          {/* TABULAR FULL DATA MODE (When user toggles 'Tampilan Rincian Tabel') */}
+          {/* TABULAR FULL DATA MODE (Sub-tabs for cleaner view) */}
           {viewMode === 'table' && (
-            <div className="space-y-6">
-              {/* Section 1: Tabel Siswa Baru yang Daftar di Website Bulan Ini */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <Users className="w-4 h-4 text-[#D15B40]" />
-                      <span>I. Rekapitulasi Akun Siswa Baru Terdaftar di Website ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar akun siswa yang baru melakukan registrasi akun di platform EskulHub pada bulan terpilih.
-                    </p>
-                  </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
-                    {pengurusData.newStudents.length} Akun Baru
-                  </span>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Nama Siswa</th>
-                        <th className="py-3 px-4">Email Akun</th>
-                        <th className="py-3 px-4">NISN</th>
-                        <th className="py-3 px-4">Kelas</th>
-                        <th className="py-3 px-4">Tanggal Buat Akun</th>
-                        <th className="py-3 px-4">Status Akun</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pengurusData.newStudents.length === 0 ? (
-                        <tr>
-                          <td colSpan={7} className="py-8 text-center text-[#68655F] italic">
-                            Tidak ada pendaftaran akun siswa baru di website pada bulan {monthName} {selectedYear}.
-                          </td>
-                        </tr>
-                      ) : (
-                        pengurusData.newStudents.map((st, idx) => (
-                          <tr key={st.id} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 font-bold text-[#171717]">{st.name}</td>
-                            <td className="py-3 px-4 text-[#525049]">{st.email}</td>
-                            <td className="py-3 px-4 text-[#525049]">{st.nisn || '-'}</td>
-                            <td className="py-3 px-4 text-[#525049]">{st.class_name || '-'}</td>
-                            <td className="py-3 px-4 text-[#525049]">
-                              {st.created_at ? st.created_at.split('T')[0] : '-'}
-                            </td>
-                            <td className="py-3 px-4">
-                              <span className="px-2 py-0.5 text-[11px] font-semibold rounded bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
-                                Aktif
-                              </span>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+            <div className="space-y-4">
+              {/* Horizontal Sub-tabs Navigation */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+                  <button
+                    onClick={() => setPengurusTab('newStudents')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pengurusTab === 'newStudents'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <Users className="w-3.5 h-3.5" />
+                    <span>I. Akun Siswa Baru</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pengurusTab === 'newStudents' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pengurusData.newStudents.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setPengurusTab('clubGrowth')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pengurusTab === 'clubGrowth'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <TrendingUp className="w-3.5 h-3.5" />
+                    <span>II. Komparasi Ekskul</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pengurusTab === 'clubGrowth' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pengurusData.ekskulRecapList.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setPengurusTab('facilityUsage')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pengurusTab === 'facilityUsage'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>III. Log Fasilitas</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pengurusTab === 'facilityUsage' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pengurusData.facilityUsageSessions.length}
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => setPengurusTab('schoolAchievements')}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+                      pengurusTab === 'schoolAchievements'
+                        ? 'bg-[#D15B40] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                    }`}
+                  >
+                    <Award className="w-3.5 h-3.5" />
+                    <span>IV. Prestasi Sekolah</span>
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-extrabold ${
+                      pengurusTab === 'schoolAchievements' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {pengurusData.achievements.length}
+                    </span>
+                  </button>
                 </div>
               </div>
+
+              {/* Section 1: Tabel Siswa Baru yang Daftar di Website Bulan Ini */}
+              {pengurusTab === 'newStudents' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-[#D15B40]" />
+                        <span>Rekapitulasi Akun Siswa Baru Terdaftar di Website ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar akun siswa yang baru melakukan registrasi akun di platform EskulHub pada bulan terpilih.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-orange-50 text-[#D15B40] border border-orange-200/60">
+                      {pengurusData.newStudents.length} Akun Baru
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
+                        <tr>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Nama Siswa</th>
+                          <th className="py-3 px-4">Email Akun</th>
+                          <th className="py-3 px-4">NISN</th>
+                          <th className="py-3 px-4">Kelas</th>
+                          <th className="py-3 px-4">Tanggal Buat Akun</th>
+                          <th className="py-3 px-4">Status Akun</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pengurusData.newStudents.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <Users className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-700">Tidak ada pendaftaran akun baru</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Tidak ada pendaftaran akun siswa baru di website pada bulan {monthName} {selectedYear}.</p>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          pengurusData.newStudents.map((st, idx) => (
+                            <tr key={st.id} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 font-bold text-slate-900">{st.name}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{st.email}</td>
+                              <td className="py-3.5 px-4 text-slate-600 font-mono text-[11px]">{st.nisn || '-'}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{st.class_name || '-'}</td>
+                              <td className="py-3.5 px-4 text-slate-600">
+                                {st.created_at ? st.created_at.split('T')[0] : '-'}
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60">
+                                  Aktif
+                                </span>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
 
               {/* Section 2: Tabel Komparasi Penambahan Anggota per Ekskul */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-[#3B7A82]" />
-                      <span>II. Rekapitulasi Penambahan Anggota per Ekstrakurikuler ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Tabel perkembangan keanggotaan, kuota terisi, dan intensitas latihan dari setiap ekskul di SMKN 1 Ciomas.
-                    </p>
+              {pengurusTab === 'clubGrowth' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-[#3B7A82]" />
+                        <span>Rekapitulasi Penambahan Anggota per Ekstrakurikuler ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Tabel perkembangan keanggotaan, kuota terisi, dan intensitas latihan dari setiap ekskul di SMKN 1 Ciomas.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-teal-50 text-[#3B7A82] border border-teal-200/60">
+                      {pengurusData.ekskulRecapList.length} Cabang Ekskul
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#E8F4F5] text-[#3B7A82]">
-                    {pengurusData.ekskulRecapList.length} Cabang Ekskul
-                  </span>
-                </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Nama Ekstrakurikuler</th>
-                        <th className="py-3 px-4">Kategori</th>
-                        <th className="py-3 px-4">Guru Pembina</th>
-                        <th className="py-3 px-4 text-center">Penambahan Bulan Ini</th>
-                        <th className="py-3 px-4 text-center">Total Anggota Aktif</th>
-                        <th className="py-3 px-4 text-center">Kapasitas</th>
-                        <th className="py-3 px-4 text-center">Sesi Latihan</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pengurusData.ekskulRecapList.map((item, idx) => {
-                        const capacityPct = Math.round((item.totalActiveMembers / item.capacity) * 100);
-                        return (
-                          <tr key={item.ekskul.id} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 font-bold text-[#171717]">{item.ekskul.name}</td>
-                            <td className="py-3 px-4 text-[#525049]">{item.ekskul.category}</td>
-                            <td className="py-3 px-4 text-[#525049]">{item.ekskul.supervisor_name}</td>
-                            <td className="py-3 px-4 text-center font-bold text-[#D15B40]">
-                              {item.newMembersCount > 0 ? `+${item.newMembersCount} Siswa` : '-'}
-                            </td>
-                            <td className="py-3 px-4 text-center font-semibold text-[#171717]">
-                              {item.totalActiveMembers} Siswa
-                            </td>
-                            <td className="py-3 px-4 text-center text-[#525049]">
-                              {item.capacity} ({capacityPct}%)
-                            </td>
-                            <td className="py-3 px-4 text-center">
-                              <span className="px-2 py-0.5 text-[11px] font-semibold rounded bg-[#F9F8F6] text-[#525049] border border-[#EAE6DC]">
-                                {item.sessionCount} Kali
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
+                        <tr>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Nama Ekstrakurikuler</th>
+                          <th className="py-3 px-4">Kategori</th>
+                          <th className="py-3 px-4">Guru Pembina</th>
+                          <th className="py-3 px-4 text-center">Penambahan Bulan Ini</th>
+                          <th className="py-3 px-4 text-center">Total Anggota Aktif</th>
+                          <th className="py-3 px-4 text-center">Kapasitas</th>
+                          <th className="py-3 px-4 text-center">Sesi Latihan</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pengurusData.ekskulRecapList.map((item, idx) => {
+                          const capacityPct = Math.round((item.totalActiveMembers / item.capacity) * 100);
+                          return (
+                            <tr key={item.ekskul.id} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 font-bold text-slate-900">{item.ekskul.name}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{item.ekskul.category}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{item.ekskul.supervisor_name}</td>
+                              <td className="py-3.5 px-4 text-center font-bold text-[#D15B40]">
+                                {item.newMembersCount > 0 ? `+${item.newMembersCount} Siswa` : '-'}
+                              </td>
+                              <td className="py-3.5 px-4 text-center font-semibold text-slate-900">
+                                {item.totalActiveMembers} Siswa
+                              </td>
+                              <td className="py-3.5 px-4 text-center text-slate-600">
+                                {item.capacity} ({capacityPct}%)
+                              </td>
+                              <td className="py-3.5 px-4 text-center">
+                                <span className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                                  {item.sessionCount} Kali
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Section 3: Log Penggunaan Fasilitas & Sarana Prasarana */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-[#D15B40]" />
-                      <span>III. Log Penggunaan Fasilitas & Lapangan Sekolah ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar pemakaian lapangan olahraga, aula, laboratorium, dan sarana sekolah oleh seluruh ekstrakurikuler.
-                    </p>
+              {pengurusTab === 'facilityUsage' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-[#D15B40]" />
+                        <span>Log Penggunaan Fasilitas & Lapangan Sekolah ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar pemakaian lapangan olahraga, aula, laboratorium, dan sarana sekolah oleh seluruh ekstrakurikuler.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-orange-50 text-[#D15B40] border border-orange-200/60">
+                      {pengurusData.facilityUsageSessions.length} Penggunaan
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#FDEDE9] text-[#D15B40]">
-                    {pengurusData.facilityUsageSessions.length} Penggunaan
-                  </span>
-                </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Tanggal</th>
-                        <th className="py-3 px-4">Ekstrakurikuler</th>
-                        <th className="py-3 px-4">Sarana / Fasilitas</th>
-                        <th className="py-3 px-4">Topik Sesi Latihan</th>
-                        <th className="py-3 px-4">Waktu</th>
-                        <th className="py-3 px-4 text-center">Peserta Hadir</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pengurusData.facilityUsageSessions.length === 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
                         <tr>
-                          <td colSpan={7} className="py-8 text-center text-[#68655F] italic">
-                            Belum ada log penggunaan fasilitas sekolah yang tercatat pada bulan {monthName} {selectedYear}.
-                          </td>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Tanggal</th>
+                          <th className="py-3 px-4">Ekstrakurikuler</th>
+                          <th className="py-3 px-4">Sarana / Fasilitas</th>
+                          <th className="py-3 px-4">Topik Sesi Latihan</th>
+                          <th className="py-3 px-4">Waktu</th>
+                          <th className="py-3 px-4 text-center">Peserta Hadir</th>
                         </tr>
-                      ) : (
-                        pengurusData.facilityUsageSessions.map((s, idx) => (
-                          <tr key={s.id} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 font-semibold text-[#171717]">{s.session_date}</td>
-                            <td className="py-3 px-4">
-                              <span className="font-bold text-[#D15B40]">{s.extracurricular_name}</span>
-                            </td>
-                            <td className="py-3 px-4 text-[#525049] font-medium">{s.location}</td>
-                            <td className="py-3 px-4 text-[#171717]">{s.title}</td>
-                            <td className="py-3 px-4 text-[#68655F]">{s.start_time} - {s.end_time} WIB</td>
-                            <td className="py-3 px-4 text-center font-bold text-[#D15B40]">
-                              {s.present_count || 0} Siswa
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pengurusData.facilityUsageSessions.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <MapPin className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-700">Belum ada pemakaian fasilitas</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Belum ada log penggunaan fasilitas sekolah yang tercatat pada bulan {monthName} {selectedYear}.</p>
+                              </div>
                             </td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                        ) : (
+                          pengurusData.facilityUsageSessions.map((s, idx) => (
+                            <tr key={s.id} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 font-semibold text-slate-900">{s.session_date}</td>
+                              <td className="py-3.5 px-4">
+                                <span className="font-bold text-[#D15B40]">{s.extracurricular_name}</span>
+                              </td>
+                              <td className="py-3.5 px-4 text-slate-700 font-medium">{s.location}</td>
+                              <td className="py-3.5 px-4 text-slate-900">{s.title}</td>
+                              <td className="py-3.5 px-4 text-slate-500">{s.start_time} - {s.end_time} WIB</td>
+                              <td className="py-3.5 px-4 text-center font-bold text-[#D15B40]">
+                                {s.present_count || 0} Siswa
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Section 4: Tabel Prestasi Sekolah Bulan Ini */}
-              <div className="bg-white border border-[#EAE6DC] rounded-xl overflow-hidden shadow-2xs">
-                <div className="p-4 sm:p-5 border-b border-[#EAE6DC] flex items-center justify-between">
-                  <div>
-                    <h2 className="text-sm font-bold text-[#171717] flex items-center gap-2">
-                      <Award className="w-4 h-4 text-[#8C6819]" />
-                      <span>IV. Rekapitulasi Prestasi & Kejuaraan Sekolah ({monthName} {selectedYear})</span>
-                    </h2>
-                    <p className="text-xs text-[#68655F] mt-0.5">
-                      Daftar seluruh prestasi dan piala yang berhasil disumbangkan siswa SMKN 1 Ciomas pada bulan terpilih.
-                    </p>
+              {pengurusTab === 'schoolAchievements' && (
+                <div className="bg-white border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+                    <div>
+                      <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <Award className="w-4 h-4 text-amber-600" />
+                        <span>Rekapitulasi Prestasi & Kejuaraan Sekolah ({monthName} {selectedYear})</span>
+                      </h2>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Daftar seluruh prestasi dan piala yang berhasil disumbangkan siswa SMKN 1 Ciomas pada bulan terpilih.
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-200/60">
+                      {pengurusData.achievements.length} Prestasi
+                    </span>
                   </div>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded bg-[#FDF8EA] text-[#8C6819]">
-                    {pengurusData.achievements.length} Prestasi
-                  </span>
-                </div>
 
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-[#F9F8F6] text-[#525049] font-bold border-b border-[#EAE6DC]">
-                      <tr>
-                        <th className="py-3 px-4 w-12 text-center">No</th>
-                        <th className="py-3 px-4">Tanggal</th>
-                        <th className="py-3 px-4">Ekstrakurikuler</th>
-                        <th className="py-3 px-4">Nama Kejuaraan / Turnamen</th>
-                        <th className="py-3 px-4">Tingkat</th>
-                        <th className="py-3 px-4">Peringkat / Juara</th>
-                        <th className="py-3 px-4">Siswa Peraih</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[#EAE6DC]">
-                      {pengurusData.achievements.length === 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200/80">
                         <tr>
-                          <td colSpan={7} className="py-8 text-center text-[#68655F] italic">
-                            Tidak ada catatan piala / kejuaraan baru pada bulan {monthName} {selectedYear}.
-                          </td>
+                          <th className="py-3 px-4 w-12 text-center">No</th>
+                          <th className="py-3 px-4">Tanggal</th>
+                          <th className="py-3 px-4">Ekstrakurikuler</th>
+                          <th className="py-3 px-4">Nama Kejuaraan / Turnamen</th>
+                          <th className="py-3 px-4">Tingkat</th>
+                          <th className="py-3 px-4">Peringkat / Juara</th>
+                          <th className="py-3 px-4">Siswa Peraih</th>
                         </tr>
-                      ) : (
-                        pengurusData.achievements.map((a, idx) => (
-                          <tr key={a.id} className="hover:bg-[#F9F8F6]/50">
-                            <td className="py-3 px-4 text-center text-[#68655F]">{idx + 1}</td>
-                            <td className="py-3 px-4 text-[#525049]">{a.achievement_date}</td>
-                            <td className="py-3 px-4 font-bold text-[#D15B40]">{a.extracurricular_name || 'Ekskul'}</td>
-                            <td className="py-3 px-4">
-                              <div className="font-bold text-[#171717]">{a.competition_name}</div>
-                              <div className="text-[11px] text-[#68655F]">{a.title}</div>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {pengurusData.achievements.length === 0 ? (
+                          <tr>
+                            <td colSpan={7} className="py-12 text-center">
+                              <div className="flex flex-col items-center justify-center text-slate-400">
+                                <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mb-2.5 text-slate-400">
+                                  <Award className="w-6 h-6" />
+                                </div>
+                                <p className="text-sm font-semibold text-slate-700">Belum ada torehan piala / kejuaraan</p>
+                                <p className="text-xs text-slate-500 mt-0.5">Tidak ada catatan piala atau kejuaraan baru pada bulan {monthName} {selectedYear}.</p>
+                              </div>
                             </td>
-                            <td className="py-3 px-4">
-                              <span className="px-2 py-0.5 text-[10px] font-semibold rounded bg-[#F9F8F6] text-[#525049] border border-[#EAE6DC]">
-                                {a.level}
-                              </span>
-                            </td>
-                            <td className="py-3 px-4 font-bold text-[#8C6819]">{a.rank}</td>
-                            <td className="py-3 px-4 text-[#171717] font-medium">{a.student_name}</td>
                           </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                        ) : (
+                          pengurusData.achievements.map((a, idx) => (
+                            <tr key={a.id} className="hover:bg-slate-50/70 transition-colors">
+                              <td className="py-3.5 px-4 text-center text-slate-500">{idx + 1}</td>
+                              <td className="py-3.5 px-4 text-slate-600">{a.achievement_date}</td>
+                              <td className="py-3.5 px-4 font-bold text-[#D15B40]">{a.extracurricular_name || 'Ekskul'}</td>
+                              <td className="py-3.5 px-4">
+                                <div className="font-bold text-slate-900">{a.competition_name}</div>
+                                <div className="text-[11px] text-slate-500">{a.title}</div>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className="px-2.5 py-0.5 text-[10px] font-semibold rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                                  {a.level}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-4 font-bold text-amber-700">{a.rank}</td>
+                              <td className="py-3.5 px-4 text-slate-900 font-medium">{a.student_name}</td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>

@@ -103,34 +103,73 @@ export const PengurusDashboardPage: React.FC<PengurusDashboardPageProps> = ({ on
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
-          <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Anggota Resmi</div>
-          <div className="text-2xl font-bold text-[#171717]">{members.length} / {managedEkskul.member_capacity}</div>
-          <div className="w-full h-1 bg-[#F9F8F6] rounded-full overflow-hidden mt-2">
-            <div
-              className="h-full bg-[#D15B40]"
-              style={{ width: `${(members.length / managedEkskul.member_capacity) * 100}%` }}
-            />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Anggota Resmi</span>
+            <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              {members.length}
+              <span className="text-sm font-semibold text-slate-500 ml-1.5">/ {managedEkskul.member_capacity}</span>
+            </div>
+            <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-2.5">
+              <div
+                className="h-full bg-[#D15B40] rounded-full transition-all duration-500"
+                style={{ width: `${Math.min(100, (members.length / managedEkskul.member_capacity) * 100)}%` }}
+              />
+            </div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
-          <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Pendaftaran Baru</div>
-          <div className="text-2xl font-bold text-[#3B7A82]">{registrations.length}</div>
-          <div className="text-[11px] text-[#68655F] mt-1">Perlu Persetujuan</div>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Pendaftaran Baru</span>
+            <div className="w-9 h-9 rounded-xl bg-teal-50 text-[#3B7A82] flex items-center justify-center">
+              <UserCheck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="text-3xl font-extrabold text-[#3B7A82] tracking-tight">
+              {registrations.length}
+              <span className="text-sm font-semibold text-slate-500 ml-1.5">Siswa</span>
+            </div>
+            <p className="text-[11px] font-medium text-slate-500 mt-1 truncate">Perlu Persetujuan</p>
+          </div>
         </div>
 
-        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
-          <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Sesi Presensi Selesai</div>
-          <div className="text-2xl font-bold text-[#D15B40]">{sessions.length}</div>
-          <div className="text-[11px] text-[#D15B40] font-medium mt-1">Semester Ganjil</div>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Sesi Presensi</span>
+            <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#D15B40] flex items-center justify-center">
+              <CheckSquare className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              {sessions.length}
+              <span className="text-sm font-semibold text-slate-500 ml-1.5">Sesi</span>
+            </div>
+            <p className="text-[11px] font-medium text-[#D15B40] mt-1 truncate">Semester Ganjil Selesai</p>
+          </div>
         </div>
 
-        <div className="bg-white border border-[#EAE6DC] rounded-lg p-4">
-          <div className="text-xs font-semibold text-[#68655F] uppercase mb-1">Rata-rata Kehadiran</div>
-          <div className="text-2xl font-bold text-[#D15B40]">94.2%</div>
-          <div className="text-[11px] text-[#68655F] mt-1">Kategori Sangat Baik</div>
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold tracking-wider text-slate-500 uppercase">Rata-rata Kehadiran</span>
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+              <Trophy className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="text-3xl font-extrabold text-slate-900 tracking-tight">
+              94.2%
+            </div>
+            <p className="text-[11px] font-medium text-emerald-700 mt-1 truncate">Kategori Sangat Baik</p>
+          </div>
         </div>
       </div>
 

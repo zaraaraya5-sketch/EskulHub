@@ -4,6 +4,7 @@ import { useAuth } from '@/features/authentication/providers/AuthProvider';
 import { Badge } from '@/components/ui/Badge';
 import { ATTENDANCE_STATUS_LABELS } from '@/lib/constants';
 import { CheckSquare, Calendar, Filter } from 'lucide-react';
+import { DatePickerPopover } from '@/components/ui/DatePickerPopover';
 
 export const StudentAttendancePage: React.FC = () => {
   const { currentUser } = useAuth();
@@ -11,6 +12,7 @@ export const StudentAttendancePage: React.FC = () => {
 
   const [selectedEkskul, setSelectedEkskul] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   const allRecords = db.getAttendanceRecords().filter(r => r.student_id === studentId);
   const myMemberships = db.getMembers().filter(m => m.student_id === studentId);
@@ -29,7 +31,8 @@ export const StudentAttendancePage: React.FC = () => {
   const filteredRecords = allRecords.filter((rec) => {
     const matchEkskul = selectedEkskul === 'all' || rec.extracurricular_name === selectedEkskul;
     const matchStatus = selectedStatus === 'all' || rec.status === selectedStatus;
-    return matchEkskul && matchStatus;
+    const matchDate = !selectedDate || rec.session_date === selectedDate;
+    return matchEkskul && matchStatus && matchDate;
   });
 
   return (
@@ -107,6 +110,14 @@ export const StudentAttendancePage: React.FC = () => {
             <option value="excused">Izin / Sakit</option>
             <option value="absent">Alpa</option>
           </select>
+        </div>
+
+        <div className="w-full sm:w-auto">
+          <label className="block text-[11px] font-semibold text-[#68655F] uppercase mb-1">Pilih Tanggal</label>
+          <DatePickerPopover
+            value={selectedDate}
+            onChange={setSelectedDate}
+          />
         </div>
       </div>
 
