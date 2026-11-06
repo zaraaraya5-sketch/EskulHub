@@ -4,7 +4,7 @@ import { getEkskulsAPI } from '@/lib/api';
 import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-import AccordionGallery, { AccordionGalleryItem } from '@/components/ui/AccordionGallery';
+import AccordionGallery, { AccordionGalleryItem, getContextualFallbackImage } from '@/components/ui/AccordionGallery';
 import FoldText from '@/components/ui/FoldText';
 const GradientWaves = React.lazy(() => import('@/components/ui/GradientWaves'));
 import {
@@ -62,7 +62,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
     return list.slice(0, 5).map(ekskul => ({
       id: ekskul?.id || String(Math.random()),
-      image: ekskul?.profile_image || '',
+      image: ekskul?.profile_image || getContextualFallbackImage(ekskul?.name),
       label: ekskul?.name || 'Ekstrakurikuler',
       bio: ekskul?.short_description || '',
       link: ekskul?.slug ? `/ekskul/${ekskul.slug}?from=/` : '#'
