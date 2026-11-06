@@ -5,7 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { PageLoader } from '@/components/ui/PageLoader';
 import { Logo } from '@/components/ui/Logo';
 import { db } from '@/lib/database';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const HomePage = React.lazy(() => import('@/features/extracurriculars/pages/HomePage').then((m) => ({ default: m.HomePage })));
 const CatalogPage = React.lazy(() => import('@/features/extracurriculars/pages/CatalogPage').then((m) => ({ default: m.CatalogPage })));
@@ -53,30 +53,36 @@ const AppContent: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const cleanPath = currentPath.split('?')[0];
+  const searchString = currentPath.includes('?')
+    ? currentPath.slice(currentPath.indexOf('?') + 1)
+    : (typeof window !== 'undefined' ? window.location.search.replace(/^\?/, '') : '');
+  const searchParams = new URLSearchParams(searchString);
+
   // Determine if current page is questionnaire onboarding
   const isOnboardingQuiz =
-    currentPath === '/student/onboarding-quiz' ||
-    currentPath === '/student/kuisioner' ||
-    currentPath === '/kuisioner';
+    cleanPath === '/student/onboarding-quiz' ||
+    cleanPath === '/student/kuisioner' ||
+    cleanPath === '/kuisioner';
 
   // Determine if current page is within authenticated dashboard layout
   const isAuthenticatedDashboardRoute =
     !isOnboardingQuiz &&
-    (currentPath.startsWith('/student') ||
-      currentPath.startsWith('/pengurus') ||
-      currentPath.startsWith('/pembina') ||
-      currentPath.startsWith('/teacher') ||
-      currentPath.startsWith('/admin'));
+    (cleanPath.startsWith('/student') ||
+      cleanPath.startsWith('/pengurus') ||
+      cleanPath.startsWith('/pembina') ||
+      cleanPath.startsWith('/teacher') ||
+      cleanPath.startsWith('/admin'));
 
   // Verify client-side route authorization
   const isUnauthorizedForDashboard =
     isAuthenticatedDashboardRoute &&
     (!currentUser ||
-      (currentPath.startsWith('/student') && role !== 'student') ||
-      (currentPath.startsWith('/pengurus') && role !== 'pengurus') ||
-      ((currentPath.startsWith('/pembina') || currentPath.startsWith('/teacher')) &&
+      (cleanPath.startsWith('/student') && role !== 'student') ||
+      (cleanPath.startsWith('/pengurus') && role !== 'pengurus') ||
+      ((cleanPath.startsWith('/pembina') || cleanPath.startsWith('/teacher')) &&
         !['pembina', 'teacher', 'pengurus'].includes(role)) ||
-      (currentPath.startsWith('/admin') && role !== 'pengurus'));
+      (cleanPath.startsWith('/admin') && role !== 'pengurus'));
 
   const renderContent = () => {
     // If not authenticated at all, redirect to login
@@ -141,61 +147,67 @@ const AppContent: React.FC = () => {
     }
 
     // 1. Ekstrakurikuler Registration: /ekskul/:slug/daftar
-    const daftarMatch = currentPath.match(/^\/ekskul\/([^/]+)\/daftar$/);
+    const daftarMatch = cleanPath.match(/^\/ekskul\/([^/]+)\/daftar$/);
     if (daftarMatch) {
       return <RegisterEkskulPage slug={daftarMatch[1]} onNavigate={navigate} />;
     }
 
-    // 2. Detail route: /ekskul/:slug
-    if (currentPath.startsWith('/ekskul/')) {
-      const slug = currentPath.replace('/ekskul/', '');
-      return <DetailPage slug={slug} onNavigate={navigate} />;
+    // 2. Detail route: /ekskul/:slug with contextual back navigation support
+    if (cleanPath.startsWith('/ekskul/')) {
+      const slug = cleanPath.replace('/ekskul/', '');
+      return (
+        <DetailPage
+          slug={slug}
+          onNavigate={navigate}
+          fromPath={searchParams.get('from') || undefined}
+        />
+      );
     }
 
     // 3. Verification route: /verify/:verificationId
-    if (currentPath.startsWith('/verify')) {
-      const id = currentPath.replace(/^\/verify\/?/, '').trim();
+    if (cleanPath.startsWith('/verify')) {
+      const id = cleanPath.replace(/^\/verify\/?/, '').trim();
       return <VerificationPage verificationId={id} onNavigate={navigate} />;
     }
 
     // 4. Calendar Edit route: /calendar/edit/:id
-    if (currentPath.startsWith('/calendar/edit/')) {
-      const editId = currentPath.replace('/calendar/edit/', '');
+    if (cleanPath.startsWith('/calendar/edit/')) {
+      const editId = cleanPath.replace('/calendar/edit/', '');
       return <CreateEventPage onNavigate={navigate} editEventId={editId} />;
     }
 
     // 5. Admin & Pengurus Ekskul Edit route: /admin/ekskul/:id/edit or /pengurus/ekskul/:id/edit
     if (
-      (currentPath.startsWith('/admin/ekskul/') || currentPath.startsWith('/pengurus/ekskul/')) &&
-      currentPath.endsWith('/edit')
+      (cleanPath.startsWith('/admin/ekskul/') || cleanPath.startsWith('/pengurus/ekskul/')) &&
+      cleanPath.endsWith('/edit')
     ) {
-      const parts = currentPath.split('/');
+      const parts = cleanPath.split('/');
       const editId = parts[3];
       return <AdminFormEkskulPage onNavigate={navigate} editId={editId} />;
     }
 
     // 5b. Admin & Pengurus Student Edit route: /admin/students/:id/edit or /pengurus/students/:id/edit
     if (
-      (currentPath.startsWith('/admin/students/') || currentPath.startsWith('/pengurus/students/')) &&
-      currentPath.endsWith('/edit')
+      (cleanPath.startsWith('/admin/students/') || cleanPath.startsWith('/pengurus/students/')) &&
+      cleanPath.endsWith('/edit')
     ) {
-      const parts = currentPath.split('/');
+      const parts = cleanPath.split('/');
       const editId = parts[3];
       return <AdminFormStudentPage onNavigate={navigate} editId={editId} />;
     }
 
     // 5c. Admin & Pengurus Pembina Edit route: /admin/pembina/:id/edit or /pengurus/pembina/:id/edit
     if (
-      (currentPath.startsWith('/admin/pembina/') || currentPath.startsWith('/pengurus/pembina/')) &&
-      currentPath.endsWith('/edit')
+      (cleanPath.startsWith('/admin/pembina/') || cleanPath.startsWith('/pengurus/pembina/')) &&
+      cleanPath.endsWith('/edit')
     ) {
-      const parts = currentPath.split('/');
+      const parts = cleanPath.split('/');
       const editId = parts[3];
       return <AdminFormPembinaPage onNavigate={navigate} editId={editId} />;
     }
 
     // 6. Exact matching routes
-    switch (currentPath) {
+    switch (cleanPath) {
       case '/':
         return <HomePage onNavigate={navigate} />;
       case '/ekskul':
@@ -334,21 +346,28 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col lg:flex-row bg-[#F9F8F6] text-[#171717]">
         {/* Mobile Dashboard Header (< lg) */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-3 sm:px-4 h-14 sm:h-15 flex items-center justify-between shadow-2xs">
-          {/* Sisi Kiri: Tombol Hamburger Menu (selaras dengan arah slide-in drawer dari kiri) & Logo EskulHub */}
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <header className="lg:hidden sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 h-16 flex items-center justify-between shadow-2xs transition-all duration-300">
+          {/* Sisi Kiri: Tombol Hamburger Menu (icon button bersih + efek tekan responsif) & Logo EskulHub */}
+          <div className="flex items-center gap-3 min-w-0">
             <button
-              onClick={() => setMobileSidebarOpen(true)}
-              className="min-h-[38px] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] active:scale-95 text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-all shadow-2xs shrink-0"
-              aria-label="Buka navigasi dasbor"
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+              className="w-10 h-10 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 active:bg-slate-100 active:scale-95 text-[#171717] flex items-center justify-center cursor-pointer select-none transition-all duration-200 shadow-2xs shrink-0"
+              aria-label={mobileSidebarOpen ? "Tutup navigasi dasbor" : "Buka navigasi dasbor"}
+              aria-expanded={mobileSidebarOpen}
             >
-              <Menu className="w-4 h-4 text-[#D15B40]" />
-              <span className="uppercase tracking-wider text-[11px] font-bold">Menu</span>
+              <div className={`transition-transform duration-300 ease-in-out ${mobileSidebarOpen ? 'rotate-90' : 'rotate-0'}`}>
+                {mobileSidebarOpen ? (
+                  <X className="w-5 h-5 text-[#D15B40] transition-transform duration-200" />
+                ) : (
+                  <Menu className="w-5 h-5 text-[#D15B40] transition-transform duration-200" />
+                )}
+              </div>
             </button>
 
             <Logo
               size="sm"
               withText
+              hideSubtitleOnMobile={true}
               subtitle={settings.school_name}
               onClick={() => navigate('/')}
               title="Kembali ke Beranda"
@@ -358,11 +377,11 @@ const AppContent: React.FC = () => {
           {/* Sisi Kanan: Profil User */}
           <div className="flex items-center gap-2 shrink-0">
             {currentUser && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs">
+              <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#F9F8F6] border border-slate-200/80 rounded-xl text-xs">
                 <span className="w-6 h-6 rounded-lg bg-[#D15B40] text-white flex items-center justify-center font-bold text-[11px] shrink-0 shadow-2xs">
                   {currentUser.name.charAt(0)}
                 </span>
-                <span className="font-bold text-[#171717] max-w-[85px] sm:max-w-[120px] truncate text-[11px]">
+                <span className="font-bold text-[#171717] max-w-[85px] sm:max-w-[120px] truncate text-xs">
                   {currentUser.name.split(' ')[0]}
                 </span>
               </div>

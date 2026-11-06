@@ -268,29 +268,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </aside>
 
       {/* Mobile Drawer (Slide-Over with Backdrop for narrow screens) */}
-      {isMobileOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200"
-            onClick={onCloseMobile}
-            aria-hidden="true"
-          />
-          <aside className="relative w-72 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-in">
-            {/* Header close button for drawer */}
-            <div className="p-3.5 border-b border-[#EAE6DC] flex items-center justify-between bg-[#F9F8F6] shrink-0">
-              <span className="text-xs font-bold text-[#171717] uppercase tracking-wider">Navigasi Dasbor</span>
-              <button
-                onClick={onCloseMobile}
-                className="w-9 h-9 flex items-center justify-center rounded-xl text-[#68655F] hover:text-[#171717] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] transition-colors cursor-pointer"
-                aria-label="Tutup menu navigasi"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            {renderSidebarContent(true)}
-          </aside>
-        </div>
-      )}
+      <div
+        className={`fixed inset-0 z-50 lg:hidden transition-all duration-300 ${
+          isMobileOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'
+        }`}
+        aria-hidden={!isMobileOpen}
+      >
+        {/* Soft fade backdrop */}
+        <div
+          className={`fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300 ease-in-out ${
+            isMobileOpen ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={onCloseMobile}
+          aria-hidden="true"
+        />
+
+        {/* Fluid cubic-bezier slide-in drawer from the left */}
+        <aside
+          className={`relative w-72 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 transform transition-transform duration-300 ease-in-out ${
+            isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {/* Header close button for drawer */}
+          <div className="p-3.5 border-b border-[#EAE6DC] flex items-center justify-between bg-[#F9F8F6] shrink-0">
+            <span className="text-xs font-bold text-[#171717] uppercase tracking-wider">Navigasi Dasbor</span>
+            <button
+              onClick={onCloseMobile}
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-[#68655F] hover:text-[#171717] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] transition-colors cursor-pointer"
+              aria-label="Tutup menu navigasi"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          {renderSidebarContent(true)}
+        </aside>
+      </div>
     </>
   );
 };

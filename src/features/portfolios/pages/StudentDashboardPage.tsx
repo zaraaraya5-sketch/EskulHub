@@ -172,7 +172,8 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
 
   const handleSelectEkskul = (ekskul: Extracurricular | null) => {
     if (ekskul) {
-      onNavigate(`/ekskul/${ekskul.slug}`);
+      const fromPath = activeTab === 'browse' ? '/student/ekskul' : '/student';
+      onNavigate(`/ekskul/${ekskul.slug}?from=${encodeURIComponent(fromPath)}`);
     }
   };
 

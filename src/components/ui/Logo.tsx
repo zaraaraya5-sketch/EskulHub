@@ -11,6 +11,8 @@ export interface LogoProps {
   badgeText?: string;
   /** Automatically hide badge text on mobile screens to prevent navbar overcrowding */
   hideBadgeOnMobile?: boolean;
+  /** Automatically hide long subtitle on mobile screens for compact layout */
+  hideSubtitleOnMobile?: boolean;
   subtitle?: string;
   /** Backwards compatibility alias for subtitle */
   schoolSubtitle?: string;
@@ -34,6 +36,7 @@ export const Logo: React.FC<LogoProps> = ({
   variant = 'light',
   badgeText,
   hideBadgeOnMobile = true,
+  hideSubtitleOnMobile = false,
   subtitle,
   schoolSubtitle,
   onClick,
@@ -239,6 +242,8 @@ export const Logo: React.FC<LogoProps> = ({
         {subtitleText && (
           <div
             className={`font-medium tracking-wide uppercase mt-0.5 sm:mt-1 truncate ${
+              hideSubtitleOnMobile ? 'hidden sm:block' : ''
+            } ${
               variant === 'dark' ? 'text-stone-400' : 'text-[#68655F]'
             } ${currentSize.subtitle}`}
           >

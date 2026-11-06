@@ -215,7 +215,7 @@ export const AdminEkskulSection: React.FC<AdminEkskulSectionProps> = ({
                 {/* Card Action Controls */}
                 <div className="pt-4 mt-4 border-t border-[#EAE6DC] flex items-center justify-between">
                   <button
-                    onClick={() => onNavigate(`/ekskul/${ekskul.slug}`)}
+                    onClick={() => onNavigate(`/ekskul/${ekskul.slug}?from=/pengurus`)}
                     className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#525049] hover:text-[#D15B40] transition-colors cursor-pointer"
                   >
                     <ExternalLink className="w-3 h-3" />

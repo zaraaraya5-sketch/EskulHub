@@ -65,7 +65,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
       image: ekskul?.profile_image || '',
       label: ekskul?.name || 'Ekstrakurikuler',
       bio: ekskul?.short_description || '',
-      link: ekskul?.slug ? `/ekskul/${ekskul.slug}` : '#'
+      link: ekskul?.slug ? `/ekskul/${ekskul.slug}?from=/` : '#'
     }));
   }, [ekskuls]);
 

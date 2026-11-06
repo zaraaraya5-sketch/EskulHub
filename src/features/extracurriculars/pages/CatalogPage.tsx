@@ -181,7 +181,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             <div
               key={item.id}
               className="group relative rounded-2xl overflow-hidden aspect-[16/10] bg-[#171717] border border-[#EAE6DC] shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer"
-              onClick={() => onNavigate(`/ekskul/${item.slug}`)}
+              onClick={() => onNavigate(`/ekskul/${item.slug}?from=/ekskul`)}
             >
               {/* Full Landscape Image */}
               <img
@@ -251,7 +251,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
                     className="w-full justify-center shadow-md hover:shadow-lg bg-[#D15B40] hover:bg-[#b84a32] text-white border-0 text-xs py-2 transition-transform active:scale-95 font-semibold"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onNavigate(`/ekskul/${item.slug}`);
+                      onNavigate(`/ekskul/${item.slug}?from=/ekskul`);
                     }}
                     icon={<ArrowRight className="w-3.5 h-3.5" />}
                   >
