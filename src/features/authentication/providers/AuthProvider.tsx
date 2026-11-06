@@ -173,8 +173,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
       }
 
-      // If backend explicitly returned a validation error (like email duplicate), return it
-      if (apiRes && apiRes.success === false && apiRes.message && !apiRes.message.includes('Gagal terhubung')) {
+      // If backend explicitly returned a real validation error (like duplicate email in DB), return it
+      if (apiRes && apiRes.success === false && (apiRes.isValidationError || (apiRes.message && !apiRes.message.includes('Gagal terhubung') && !apiRes.message.includes('server lokal')))) {
         return {
           success: false,
           message: apiRes.message,

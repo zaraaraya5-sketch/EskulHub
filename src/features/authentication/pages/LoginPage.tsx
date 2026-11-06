@@ -213,11 +213,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, currentPath })
           </div>
         )}
 
-        {/* Error Alert */}
-        {error && (
-          <div className="p-3 bg-[#E8F4F5] border border-[#E8BAB5] rounded-lg flex items-start gap-2.5 text-xs text-[#A33D35]">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#A33D35]" />
-            <span className="font-medium leading-relaxed">{error}</span>
+        {/* Error Alert (Login mode) */}
+        {error && mode === 'login' && (
+          <div className="p-3 bg-[#FDEDE9] border border-[#F2C9C0] rounded-xl flex items-start gap-2.5 text-xs text-[#A33D35] animate-fade-in">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#D15B40]" />
+            <span className="font-semibold leading-relaxed">{error}</span>
           </div>
         )}
 

@@ -139,12 +139,16 @@ export const registerAPI = async (userData: Partial<User>) => {
     }
     return res.data;
   } catch (err: any) {
-    if (!err.response) {
+    const status = err.response?.status;
+    // When offline, network unreachable, or endpoint 404/405/5xx (e.g. Vercel deployment where Laravel backend is not hosted)
+    if (!err.response || status === 404 || status === 405 || status >= 500) {
       return {
         success: false,
+        isUnavailable: true,
         message: 'Gagal terhubung ke server autentikasi lokal.',
       };
     }
+
     let msg = err.response?.data?.message || 'Gagal mendaftarkan akun ke server lokal.';
     if (err.response?.data?.errors) {
       const errors = err.response.data.errors;
@@ -160,6 +164,7 @@ export const registerAPI = async (userData: Partial<User>) => {
     }
     return {
       success: false,
+      isValidationError: status === 422 || Boolean(err.response?.data?.errors),
       message: msg,
     };
   }
