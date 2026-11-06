@@ -314,33 +314,46 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
             </span>
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
-                <div className="ag-panel__label-container">
-                  <div className="ag-panel__header">
-                    <span className="ag-panel__bar" ref={(el) => { barRefs.current[i] = el; }} />
-                    <div className="ag-panel__title-wrapper">
-                      <div className="ag-panel__text" ref={(el) => { textRefs.current[i] = el; }}>
-                        {item.label}
+                {/* Active Expanded State: Modern minimal glassmorphism without covering the photo */}
+                <div className="ag-panel__active-content">
+                  <div className="ag-panel__info">
+                    <div className="ag-panel__header">
+                      <span className="ag-panel__bar" ref={(el) => { barRefs.current[i] = el; }} />
+                      <div className="ag-panel__title-wrapper">
+                        <div className="ag-panel__text" ref={(el) => { textRefs.current[i] = el; }}>
+                          {item.label}
+                        </div>
                       </div>
                     </div>
+                    {item.bio && (
+                      <p className="ag-panel__bio" ref={(el) => { bioRefs.current[i] = el; }}>
+                        {item.bio}
+                      </p>
+                    )}
                   </div>
-                  {item.bio && (
-                     <p className="ag-panel__bio" ref={(el) => { bioRefs.current[i] = el; }}>
-                       {item.bio}
-                     </p>
-                  )}
+
                   {item.link && (
-                     <div className="ag-panel__cta-wrapper" ref={(el) => { ctaRefs.current[i] = el; }}>
-                       <button 
-                         className="ag-panel__cta"
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           if (onNavigate) onNavigate(item.link!);
-                         }}
-                       >
-                         Lihat Profil <ArrowRight className="w-3 h-3 ml-1" />
-                       </button>
-                     </div>
+                    <div className="ag-panel__cta-wrapper" ref={(el) => { ctaRefs.current[i] = el; }}>
+                      <button
+                        type="button"
+                        className="ag-panel__circle-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onNavigate) onNavigate(item.link!);
+                        }}
+                        aria-label={`Buka detail ekskul ${item.label}`}
+                        title={`Buka detail ekskul ${item.label}`}
+                      >
+                        <ArrowRight className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
                   )}
+                </div>
+
+                {/* Collapsed Inactive Pill */}
+                <div className="ag-panel__collapsed-pill">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#D15B40] shrink-0" />
+                  <span className="truncate">{item.label}</span>
                 </div>
               </span>
             )}

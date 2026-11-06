@@ -9,6 +9,8 @@ export interface LogoProps {
   layout?: 'horizontal' | 'vertical';
   variant?: 'light' | 'dark';
   badgeText?: string;
+  /** Automatically hide badge text on mobile screens to prevent navbar overcrowding */
+  hideBadgeOnMobile?: boolean;
   subtitle?: string;
   /** Backwards compatibility alias for subtitle */
   schoolSubtitle?: string;
@@ -31,6 +33,7 @@ export const Logo: React.FC<LogoProps> = ({
   layout = 'horizontal',
   variant = 'light',
   badgeText,
+  hideBadgeOnMobile = true,
   subtitle,
   schoolSubtitle,
   onClick,
@@ -225,7 +228,9 @@ export const Logo: React.FC<LogoProps> = ({
           </span>
           {badgeText && (
             <span
-              className={`font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] rounded-md shrink-0 ${currentSize.badge}`}
+              className={`${
+                hideBadgeOnMobile ? 'hidden sm:inline-flex' : 'inline-flex'
+              } font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0] rounded-md shrink-0 ${currentSize.badge}`}
             >
               {badgeText}
             </span>

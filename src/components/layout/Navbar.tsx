@@ -83,47 +83,48 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {currentUser ? (
             <div className="flex items-center gap-1.5 sm:gap-2">
               {/* Active Dashboard Shortcut */}
               <button
                 onClick={() => handleNavClick(getDashboardPath(role))}
-                className="min-h-[40px] inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-[#F9F8F6] hover:bg-[#EAE6DC] active:scale-[0.97] text-[#171717] text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 cursor-pointer border border-[#EAE6DC] shadow-2xs hover:shadow-xs select-none"
+                className="min-h-[38px] sm:min-h-[40px] inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-[#F9F8F6] hover:bg-[#EAE6DC] active:scale-[0.97] text-[#171717] text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 cursor-pointer border border-[#EAE6DC] shadow-2xs hover:shadow-xs select-none"
+                title="Buka Dasbor"
               >
                 <LayoutDashboard className="w-4 h-4 text-[#D15B40] shrink-0" />
                 <span className="hidden sm:inline">Buka Dasbor Utama</span>
-                <span className="sm:hidden font-bold">Dasbor</span>
+                <span className="hidden xs:inline sm:hidden font-bold">Dasbor</span>
               </button>
 
-              {/* Logout Button */}
+              {/* Logout Button: Visible on tablet/desktop, secondary action moved to drawer on mobile */}
               <button
                 onClick={() => {
                   logout();
                   handleNavClick('/');
                 }}
-                className="min-h-[40px] min-w-[40px] inline-flex items-center justify-center sm:gap-1.5 px-2.5 sm:px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#FDF6F5] hover:border-[#FADBD8] active:scale-95 border border-[#EAE6DC] rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
+                className="hidden sm:inline-flex min-h-[40px] min-w-[40px] items-center justify-center sm:gap-1.5 px-2.5 sm:px-3 py-2 bg-[#F9F8F6] text-[#68655F] hover:text-[#A33D35] hover:bg-[#FDF6F5] hover:border-[#FADBD8] active:scale-95 border border-[#EAE6DC] rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer"
                 title="Keluar dari sesi"
                 aria-label="Keluar dari sesi"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Keluar</span>
+                <span>Keluar</span>
               </button>
             </div>
           ) : (
             <button
               onClick={() => handleNavClick('/login')}
-              className="min-h-[40px] inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 bg-[#171717] text-white text-xs sm:text-sm font-bold rounded-xl hover:bg-[#333333] active:scale-[0.97] transition-all duration-200 cursor-pointer shadow-xs select-none"
+              className="min-h-[38px] sm:min-h-[40px] inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-1.5 sm:py-2.5 bg-[#171717] text-white text-xs sm:text-sm font-bold rounded-xl hover:bg-[#333333] active:scale-[0.97] transition-all duration-200 cursor-pointer shadow-xs select-none"
             >
-              <LogIn className="w-4 h-4 shrink-0" />
+              <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               <span>Masuk</span>
             </button>
           )}
 
-          {/* Mobile Navigation Toggle (Labeled Hamburger) */}
+          {/* Mobile Navigation Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden min-h-[40px] min-w-[40px] inline-flex items-center justify-center gap-1 px-2.5 py-2 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] text-xs font-bold text-[#171717] cursor-pointer transition-colors select-none"
+            className="lg:hidden min-h-[38px] min-w-[38px] sm:min-h-[40px] sm:min-w-[40px] inline-flex items-center justify-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] text-xs font-bold text-[#171717] cursor-pointer transition-colors select-none"
             aria-label={mobileMenuOpen ? 'Tutup navigasi menu' : 'Buka navigasi menu'}
             aria-expanded={mobileMenuOpen}
           >
@@ -132,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
             ) : (
               <>
                 <Menu className="w-4 h-4" />
-                <span className="text-[11px] uppercase tracking-wide">Menu</span>
+                <span className="hidden xs:inline text-[11px] uppercase tracking-wide">Menu</span>
               </>
             )}
           </button>
@@ -153,14 +154,21 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
           <aside className="relative w-80 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-slide-in">
             {/* Drawer Header */}
             <div className="p-4 border-b border-[#EAE6DC] flex items-center justify-between bg-[#F9F8F6]">
-              <Logo size="sm" withText subtitle="Menu Navigasi" onClick={() => handleNavClick('/')} />
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-xl text-[#68655F] hover:text-[#171717] hover:bg-[#EAE6DC] active:scale-95 transition-all cursor-pointer"
-                aria-label="Tutup menu"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2 min-w-0">
+                <Logo size="sm" withText hideBadgeOnMobile={false} subtitle="Menu Navigasi" onClick={() => handleNavClick('/')} />
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-[#FDEDE9] text-[#D15B40] border border-[#F2C9C0]">
+                  TA {settings.academic_year || '2025/2026'}
+                </span>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl text-[#68655F] hover:text-[#171717] hover:bg-[#EAE6DC] active:scale-95 transition-all cursor-pointer"
+                  aria-label="Tutup menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
             {/* Navigation Links */}
@@ -202,6 +210,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
             <div className="p-4 border-t border-[#EAE6DC] bg-[#F9F8F6] space-y-2.5">
               {currentUser ? (
                 <>
+                  <div className="flex items-center gap-2.5 px-3 py-2 bg-white rounded-xl border border-[#EAE6DC] text-xs">
+                    <div className="w-8 h-8 rounded-full bg-[#FDEDE9] text-[#D15B40] font-black flex items-center justify-center text-xs shrink-0">
+                      {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-[#171717] truncate">{currentUser.name}</div>
+                      <div className="text-[10px] text-[#68655F] uppercase font-semibold tracking-wider">{role}</div>
+                    </div>
+                  </div>
                   <button
                     onClick={() => handleNavClick(getDashboardPath(role))}
                     className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 bg-[#D15B40] text-white text-xs font-bold rounded-xl shadow-xs active:scale-[0.98] transition-all cursor-pointer"
@@ -214,10 +231,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                       logout();
                       handleNavClick('/');
                     }}
-                    className="w-full min-h-[40px] flex items-center justify-center gap-2 px-3 py-2 text-xs text-[#A33D35] hover:bg-[#FDF6F5] active:scale-[0.98] font-bold rounded-xl border border-transparent hover:border-[#FADBD8] transition-all cursor-pointer"
+                    className="w-full min-h-[40px] flex items-center justify-center gap-2 px-3 py-2 text-xs text-[#A33D35] hover:bg-[#FDF6F5] active:scale-[0.98] font-bold rounded-xl border border-[#FADBD8] transition-all cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
-                    <span>Keluar Sesi</span>
+                    <span>Keluar dari Sesi</span>
                   </button>
                 </>
               ) : (
