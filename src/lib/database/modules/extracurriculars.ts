@@ -151,11 +151,15 @@ export class ExtracurricularsModule {
   }
 
   public setExtracurriculars(ekskuls: Extracurricular[]) {
-    this.extracurriculars = ekskuls;
+    if (Array.isArray(ekskuls) && ekskuls.length > 0) {
+      this.extracurriculars = ekskuls;
+    }
   }
 
   public setMembers(members: ExtracurricularMember[]) {
-    this.members = members;
+    if (Array.isArray(members)) {
+      this.members = members;
+    }
   }
 
   public getExtracurriculars(): Extracurricular[] {

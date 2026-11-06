@@ -24,7 +24,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     // 1. Subscribe to updates from db (whenever syncWithBackend completes or updates occur)
     const unsubscribe = db.subscribe(() => {
       const liveEkskuls = db.getExtracurriculars();
-      if (liveEkskuls && liveEkskuls.length > 0) {
+      if (Array.isArray(liveEkskuls) && liveEkskuls.length > 0) {
         setEkskuls(liveEkskuls);
       }
       setSettings(db.getSettings());
@@ -32,7 +32,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
     // 2. Fetch directly from backend API to ensure immediate hydration
     getEkskulsAPI().then((data) => {
-      if (data && data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         setEkskuls(data);
       }
     }).catch(() => {
@@ -51,15 +51,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     }
   };
 
-  // Select a few featured extracurriculars for the gallery
+  // Select a few featured extracurriculars for the gallery safely
   const galleryItems: AccordionGalleryItem[] = useMemo(() => {
-    const list = ekskuls.length > 0 ? ekskuls : db.getExtracurriculars();
+    const fallbackList = db.getExtracurriculars();
+    const list = Array.isArray(ekskuls) && ekskuls.length > 0
+      ? ekskuls
+      : (Array.isArray(fallbackList) ? fallbackList : []);
+
+    if (!Array.isArray(list) || list.length === 0) return [];
+
     return list.slice(0, 5).map(ekskul => ({
-      id: ekskul.id,
-      image: ekskul.profile_image,
-      label: ekskul.name,
-      bio: ekskul.short_description,
-      link: `/ekskul/${ekskul.slug}`
+      id: ekskul?.id || String(Math.random()),
+      image: ekskul?.profile_image || '',
+      label: ekskul?.name || 'Ekstrakurikuler',
+      bio: ekskul?.short_description || '',
+      link: ekskul?.slug ? `/ekskul/${ekskul.slug}` : '#'
     }));
   }, [ekskuls]);
 

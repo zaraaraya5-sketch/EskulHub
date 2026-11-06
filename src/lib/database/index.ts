@@ -98,17 +98,17 @@ class SQLiteDatabaseClient {
         return;
       }
 
-      if (data.settings) this.settings.setSettings(data.settings);
-      if (data.users?.length) this.users.setUsers(data.users);
-      if (data.ekskuls?.length) this.extracurriculars.setExtracurriculars(data.ekskuls);
-      if (data.members?.length) this.extracurriculars.setMembers(data.members);
-      if (data.registrations?.length) this.registrations.setRegistrations(data.registrations);
-      if (data.sessions?.length) this.attendance.setSessions(data.sessions);
-      if (data.records?.length) this.attendance.setRecords(data.records);
-      if (data.events?.length) this.events.setEvents(data.events);
-      if (data.achievements?.length) this.achievements.setAchievements(data.achievements);
-      if (data.certificates?.length) this.achievements.setCertificates(data.certificates);
-      if (data.verifications?.length) this.verifications.setVerifications(data.verifications);
+      if (data.settings && typeof data.settings === 'object') this.settings.setSettings(data.settings);
+      if (Array.isArray(data.users) && data.users.length) this.users.setUsers(data.users);
+      if (Array.isArray(data.ekskuls) && data.ekskuls.length) this.extracurriculars.setExtracurriculars(data.ekskuls);
+      if (Array.isArray(data.members) && data.members.length) this.extracurriculars.setMembers(data.members);
+      if (Array.isArray(data.registrations) && data.registrations.length) this.registrations.setRegistrations(data.registrations);
+      if (Array.isArray(data.sessions) && data.sessions.length) this.attendance.setSessions(data.sessions);
+      if (Array.isArray(data.records) && data.records.length) this.attendance.setRecords(data.records);
+      if (Array.isArray(data.events) && data.events.length) this.events.setEvents(data.events);
+      if (Array.isArray(data.achievements) && data.achievements.length) this.achievements.setAchievements(data.achievements);
+      if (Array.isArray(data.certificates) && data.certificates.length) this.achievements.setCertificates(data.certificates);
+      if (Array.isArray(data.verifications) && data.verifications.length) this.verifications.setVerifications(data.verifications);
     } catch {
       // Fallback cleanly to defaults
     }
@@ -164,17 +164,17 @@ class SQLiteDatabaseClient {
       ]);
 
       let hasUpdates = false;
-      if (settings) { this.settings.setSettings(settings); hasUpdates = true; }
-      if (users && users.length > 0) { this.users.setUsers(users); hasUpdates = true; }
-      if (ekskuls && ekskuls.length > 0) { this.extracurriculars.setExtracurriculars(ekskuls); hasUpdates = true; }
-      if (members && members.length > 0) { this.extracurriculars.setMembers(members); hasUpdates = true; }
-      if (registrations && registrations.length > 0) { this.registrations.setRegistrations(registrations); hasUpdates = true; }
-      if (sessions && sessions.length > 0) { this.attendance.setSessions(sessions); hasUpdates = true; }
-      if (records && records.length > 0) { this.attendance.setRecords(records); hasUpdates = true; }
-      if (events && events.length > 0) { this.events.setEvents(events); hasUpdates = true; }
-      if (achievements && achievements.length > 0) { this.achievements.setAchievements(achievements); hasUpdates = true; }
-      if (certificates && certificates.length > 0) { this.achievements.setCertificates(certificates); hasUpdates = true; }
-      if (verifications && verifications.length > 0) { this.verifications.setVerifications(verifications); hasUpdates = true; }
+      if (settings && typeof settings === 'object') { this.settings.setSettings(settings); hasUpdates = true; }
+      if (Array.isArray(users) && users.length > 0) { this.users.setUsers(users); hasUpdates = true; }
+      if (Array.isArray(ekskuls) && ekskuls.length > 0) { this.extracurriculars.setExtracurriculars(ekskuls); hasUpdates = true; }
+      if (Array.isArray(members) && members.length > 0) { this.extracurriculars.setMembers(members); hasUpdates = true; }
+      if (Array.isArray(registrations) && registrations.length > 0) { this.registrations.setRegistrations(registrations); hasUpdates = true; }
+      if (Array.isArray(sessions) && sessions.length > 0) { this.attendance.setSessions(sessions); hasUpdates = true; }
+      if (Array.isArray(records) && records.length > 0) { this.attendance.setRecords(records); hasUpdates = true; }
+      if (Array.isArray(events) && events.length > 0) { this.events.setEvents(events); hasUpdates = true; }
+      if (Array.isArray(achievements) && achievements.length > 0) { this.achievements.setAchievements(achievements); hasUpdates = true; }
+      if (Array.isArray(certificates) && certificates.length > 0) { this.achievements.setCertificates(certificates); hasUpdates = true; }
+      if (Array.isArray(verifications) && verifications.length > 0) { this.verifications.setVerifications(verifications); hasUpdates = true; }
 
       if (hasUpdates) {
         this.saveToCache();

@@ -50,6 +50,30 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Guard against SPA fallback: if server returned an HTML page (like index.html on Vercel), reject immediately
+api.interceptors.response.use(
+  (response) => {
+    const contentType = response.headers?.['content-type'] || '';
+    if (
+      typeof response.data === 'string' &&
+      (contentType.includes('text/html') ||
+        response.data.trim().startsWith('<!DOCTYPE') ||
+        response.data.trim().startsWith('<html'))
+    ) {
+      return Promise.reject(new Error('Invalid API response: Server returned HTML page instead of JSON'));
+    }
+    return response;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Safe helper to guarantee array results regardless of backend packaging ({ data: [...] } or direct [...])
+const ensureArray = <T>(data: any): T[] => {
+  if (Array.isArray(data)) return data;
+  if (data && Array.isArray(data.data)) return data.data;
+  return [];
+};
+
 // ==========================================
 // 1. Settings
 // ==========================================
@@ -151,7 +175,7 @@ export const updateProfileAPI = async (id: string, data: Partial<User>) => {
 export const getUsersAPI = async (): Promise<User[]> => {
   try {
     const res = await api.get('/users');
-    return res.data;
+    return ensureArray<User>(res.data);
   } catch (err) {
     console.error('Error fetching users from API:', err);
     return [];
@@ -196,7 +220,7 @@ export const deleteUserAPI = async (id: string) => {
 export const getEkskulsAPI = async (): Promise<Extracurricular[]> => {
   try {
     const res = await api.get('/ekskul');
-    return res.data;
+    return ensureArray<Extracurricular>(res.data);
   } catch (err) {
     console.error('Error fetching ekskuls from API:', err);
     return [];
@@ -255,7 +279,7 @@ export const deleteEkskulAPI = async (id: string) => {
 export const getAllMembersAPI = async (): Promise<ExtracurricularMember[]> => {
   try {
     const res = await api.get('/members');
-    return res.data;
+    return ensureArray<ExtracurricularMember>(res.data);
   } catch (err) {
     console.error('Error fetching all members from API:', err);
     return [];
@@ -288,7 +312,7 @@ export const deleteMemberAPI = async (memberId: string) => {
 export const getRegistrationsAPI = async (): Promise<ExtracurricularRegistration[]> => {
   try {
     const res = await api.get('/registrations');
-    return res.data;
+    return ensureArray<ExtracurricularRegistration>(res.data);
   } catch (err) {
     console.error('Error fetching registrations from API:', err);
     return [];
@@ -332,7 +356,7 @@ export const updateRegistrationStatusAPI = async (
 export const getAttendanceSessionsAPI = async (): Promise<AttendanceSession[]> => {
   try {
     const res = await api.get('/attendance/sessions');
-    return res.data;
+    return ensureArray<AttendanceSession>(res.data);
   } catch (err) {
     console.error('Error fetching attendance sessions from API:', err);
     return [];
@@ -352,7 +376,7 @@ export const createAttendanceSessionAPI = async (data: Partial<AttendanceSession
 export const getAttendanceRecordsAPI = async (): Promise<AttendanceRecord[]> => {
   try {
     const res = await api.get('/attendance/records');
-    return res.data;
+    return ensureArray<AttendanceRecord>(res.data);
   } catch (err) {
     console.error('Error fetching attendance records from API:', err);
     return [];
@@ -472,7 +496,7 @@ export const importEventsExcelAPI = async (payload: {
 export const getAchievementsAPI = async (): Promise<Achievement[]> => {
   try {
     const res = await api.get('/achievements');
-    return res.data;
+    return ensureArray<Achievement>(res.data);
   } catch (err) {
     console.error('Error fetching achievements from API:', err);
     return [];
@@ -515,7 +539,7 @@ export const deleteAchievementAPI = async (id: string) => {
 export const getCertificatesAPI = async (): Promise<Certificate[]> => {
   try {
     const res = await api.get('/certificates');
-    return res.data;
+    return ensureArray<Certificate>(res.data);
   } catch (err) {
     console.error('Error fetching certificates from API:', err);
     return [];
@@ -548,7 +572,7 @@ export const deleteCertificateAPI = async (id: string) => {
 export const getVerificationsAPI = async (): Promise<PortfolioVerification[]> => {
   try {
     const res = await api.get('/verifications');
-    return res.data;
+    return ensureArray<PortfolioVerification>(res.data);
   } catch (err) {
     console.error('Error fetching verifications list from API:', err);
     return [];
