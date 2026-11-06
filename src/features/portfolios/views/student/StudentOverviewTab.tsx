@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Extracurricular, SchoolEvent, AttendanceRecord, ExtracurricularMember, Achievement, Certificate } from '@/types';
 import { db } from '@/lib/database';
+import { getContextualFallbackImage, handleImageError } from '@/lib/imageUtils';
 import {
   CheckSquare,
   Calendar,
@@ -242,19 +243,13 @@ export const StudentOverviewTab: React.FC<StudentOverviewTabProps> = ({
                     >
                       <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
                         <img
-                          src={ekskul?.profile_image || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150'}
+                          src={ekskul?.profile_image || getContextualFallbackImage(ekskul?.name)}
                           alt={ekskul?.name}
                           width={64}
                           height={64}
                           loading="lazy"
                           decoding="async"
-                          onError={(e) => {
-                            const target = e.currentTarget;
-                            if (!target.dataset.fallback) {
-                              target.dataset.fallback = 'true';
-                              target.src = 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=150';
-                            }
-                          }}
+                          onError={(e) => handleImageError(e, ekskul?.name)}
                           className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border border-[#EAE6DC] shrink-0 group-hover:scale-105 transition-transform duration-200"
                         />
                         <div className="min-w-0 flex-1">

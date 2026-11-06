@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
+import { getContextualFallbackImage } from '@/lib/imageUtils';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -212,7 +213,7 @@ export const RegisterEkskulPage: React.FC<RegisterEkskulPageProps> = ({ slug, on
             <div className="bg-white border border-[#EAE6DC] rounded-2xl overflow-hidden shadow-xs">
               <div className="h-40 w-full relative bg-[#2A2926] overflow-hidden">
                 <img
-                  src={imgError ? 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800' : (ekskul.profile_image || 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800')}
+                  src={imgError ? getContextualFallbackImage(ekskul.name || ekskul.category) : (ekskul.profile_image || getContextualFallbackImage(ekskul.name || ekskul.category))}
                   alt={ekskul.name}
                   width={400}
                   height={160}

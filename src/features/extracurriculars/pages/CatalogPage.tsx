@@ -5,6 +5,7 @@ import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { EXTRACURRICULAR_CATEGORIES } from '@/lib/constants';
+import { getContextualFallbackImage, handleImageError } from '@/lib/imageUtils';
 import { Search, Filter, BookOpen, Users, Calendar, MapPin, ArrowRight, Loader2 } from 'lucide-react';
 
 interface CatalogPageProps {
@@ -185,19 +186,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({ onNavigate }) => {
             >
               {/* Full Landscape Image */}
               <img
-                src={item.profile_image}
+                src={item.profile_image || getContextualFallbackImage(item.name || item.category)}
                 alt={item.name}
                 width={480}
                 height={300}
                 loading="lazy"
                 decoding="async"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (!target.dataset.fallback) {
-                    target.dataset.fallback = 'true';
-                    target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
-                  }
-                }}
+                onError={(e) => handleImageError(e, item.name || item.category)}
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />
 

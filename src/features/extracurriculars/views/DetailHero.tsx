@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/features/authentication/providers/AuthProvider';
+import { getContextualFallbackImage, handleImageError } from '@/lib/imageUtils';
 import { Extracurricular } from '@/types';
 
 interface DetailHeroProps {
@@ -21,18 +22,12 @@ export const DetailHero: React.FC<DetailHeroProps> = ({
     <div className="bg-white border border-[#EAE6DC] rounded-lg overflow-hidden">
       <div className="h-64 sm:h-80 relative bg-[#EAE6DC]">
         <img
-          src={ekskul.profile_image}
+          src={ekskul.profile_image || getContextualFallbackImage(ekskul.name || ekskul.category)}
           alt={ekskul.name}
           width={1200}
           height={320}
           decoding="async"
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (!target.dataset.fallback) {
-              target.dataset.fallback = 'true';
-              target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
-            }
-          }}
+          onError={(e) => handleImageError(e, ekskul.name || ekskul.category)}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />

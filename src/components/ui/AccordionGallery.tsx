@@ -2,7 +2,10 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ArrowRight } from 'lucide-react';
+import { getContextualFallbackImage } from '@/lib/imageUtils';
 import './AccordionGallery.css';
+
+export { getContextualFallbackImage };
 
 export interface AccordionGalleryItem {
   id?: string;
@@ -36,39 +39,7 @@ interface AccordionGalleryProps {
   onNavigate?: (path: string) => void;
 }
 
-// Map fallback images contextually based on extracurricular activity name/keywords
-// so it NEVER falls back to generic tech/coding photos.
-const CATEGORY_FALLBACKS: Record<string, string> = {
-  voli: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
-  volly: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
-  volleyball: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=800',
-  futsal: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800',
-  basket: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800',
-  basketball: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800',
-  paskibra: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5tBV8kDQOfViGAslYLp1_hJ4v-QxTURbwOSeOu9MR2HDzTgdZpWHVmyMM&s=10',
-  pramuka: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800',
-  scout: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800',
-  pmr: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800',
-  palang: 'https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800',
-  rohis: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800',
-  islam: 'https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800',
-  it: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800',
-  coding: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800',
-  musik: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800',
-  tari: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800',
-  teater: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?w=800',
-};
 
-export const getContextualFallbackImage = (label?: string): string => {
-  if (!label) return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800';
-  const clean = label.toLowerCase().trim();
-  for (const [keyword, url] of Object.entries(CATEGORY_FALLBACKS)) {
-    if (clean.includes(keyword)) {
-      return url;
-    }
-  }
-  return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800';
-};
 
 const DEFAULT_ITEMS: AccordionGalleryItem[] = [
   {

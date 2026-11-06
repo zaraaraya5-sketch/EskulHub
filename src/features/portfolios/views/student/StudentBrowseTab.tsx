@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { getContextualFallbackImage, handleImageError } from '@/lib/imageUtils';
 import { Extracurricular } from '@/types';
 import {
   Search,
@@ -95,19 +96,13 @@ export const StudentBrowseTab: React.FC<StudentBrowseTabProps> = ({
                 {/* Image Banner */}
                 <div className="relative h-44 overflow-hidden bg-[#ECEAE4]">
                   <img
-                    src={ekskul.profile_image}
+                    src={ekskul.profile_image || getContextualFallbackImage(ekskul.name || ekskul.category)}
                     alt={ekskul.name}
                     width={400}
                     height={176}
                     loading="lazy"
                     decoding="async"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.dataset.fallback) {
-                        target.dataset.fallback = 'true';
-                        target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
-                      }
-                    }}
+                    onError={(e) => handleImageError(e, ekskul.name || ekskul.category)}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-3 left-3">

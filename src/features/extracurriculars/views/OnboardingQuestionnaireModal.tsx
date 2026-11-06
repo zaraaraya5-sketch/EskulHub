@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { db } from '@/lib/database';
+import { getContextualFallbackImage, handleImageError } from '@/lib/imageUtils';
 import { Extracurricular } from '@/types';
 import { Button } from '@/components/ui/Button';
 import {
@@ -646,19 +647,13 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
 
                     <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 items-center">
                       <img
-                        src={top.ekskul.profile_image}
+                        src={top.ekskul.profile_image || getContextualFallbackImage(top.ekskul.name || top.ekskul.category)}
                         alt={top.ekskul.name}
                         width={112}
                         height={112}
                         loading="lazy"
                         decoding="async"
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          if (!target.dataset.fallback) {
-                            target.dataset.fallback = 'true';
-                            target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
-                          }
-                        }}
+                        onError={(e) => handleImageError(e, top.ekskul.name || top.ekskul.category)}
                         className="w-full sm:w-28 h-36 sm:h-28 object-cover rounded-xl border border-[#EAE6DC] shrink-0"
                       />
                       <div className="space-y-2 flex-1 text-center sm:text-left min-w-0">
@@ -719,19 +714,13 @@ export const OnboardingQuestionnaireModal: React.FC<OnboardingQuestionnaireModal
                 <div className="p-3.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] flex items-center justify-between gap-3 min-w-0">
                   <div className="flex items-center gap-3 min-w-0 flex-1">
                     <img
-                      src={rankedResults[1].ekskul.profile_image}
+                      src={rankedResults[1].ekskul.profile_image || getContextualFallbackImage(rankedResults[1].ekskul.name || rankedResults[1].ekskul.category)}
                       alt={rankedResults[1].ekskul.name}
                       width={44}
                       height={44}
                       loading="lazy"
                       decoding="async"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (!target.dataset.fallback) {
-                          target.dataset.fallback = 'true';
-                          target.src = 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800';
-                        }
-                      }}
+                      onError={(e) => handleImageError(e, rankedResults[1].ekskul.name || rankedResults[1].ekskul.category)}
                       className="w-11 h-11 rounded-lg object-cover border border-[#EAE6DC] shrink-0"
                     />
                     <div className="min-w-0 flex-1">
