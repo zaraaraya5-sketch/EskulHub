@@ -334,16 +334,29 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen flex flex-col lg:flex-row bg-[#F9F8F6] text-[#171717]">
         {/* Mobile Dashboard Header (< lg) */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-3.5 sm:px-4 h-14 sm:h-15 flex items-center justify-between shadow-2xs">
-          <Logo
-            size="sm"
-            withText
-            subtitle={settings.school_name}
-            onClick={() => navigate('/')}
-            title="Kembali ke Beranda"
-          />
+        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-[#EAE6DC] px-3 sm:px-4 h-14 sm:h-15 flex items-center justify-between shadow-2xs">
+          {/* Sisi Kiri: Tombol Hamburger Menu (selaras dengan arah slide-in drawer dari kiri) & Logo EskulHub */}
+          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+            <button
+              onClick={() => setMobileSidebarOpen(true)}
+              className="min-h-[38px] px-2.5 sm:px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] active:scale-95 text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-all shadow-2xs shrink-0"
+              aria-label="Buka navigasi dasbor"
+            >
+              <Menu className="w-4 h-4 text-[#D15B40]" />
+              <span className="uppercase tracking-wider text-[11px] font-bold">Menu</span>
+            </button>
 
-          <div className="flex items-center gap-2">
+            <Logo
+              size="sm"
+              withText
+              subtitle={settings.school_name}
+              onClick={() => navigate('/')}
+              title="Kembali ke Beranda"
+            />
+          </div>
+
+          {/* Sisi Kanan: Profil User */}
+          <div className="flex items-center gap-2 shrink-0">
             {currentUser && (
               <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F9F8F6] border border-[#EAE6DC] rounded-xl text-xs">
                 <span className="w-6 h-6 rounded-lg bg-[#D15B40] text-white flex items-center justify-center font-bold text-[11px] shrink-0 shadow-2xs">
@@ -354,15 +367,6 @@ const AppContent: React.FC = () => {
                 </span>
               </div>
             )}
-
-            <button
-              onClick={() => setMobileSidebarOpen(true)}
-              className="min-h-[38px] px-3 py-1.5 rounded-xl border border-[#EAE6DC] bg-[#F9F8F6] hover:bg-[#EAE6DC] active:bg-[#E0DDD5] active:scale-95 text-xs font-bold text-[#171717] flex items-center gap-1.5 cursor-pointer select-none transition-all shadow-2xs"
-              aria-label="Buka navigasi dasbor"
-            >
-              <Menu className="w-4 h-4 text-[#D15B40]" />
-              <span className="uppercase tracking-wider text-[11px]">Menu</span>
-            </button>
           </div>
         </header>
 

@@ -302,6 +302,9 @@ const AccordionGallery: React.FC<AccordionGalleryProps> = ({
                   draggable="false"
                   loading={i === 0 || isActive ? 'eager' : 'lazy'}
                   decoding="async"
+                  className={`w-full h-full object-cover transition-all duration-500 md:blur-none ${
+                    isActive ? 'blur-xs md:blur-none' : 'blur-none'
+                  }`}
                   onError={(e) => {
                     const target = e.currentTarget;
                     if (target.src !== FALLBACK_IMAGE) {

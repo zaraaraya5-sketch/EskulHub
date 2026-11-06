@@ -79,10 +79,25 @@
   transition: filter 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Subtle, refined glassmorphic blur on active/expanded state */
+/* Sharp, crystal clear photos on Desktop (md and above) */
 .ag-panel--active .ag-panel__media img {
-  filter: blur(2.5px);
+  filter: none;
   transform: scale(1.04);
+}
+
+/* Mobile only (< 768px): subtle blur on active card to ensure text readability on small screens */
+@media (max-width: 767px) {
+  .ag-panel--active .ag-panel__media img {
+    filter: blur(2.5px);
+    transform: scale(1.04);
+  }
+}
+
+@media (min-width: 768px) {
+  .ag-panel .ag-panel__media img,
+  .ag-panel--active .ag-panel__media img {
+    filter: none !important;
+  }
 }
 
 /* Dark, sleek gradient overlay so the photo stays clearly visible */
