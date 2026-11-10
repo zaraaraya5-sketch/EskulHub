@@ -102,3 +102,4 @@ flowchart TD
    - Integrasi pengingat otomatis ke siswa jika ada sesi latihan rutin besok sore atau ada pengumuman mendesak dari pembina.
 3. **Filter Portofolio Multi-Semester:**
    - Memungkinkan siswa kelas XII memilih apakah ingin mencetak portofolio satu semester terakhir atau komprehensif 3 tahun selama bersekolah di SMKN 1 Ciomas.
+
